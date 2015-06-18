@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="darker_green">#ff3b8d01</color>
+    <color name="text_color">#ff101010</color>
+
+    <color name="lv_background_color">#ffc1c1c1</color>
+    <color name="lv_background_color_dark">#ffadadad</color>
+
+    <color name="row_lv_background_color">#ffffffff</color>
+    <color name="tb_background_color">#ff0a9900</color>
+    <color name="tb_text_color">#EEEBF0</color>
+    <color name="element_background_color">#4888F0</color>
+    <color name="element_text_color">#FFFFFF</color>
+    <color name="date_background_color">#5BC0DE</color>
+    <color name="price_background_color">#3D9400</color>
+    <color name="requests_background_color">#999999</color>
+
+    <!--Menu colors-->
+    <color name="menu_background_color">#ff0a9900</color>
+    <color name="divider_menu_background_color">#ff535764</color>
+    <color name="menu_text_color">#ffd1d2d2</color>
+    <color name="selected_menu_text_color">#ff222222</color>
+    <color name="selected_menu_background_color">#ffd1c7a0</color>
+    <color name="selected_devider_menu_background_color">#ffd1c7a0</color>
+    <color name="header_text_color">#FFA500</color>
+    <color name="background_row_forum_section">@color/row_lv_background_color</color>
+    <color name="selected_background_row_forum_section">#fff7d96b</color>
+
+    <!--GridView-->
+    <color name="gridview_item_background">#8e8699</color>
+
+</resources>

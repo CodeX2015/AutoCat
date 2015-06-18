@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:padding="5dp">
+
+    <ImageView
+        android:id="@+id/iv_car"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="6dp"
+        android:contentDescription=""
+        android:src="@drawable/car_example" />
+
+    <TextView
+        android:id="@+id/tv_model"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/iv_car"
+        android:layout_toLeftOf="@+id/tv_create_header"
+        android:paddingLeft="5dp"
+        android:text="Model"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/size_text_normal"
+        android:textStyle="bold" />
+    <TextView
+        android:id="@+id/tv_create_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/tv_create"
+        android:paddingLeft="5dp"
+        android:text="Выпуск: "
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/size_text_normal"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:paddingLeft="5dp"
+        android:text="12.12.2008"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/size_text_normal"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_mt_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/tv_mt"
+        android:layout_above="@+id/tv_at_header"
+        android:paddingLeft="5dp"
+        android:text="Механика: "
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/size_text_normal"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_mt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/tv_at_header"
+        android:paddingLeft="5dp"
+        android:text="4"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/size_text_normal"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_at_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/tv_at"
+        android:paddingLeft="5dp"
+        android:text="Автомат: "
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/size_text_normal"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_at"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:paddingLeft="5dp"
+        android:text="0"
+        android:textColor="@color/text_color"
+        android:textSize="@dimen/size_text_normal"
+        android:textStyle="bold" />
+
+</RelativeLayout>
