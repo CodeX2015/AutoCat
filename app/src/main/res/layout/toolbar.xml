@@ -17,6 +17,13 @@
         android:popupBackground="#D3D5D3"
         android:visibility="gone" />
 
+    <Button
+        android:id="@+id/action_change_view"
+        android:icon="@drawable/ic_view_list_white_24dp"
+        android:menuCategory="secondary"
+        android:orderInCategory="1"
+        android:title="" />
+
 </android.support.v7.widget.Toolbar>
 
 

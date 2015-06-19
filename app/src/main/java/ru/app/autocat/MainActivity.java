@@ -2,6 +2,7 @@ package ru.app.autocat;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -27,6 +28,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -44,6 +50,12 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         spnTBCat = (Spinner) findViewById(R.id.toolbar_spinner_cat);
+
+
+
+
+
+
 
         ArrayAdapter<String> SpinnerAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new String[]{"Каталог", "Гараж", "Резерв"});
@@ -74,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
                     changeFragment(newFragment);
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -102,6 +115,31 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mHandler = new Handler();
     }
+
+    public void savePref() {
+
+        ArrayList<String> nnn = new ArrayList<String>();
+        for (int i = 0; i < 10; i++) {
+            nnn.add("sjdhfjkhsdjklfkl");
+        }
+
+        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(nnn);
+        prefsEditor.putString("MyObject", json);
+        prefsEditor.commit();
+
+    }
+
+    public ArrayList<String> loadPref() {
+        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = mPrefs.getString("MyObject", "");
+        ArrayList<String> obj = gson.fromJson(json, new TypeToken<ArrayList<String>>() {}.getType());
+        return obj;
+    }
+
 
     private void setAdapter() {
         mDrawerList.setAdapter(new AppSectionAdapter());
