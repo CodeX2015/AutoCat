@@ -73,10 +73,19 @@ public class FragmentCatalogGrid extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getActivity(),
-                                "OnParseComplete, cars = " + String.valueOf(((ArrayList<Car>) result).size()),
-                                Toast.LENGTH_LONG).show();
-                        mGridView.setAdapter(new MyListAdapter((ArrayList<Car>) result));
+                        /**
+                        if (getArguments() != null && getArguments().getString("FilterPattern","")!="") {
+                            mGridView.setAdapter(new MyListAdapter(((MainActivity) getActivity())
+                                    .getFilteredData(getArguments().getString("FilterPattern", ""), (ArrayList<Car>) result)));
+                        } else {
+                            Toast.makeText(getActivity(),
+                                    "OnParseComplete, cars = " + String.valueOf(((ArrayList<Car>) result).size()),
+                                    Toast.LENGTH_LONG).show();
+                            mGridView.setAdapter(new MyListAdapter((ArrayList<Car>) result));
+                        }
+                        */
+
+                        mGridView.setAdapter(new MyListAdapter(((MainActivity) getActivity()).getCarsDBG()));
                     }
                 });
             }

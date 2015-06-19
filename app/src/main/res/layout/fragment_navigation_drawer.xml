@@ -53,5 +53,7 @@
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
         android:dividerHeight="2dp"
-        android:focusable="true" />
+        android:focusable="true"
+        android:clickable="true"
+        android:drawSelectorOnTop="true"/>
 </LinearLayout>

@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -45,20 +46,44 @@ public class MainActivity extends AppCompatActivity {
     private Spinner spnTBCat;
     private MorphButton btnChangeView;
     private Handler mHandler;
+    public ArrayList<Car> carsDB;
+    public ArrayList<Car> carsDBG;
+    private Button mDrawerBtnDe;
+    private Button mDrawerBtnJp;
+    private Button mDrawerBtnUs;
 
-    public static final String[] DATA = {"Все", "Audi", "BMV", "Ford", "Toyota", "Mercedes", "Nissan", "Mitsubishi", "VW", "Reno"};
+    public static final String[] DATA = {"Все", "Audi", "BMW", "Ford", "Toyota"};
+
+    public void setCarsDBG(ArrayList<Car> carsDBG) {
+        this.carsDBG = carsDBG;
+    }
+
+    public ArrayList<Car> getCarsDBG() {
+        return carsDBG;
+    }
+
+    public void setCarsDB(ArrayList<Car> carsDB) {
+        this.carsDB = carsDB;
+    }
+
+    public ArrayList<Car> getCarsDB() {
+        return carsDB;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        parseXML();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         btnChangeView = (MorphButton) findViewById(R.id.stopBtn);
         spnTBCat = (Spinner) findViewById(R.id.toolbar_spinner_cat);
 
 
         btnChangeView.setOnStateChangedListener(new MorphButton.OnStateChangedListener() {
+
             @Override
             public void onStateChanged(MorphButton.MorphState changedTo, boolean isAnimating) {
                 // Do something here
@@ -84,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         spnTBCat.setVisibility(View.VISIBLE);
 
         spnTBCat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Fragment newFragment = null;
@@ -115,8 +141,54 @@ public class MainActivity extends AppCompatActivity {
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+
+
         mDrawerList = (ListView) findViewById(R.id.lv_fragment_drawer);
         setAdapter();
+
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //setFilterPattern(parent.getAdapter().getItem(position).toString());
+                if (!parent.getAdapter().getItem(position).toString().equalsIgnoreCase("Все")) {
+                    setCarsDBG(
+                            getFilteredData(
+                                    parent.getAdapter().getItem(position).toString(), getCarsDB()));
+                } else {
+                    setCarsDBG(getCarsDB());
+                }
+                changeFragment(new FragmentCatalogGrid());
+            }
+        });
+
+        mDrawerBtnDe = (Button) findViewById(R.id.btnDE);
+        mDrawerBtnJp = (Button) findViewById(R.id.btnJP);
+        mDrawerBtnUs = (Button) findViewById(R.id.btnUS);
+
+        /**
+        View.OnClickListener oclBtn = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String pattern = "";
+                switch (v.getId()) {
+                    case R.id.btnDE:
+                        pattern = "Германия";
+                        break;
+                    case R.id.btnUS:
+                        pattern = "США";
+                        break;
+                    case R.id.btnJP:
+                        pattern = "Япония";
+                        break;
+                }
+                setCarsDBG(getFilteredDataByCountry(pattern));
+                changeFragment(new FragmentCatalogGrid());
+            }
+        };
+         */
+        //mDrawerBtnDe.setOnClickListener(oclBtn);
+        //mDrawerBtnJp.setOnClickListener(oclBtn);
+        //mDrawerBtnUs.setOnClickListener(oclBtn);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
                 R.string.navigation_drawer_open,
@@ -133,7 +205,31 @@ public class MainActivity extends AppCompatActivity {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mHandler = new Handler();
+    }
 
+    private void parseXML() {
+        XmlParserHelper.parseXMLbyStack(new XmlParserHelper.LoadListener() {
+            @Override
+            public void OnParseComplete(final Object result) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setCarsDB((ArrayList<Car>) result);
+                        setCarsDBG(getCarsDB());
+                    }
+                });
+            }
+
+            @Override
+            public void OnParseError(final Exception error) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "OnParseError: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }, getResources().getXml(R.xml.test));
     }
 
     void selectItem(int item) {
@@ -146,7 +242,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void savePref(Car carDetails) {
         ArrayList<Car> cars = loadPref();
-        if (cars == null) {cars = new ArrayList<Car>();}
+        if (cars == null) {
+            cars = new ArrayList<Car>();
+        }
         SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         Gson gson = new Gson();
@@ -165,6 +263,37 @@ public class MainActivity extends AppCompatActivity {
         }.getType());
     }
 
+    private void setFilterPattern(String pattern) {
+        FragmentCatalogGrid fragmentCatalogGrid = new FragmentCatalogGrid();
+        Bundle patternArgs = new Bundle();
+        if (pattern.equalsIgnoreCase("Все")) {
+            pattern = "";
+        }
+        patternArgs.putString("FilterPattern", pattern);
+        fragmentCatalogGrid.setArguments(patternArgs);
+        changeFragment(fragmentCatalogGrid);
+    }
+
+    public ArrayList<Car> getFilteredData(String pattern, ArrayList<Car> dataforfilter) {
+        ArrayList<Car> filteredData = new ArrayList<Car>();
+        for (Car car : dataforfilter) {
+            if (car.getMark().equalsIgnoreCase(pattern)) {
+                filteredData.add(car);
+            }
+        }
+        return filteredData;
+    }
+
+    public ArrayList<Car> getFilteredDataByCountry(String pattern) {
+        ArrayList<Car> filteredData = new ArrayList<Car>();
+
+        for (Car car : getCarsDB()) {
+            if (car.getCountry().equalsIgnoreCase(pattern)) {
+                filteredData.add(car);
+            }
+        }
+        return filteredData;
+    }
 
     private void setAdapter() {
         mDrawerList.setAdapter(new AppSectionAdapter());

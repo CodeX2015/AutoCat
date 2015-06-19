@@ -20,16 +20,19 @@
         android:padding="5dp">
 
         <Button
+            android:id="@+id/btnUS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="US" />
 
         <Button
+            android:id="@+id/btnJP"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="JP" />
 
         <Button
+            android:id="@+id/btnDE"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="DE" />
