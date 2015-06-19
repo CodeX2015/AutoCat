@@ -30,4 +30,7 @@
     <!--GridView-->
     <color name="gridview_item_background">#8e8699</color>
 
+    <!--Button-->
+    <color name="btn_bg_color">#2bad28</color>
+
 </resources>

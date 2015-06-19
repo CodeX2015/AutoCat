@@ -10,13 +10,93 @@
         <country>Германия</country>
     </car>
     <car>
-        <id>audi-q3</id>
-        <model>Q3</model>
+        <id>audi-q6</id>
+        <model>Q6</model>
         <title>Россия – территория quattro</title>
         <mark>Audi</mark>
-        <imageName1>audi-q3-1.jpg</imageName1>
+        <imageName1>audi-q6-1.jpg</imageName1>
         <created>2011</created>
-        <kpp>механика и робот</kpp>
+        <kpp>механика и автомат</kpp>
         <country>Германия</country>
+    </car>
+    <car>
+        <id>Toyota-Camry</id>
+        <model>Camry</model>
+        <title>Toyota - управляй мечтой</title>
+        <mark>Toyota</mark>
+        <imageName1>Toyota-Camry-1.jpg</imageName1>
+        <created>2013</created>
+        <kpp>механика и автомат</kpp>
+        <country>Япония</country>
+    </car>
+    <car>
+        <id>Mercedes-SLK</id>
+        <model>SLK</model>
+        <title>mers</title>
+        <mark>Mercedes</mark>
+        <imageName1>Mercedes-SLK-1.jpg</imageName1>
+        <created>2013</created>
+        <kpp>механика и автомат</kpp>
+        <country>Германия</country>
+    </car>
+    <car>
+        <id>Mercedes-СLK</id>
+        <model>СLK</model>
+        <title>mers</title>
+        <mark>Mercedes</mark>
+        <imageName1>Mercedes-СLK-1.jpg</imageName1>
+        <created>2013</created>
+        <kpp>механика и автомат</kpp>
+        <country>Германия</country>
+    </car>
+    <car>
+        <id>Nissan-Sunny</id>
+        <model>Sunny</model>
+        <title>way of world</title>
+        <mark>Nissan</mark>
+        <imageName1>Nissan-sunny-1.jpg</imageName1>
+        <created>2013</created>
+        <kpp>механика и автомат</kpp>
+        <country>Япония</country>
+    </car>
+    <car>
+        <id>ВАЗ-21015</id>
+        <model>21015</model>
+        <title>ведро с болтами</title>
+        <mark>ВАЗ</mark>
+        <imageName1>ВАЗ-21015-1.jpg</imageName1>
+        <created>2013</created>
+        <kpp>механика и автомат</kpp>
+        <country>Россия</country>
+    </car>
+    <car>
+        <id>Reno-Logan</id>
+        <model>Logan</model>
+        <title>france</title>
+        <mark>Reno</mark>
+        <imageName1>Mercedes-SLK-1.jpg</imageName1>
+        <created>2013</created>
+        <kpp>механика и автомат</kpp>
+        <country>Франция</country>
+    </car>
+    <car>
+        <id>Ford-Focus</id>
+        <model>Focus</model>
+        <title>пиндосы</title>
+        <mark>Ford</mark>
+        <imageName1>Mercedes-SLK-1.jpg</imageName1>
+        <created>2013</created>
+        <kpp>механика и автомат</kpp>
+        <country>США</country>
+    </car>
+    <car>
+        <id>Ferrari-F55</id>
+        <model>F55</model>
+        <title>italy</title>
+        <mark>Ferrari</mark>
+        <imageName1>Mercedes-SLK-1.jpg</imageName1>
+        <created>2013</created>
+        <kpp>механика и автомат</kpp>
+        <country>Италия</country>
     </car>
 </car_database>

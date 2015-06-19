@@ -9,7 +9,7 @@
         android:layout_margin="3dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#3c9a7e"
+        android:background="@color/btn_bg_color"
         android:text="parseXML"/>
     <GridView
         android:layout_margin="5dp"

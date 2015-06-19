@@ -16,6 +16,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,11 +56,23 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         btnChangeView = (MorphButton) findViewById(R.id.stopBtn);
         spnTBCat = (Spinner) findViewById(R.id.toolbar_spinner_cat);
+
+
         btnChangeView.setOnStateChangedListener(new MorphButton.OnStateChangedListener() {
             @Override
             public void onStateChanged(MorphButton.MorphState changedTo, boolean isAnimating) {
                 // Do something here
                 Toast.makeText(MainActivity.this, "Changed to: " + changedTo, Toast.LENGTH_SHORT).show();
+                switch (String.valueOf(changedTo)) {
+                    case "END":
+                        Log.d("hhh", "list");
+                        changeFragment(new FragmentCatalogList());
+                        break;
+                    case "START":
+                        Log.d("hhh", "grid");
+                        changeFragment(new FragmentCatalogGrid());
+                        break;
+                }
             }
         });
         setSupportActionBar(toolbar);
@@ -84,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getBaseContext(), "Garage", Toast.LENGTH_SHORT).show();
                         break;
                     case 2:
-                        //newFragment = new FragmentReserve();
+                        newFragment = new FragmentReserve();
                         Toast.makeText(getBaseContext(), "Reserve", Toast.LENGTH_SHORT).show();
                         break;
                 }
@@ -123,33 +136,33 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    void addButton() {
-        MorphButton mb = new MorphButton(this);
-
+    void selectItem(int item) {
+        Log.d("hhh", "end");
     }
 
-    public void savePref() {
+    void addButton() {
+        MorphButton mb = new MorphButton(this);
+    }
 
-        ArrayList<String> nnn = new ArrayList<String>();
-        for (int i = 0; i < 10; i++) {
-            nnn.add("sjdhfjkhsdjklfkl");
-        }
-
+    public void savePref(Car carDetails) {
+        ArrayList<Car> cars = loadPref();
+        if (cars == null) {cars = new ArrayList<Car>();}
         SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(nnn);
-        prefsEditor.putString("MyObject", json);
+        cars.add(carDetails);
+        String json = gson.toJson(cars);
+        prefsEditor.clear();
+        prefsEditor.putString("Cars", json);
         prefsEditor.commit();
-
     }
 
-    public ArrayList<String> loadPref() {
+    public ArrayList<Car> loadPref() {
         SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
         Gson gson = new Gson();
-        String json = mPrefs.getString("MyObject", "");
-        ArrayList<String> obj = gson.fromJson(json, new TypeToken<ArrayList<String>>() {}.getType());
-        return obj;
+        String json = mPrefs.getString("Cars", "");
+        return gson.fromJson(json, new TypeToken<ArrayList<Car>>() {
+        }.getType());
     }
 
 

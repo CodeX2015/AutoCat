@@ -6,7 +6,7 @@
     android:padding="5dp">
 
     <ImageView
-        android:id="@+id/iv_car"
+        android:id="@+id/ivCarPic"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginTop="6dp"
@@ -14,11 +14,11 @@
         android:src="@drawable/car_example" />
 
     <TextView
-        android:id="@+id/tv_model"
+        android:id="@+id/tvModel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/iv_car"
+        android:layout_toRightOf="@+id/ivCarPic"
         android:layout_toLeftOf="@+id/tv_create_header"
         android:paddingLeft="5dp"
         android:text="Model"

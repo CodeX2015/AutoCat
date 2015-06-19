@@ -4,7 +4,7 @@
         android:width="1dp"
         android:color="@color/gridview_item_background" />
 
-    <solid android:color="@color/gridview_item_background"/>
+    <solid android:color="@android:color/transparent"/>
 
     <padding
         android:left="5dp"

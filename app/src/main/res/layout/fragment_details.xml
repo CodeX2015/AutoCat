@@ -18,9 +18,9 @@
             android:textColor="@android:color/black" />
 
         <ImageView
+            android:layout_margin="15dp"
             android:layout_width="match_parent"
             android:layout_height="120dp"
-            android:layout_margin="2dp"
             android:gravity="center"
             android:src="@drawable/car_example" />
 
@@ -34,7 +34,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center">
 
             <TextView
                 android:id="@+id/tv_create_header"
@@ -61,29 +62,31 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_margin="15dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Механика"
+                    android:textColor="@color/text_color"
                     android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
+                    android:textColor="@color/text_color"
                     android:textSize="20sp" />
 
                 <LinearLayout
@@ -108,20 +111,22 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Автомат"
+                    android:textColor="@color/text_color"
                     android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
+                    android:textColor="@color/text_color"
                     android:textSize="20sp" />
 
                 <LinearLayout
@@ -142,6 +147,14 @@
             </LinearLayout>
 
         </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_save_car"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save Car"
+            android:background="@color/btn_bg_color"
+            android:layout_gravity="center"/>
 
     </LinearLayout>
 </ScrollView>

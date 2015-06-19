@@ -1,7 +1,5 @@
 package ru.app.autocat;
 
-import android.util.Log;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -44,12 +42,12 @@ public class XmlParserHelper {
                             //Log.d(LOG_TAG, "START.tagName = " + xpp.getName());
                             if (tagName.equals("car_database")) {
                                 // init your ArrayList
-                                Log.d(LOG_TAG, "Clear Array");
+                                //Log.d(LOG_TAG, "Clear Array");
                                 cars.clear();
                             } else if (tagName.equals("car")) {
                                 // new car tag opened
                                 car = new Car();
-                                Log.d(LOG_TAG, "Create Car");
+                                //Log.d(LOG_TAG, "Create Car");
                             }
                         } else if (eventType == XmlPullParser.TEXT) {
                             //Log.d(LOG_TAG, tagName + " ?= " + xpp.getText());
