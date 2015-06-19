@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
@@ -11,18 +12,22 @@
     <Spinner
         android:id="@+id/toolbar_spinner_cat"
         style="@style/Widget.AppCompat.Spinner.DropDown.ActionBar"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:drawSelectorOnTop="true"
         android:popupBackground="#D3D5D3"
         android:visibility="gone" />
 
-    <Button
-        android:id="@+id/action_change_view"
-        android:icon="@drawable/ic_view_list_white_24dp"
-        android:menuCategory="secondary"
-        android:orderInCategory="1"
-        android:title="" />
+    <com.wnafee.vector.MorphButton
+        android:id="@+id/stopBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        app:vc_backgroundTint="#0A9900"
+        app:vc_foregroundTint="#ffffff"
+        app:vc_startDrawable="@drawable/ic_view_list_white_24dp"
+        app:vc_endDrawable="@drawable/ic_view_module_white_24dp"
+        />
 
 </android.support.v7.widget.Toolbar>
 

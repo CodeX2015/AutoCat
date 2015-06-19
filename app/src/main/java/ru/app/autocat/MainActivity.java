@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.wnafee.vector.MorphButton;
 
 import java.util.ArrayList;
 
@@ -40,22 +42,27 @@ public class MainActivity extends AppCompatActivity {
     private CharSequence mDrawerTitle;
     private ListView mDrawerList;
     private Spinner spnTBCat;
+    private MorphButton btnChangeView;
     private Handler mHandler;
+
     public static final String[] DATA = {"Все", "Audi", "BMV", "Ford", "Toyota", "Mercedes", "Nissan", "Mitsubishi", "VW", "Reno"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        btnChangeView = (MorphButton) findViewById(R.id.stopBtn);
         spnTBCat = (Spinner) findViewById(R.id.toolbar_spinner_cat);
-
-
-
-
-
-
+        btnChangeView.setOnStateChangedListener(new MorphButton.OnStateChangedListener() {
+            @Override
+            public void onStateChanged(MorphButton.MorphState changedTo, boolean isAnimating) {
+                // Do something here
+                Toast.makeText(MainActivity.this, "Changed to: " + changedTo, Toast.LENGTH_SHORT).show();
+            }
+        });
+        setSupportActionBar(toolbar);
 
         ArrayAdapter<String> SpinnerAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new String[]{"Каталог", "Гараж", "Резерв"});
@@ -69,11 +76,11 @@ public class MainActivity extends AppCompatActivity {
                 Fragment newFragment = null;
                 switch (position) {
                     case 0:
-                        newFragment = new FragmentCatalog();
+                        newFragment = new FragmentCatalogGrid();
                         Toast.makeText(getBaseContext(), "Catalog", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
-                        //newFragment = new FragmentGarage();
+                        newFragment = new FragmentGarage();
                         Toast.makeText(getBaseContext(), "Garage", Toast.LENGTH_SHORT).show();
                         break;
                     case 2:
@@ -98,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
         mDrawerList = (ListView) findViewById(R.id.lv_fragment_drawer);
         setAdapter();
 
-
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close) {
@@ -114,6 +120,25 @@ public class MainActivity extends AppCompatActivity {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mHandler = new Handler();
+
+
+        XmlParser.parseXML(new XmlParser.LoadListener() {
+            @Override
+            public void OnParseComplete(Object result) {
+                Toast.makeText(MainActivity.this, "OnParseComplete", Toast.LENGTH_LONG).show();;
+            }
+
+            @Override
+            public void OnParseError(Exception error) {
+                Toast.makeText(MainActivity.this, "OnParseError", Toast.LENGTH_LONG).show();;
+            }
+        }, getResources().getXml(R.xml.test));
+
+    }
+
+    void addButton() {
+        MorphButton mb = new MorphButton(this);
+
     }
 
     public void savePref() {
@@ -186,6 +211,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void changeFragmentBack(Fragment fragment) {
+        FragmentTransaction trans = getSupportFragmentManager()
+                .beginTransaction();
+        trans.replace(R.id.content_frame, fragment);
+        trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        trans.addToBackStack(null);
+        trans.commit();
+    }
+
     public void changeFragment(Fragment fragment) {
         mHandler.post(new CommitFragmentRunnable(fragment));
     }
@@ -208,6 +242,20 @@ public class MainActivity extends AppCompatActivity {
                         .commit();
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+        if (fm.getBackStackEntryCount() > 0 && !mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            fm.popBackStack();
+        } else {
+            //todo not work yet
+            //mDrawerLayout.openDrawer(mDrawerList);
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                appExit();
             }
         }
     }

@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:orientation="vertical"
-android:padding="5dp"
-android:layout_gravity="start">
-
-<TextView
-    android:padding="3dp"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Страна"
-    android:background="@android:color/darker_gray"
-    android:textColor="@android:color/black"/>
-
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center"
-    android:orientation="horizontal"
-    android:padding="5dp">
-
-    <Button
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:text="US" />
-
-    <Button
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:text="JP" />
-
-    <Button
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:text="DE" />
-</LinearLayout>
-
-<TextView
-    android:layout_marginBottom="5dp"
-    android:padding="3dp"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Марка"
-    android:textColor="@android:color/black"
-    android:background="@android:color/darker_gray"/>
-<ListView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/lv_fragment_drawer"
-    android:choiceMode="singleChoice"
-    android:divider="@android:color/transparent"
-    android:dividerHeight="2dp"
-    android:focusable="true"/>
+    android:layout_gravity="start"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/darker_gray"
+        android:padding="3dp"
+        android:text="Страна"
+        android:textColor="@android:color/black" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <Button
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:text="US" />
+
+        <Button
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:text="JP" />
+
+        <Button
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:text="DE" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:background="@android:color/darker_gray"
+        android:padding="3dp"
+        android:text="Марка"
+        android:textColor="@android:color/black" />
+
+    <ListView
+        android:id="@+id/lv_fragment_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="2dp"
+        android:focusable="true" />
 </LinearLayout>
