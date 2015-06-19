@@ -13,6 +13,8 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 /**
  * Created by CodeX on 18.06.2015.
  */
@@ -60,15 +62,27 @@ public class FragmentCatalogGrid extends Fragment {
     }
 
     private void parseXML() {
-        XmlParser.parseXML(new XmlParser.LoadListener() {
+        XmlParserHelper.parseXMLbyStack(new XmlParserHelper.LoadListener() {
             @Override
-            public void OnParseComplete(Object result) {
-                Toast.makeText(getActivity(), "OnParseComplete", Toast.LENGTH_LONG).show();
+            public void OnParseComplete(final Object result) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getActivity(),
+                                "OnParseComplete, cars = " + String.valueOf(((ArrayList<Car>) result).size()),
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
             }
 
             @Override
-            public void OnParseError(Exception error) {
-                Toast.makeText(getActivity(), "OnParseError", Toast.LENGTH_LONG).show();
+            public void OnParseError(final Exception error) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getActivity(), "OnParseError: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         }, getActivity().getResources().getXml(R.xml.test));
     }

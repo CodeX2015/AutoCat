@@ -1,6 +1,6 @@
 <car_database>
     <car>
-        <id>audi-q3"</id>
+        <id>audi-q3</id>
         <model>Q3</model>
         <title>Россия – территория quattro</title>
         <mark>Audi</mark>
@@ -10,7 +10,7 @@
         <country>Германия</country>
     </car>
     <car>
-        <id>audi-q3"</id>
+        <id>audi-q3</id>
         <model>Q3</model>
         <title>Россия – территория quattro</title>
         <mark>Audi</mark>
