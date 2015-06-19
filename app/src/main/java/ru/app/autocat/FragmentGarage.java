@@ -28,18 +28,18 @@ public class FragmentGarage extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_listview, container, false);
         mListView = (ListView) view.findViewById(R.id.lvMain);
-        mListView.setAdapter(new MyListAdapter(loadData()));
+        if (loadData() != null){mListView.setAdapter(new MyListAdapter(loadData()));}
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FragmentDetails fragmentDetails = new FragmentDetails();
+                FragmentDetailsGarage fragmentDetailsGarage = new FragmentDetailsGarage();
                 Bundle carsArgs = new Bundle();
                 Gson gson = new Gson();
                 String json = gson.toJson(((MyListAdapter) parent.getAdapter()).getItem(position));
                 carsArgs.putString("CarDetails", json);
-                fragmentDetails.setArguments(carsArgs);
-                ((MainActivity) getActivity()).changeFragmentBack(fragmentDetails);
+                fragmentDetailsGarage.setArguments(carsArgs);
+                ((MainActivity) getActivity()).changeFragmentBack(fragmentDetailsGarage);
             }
         });
 
@@ -48,10 +48,12 @@ public class FragmentGarage extends Fragment {
 
 
     private ArrayList<Car> loadData() {
-        ((MainActivity) getActivity()).loadPref();
-        Toast.makeText(getActivity(),
-                String.valueOf(((MainActivity) getActivity()).loadPref().size()), Toast.LENGTH_LONG).show();
-        return ((MainActivity) getActivity()).loadPref();
+        ArrayList<Car> result = ((MainActivity) getActivity()).loadPref();
+        if (result != null) {
+            Toast.makeText(getActivity(),
+                    String.valueOf(((MainActivity) getActivity()).loadPref().size()), Toast.LENGTH_LONG).show();
+        }
+        return result;
     }
 
     private class MyListAdapter extends BaseAdapter {

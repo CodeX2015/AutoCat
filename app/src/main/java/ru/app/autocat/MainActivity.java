@@ -166,24 +166,23 @@ public class MainActivity extends AppCompatActivity {
         mDrawerBtnUs = (Button) findViewById(R.id.btnUS);
 
         /**
-        View.OnClickListener oclBtn = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String pattern = "";
-                switch (v.getId()) {
-                    case R.id.btnDE:
-                        pattern = "Германия";
-                        break;
-                    case R.id.btnUS:
-                        pattern = "США";
-                        break;
-                    case R.id.btnJP:
-                        pattern = "Япония";
-                        break;
-                }
-                setCarsDBG(getFilteredDataByCountry(pattern));
-                changeFragment(new FragmentCatalogGrid());
-            }
+         View.OnClickListener oclBtn = new View.OnClickListener() {
+        @Override public void onClick(View v) {
+        String pattern = "";
+        switch (v.getId()) {
+        case R.id.btnDE:
+        pattern = "Германия";
+        break;
+        case R.id.btnUS:
+        pattern = "США";
+        break;
+        case R.id.btnJP:
+        pattern = "Япония";
+        break;
+        }
+        setCarsDBG(getFilteredDataByCountry(pattern));
+        changeFragment(new FragmentCatalogGrid());
+        }
         };
          */
         //mDrawerBtnDe.setOnClickListener(oclBtn);
@@ -245,20 +244,51 @@ public class MainActivity extends AppCompatActivity {
         if (cars == null) {
             cars = new ArrayList<Car>();
         }
+        //SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+        //SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        //Gson gson = new Gson();
+        cars.add(carDetails);
+        //String json = gson.toJson(cars);
+        //prefsEditor.clear();
+        //prefsEditor.putString("Cars", json);
+        //prefsEditor.commit();
+        savePrefFull(cars);
+    }
+
+    public void savePrefFull(ArrayList<Car> cars) {
         SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         Gson gson = new Gson();
-        cars.add(carDetails);
         String json = gson.toJson(cars);
         prefsEditor.clear();
-        prefsEditor.putString("Cars", json);
-        prefsEditor.commit();
+        if (cars != null) {
+            prefsEditor.putString("Cars", json);
+        }
+        prefsEditor.apply();
+    }
+
+    public void deleteSelectPref(Car carDetails) {
+        ArrayList<Car> cars = loadPref();
+        if (cars != null && cars.size() > 1) {
+
+            for (int i = 0; i <= cars.size() - 1; i++) {
+                if (cars.get(i).getId().equalsIgnoreCase(carDetails.getId())) {
+                    cars.remove(i);
+                }
+            }
+        } else if (cars != null && cars.size() <= 1) {
+            cars = null;
+        }
+        savePrefFull(cars);
     }
 
     public ArrayList<Car> loadPref() {
         SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
         Gson gson = new Gson();
-        String json = mPrefs.getString("Cars", "");
+        String json = mPrefs.getString("Cars", null);
+        if (json == null) {
+            return null;
+        }
         return gson.fromJson(json, new TypeToken<ArrayList<Car>>() {
         }.getType());
     }
@@ -276,12 +306,16 @@ public class MainActivity extends AppCompatActivity {
 
     public ArrayList<Car> getFilteredData(String pattern, ArrayList<Car> dataforfilter) {
         ArrayList<Car> filteredData = new ArrayList<Car>();
-        for (Car car : dataforfilter) {
-            if (car.getMark().equalsIgnoreCase(pattern)) {
-                filteredData.add(car);
+        if (dataforfilter != null) {
+            for (Car car : dataforfilter) {
+                if (car.getMark().equalsIgnoreCase(pattern)) {
+                    filteredData.add(car);
+                }
             }
+            return filteredData;
+        } else {
+            return null;
         }
-        return filteredData;
     }
 
     public ArrayList<Car> getFilteredDataByCountry(String pattern) {

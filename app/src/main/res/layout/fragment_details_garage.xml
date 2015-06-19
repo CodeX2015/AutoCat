@@ -170,12 +170,13 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/btn_save_car"
+            android:id="@+id/btn_remove_car"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@color/btn_bg_color"
-            android:text="Save Car"
+            android:padding="5dp"
+            android:text="Remove Car"
             android:textColor="@color/text_color" />
 
     </LinearLayout>

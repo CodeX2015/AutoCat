@@ -17,7 +17,7 @@ import com.google.gson.reflect.TypeToken;
 /**
  * Created by CodeX on 18.06.2015.
  */
-public class FragmentDetails extends Fragment {
+public class FragmentDetailsGarage extends Fragment {
 
     Button mMinusBtnMT;
     Button mPlusBtnMT;
@@ -31,18 +31,18 @@ public class FragmentDetails extends Fragment {
     TextView mDescription;
     TextView mCreated;
     ImageView mCarPic;
-    Button mSaveBtn;
+    Button mRemoveBtn;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_details, container, false);
+        View view = inflater.inflate(R.layout.fragment_details_garage, container, false);
 
         mModel = (TextView) view.findViewById(R.id.tvModel);
         mCarPic = (ImageView) view.findViewById(R.id.ivCarPic);
         mDescription = (TextView) view.findViewById(R.id.tvDescripion);
         mCreated = (TextView) view.findViewById(R.id.tv_create);
-        mSaveBtn = (Button) view.findViewById(R.id.btn_save_car);
+        mRemoveBtn = (Button) view.findViewById(R.id.btn_remove_car);
         mMinusBtnMT = (Button) view.findViewById(R.id.btn_minus_mt);
         mPlusBtnMT = (Button) view.findViewById(R.id.btn_plus_mt);
         mAmountMT = (TextView) view.findViewById((R.id.tvAmount_mt));
@@ -85,12 +85,12 @@ public class FragmentDetails extends Fragment {
             }
         });
 
-        mSaveBtn.setOnClickListener(new View.OnClickListener() {
+        mRemoveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                ((MainActivity) getActivity()).savePref(getData());
-                Toast.makeText(getActivity(), "Save car in garage", Toast.LENGTH_LONG).show();
+                ((MainActivity) getActivity()).deleteSelectPref(getData());
+                Toast.makeText(getActivity(), "Delete car from garage", Toast.LENGTH_LONG).show();
             }
         });
         if (getData() != null) {

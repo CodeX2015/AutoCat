@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by Yakovlev on 19.06.2015.
  */
-public class Car implements Serializable{
+public class Car implements Serializable {
     private String id;
     private String model;
     private String title;
@@ -14,6 +14,9 @@ public class Car implements Serializable{
     private String created;
     private String kpp;
     private String country;
+    private String KppAT = null;
+    private String KppMT = null;
+
 
     public String getId() {
         return id;
@@ -67,8 +70,21 @@ public class Car implements Serializable{
         return kpp;
     }
 
+    public String getKppAT() {
+        return kpp.split(" ")[2];
+    }
+
+    public String getKppMT() {
+        return kpp.split(" ")[0];
+    }
+
+
     public void setKpp(String kpp) {
-        this.kpp = kpp;
+        if (KppMT != null && KppAT != null) {
+           this.kpp = KppMT + " и " + KppAT;
+        } else {
+            this.kpp = kpp;
+        }
     }
 
     public String getCountry() {
@@ -77,5 +93,13 @@ public class Car implements Serializable{
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public void setKppAT(String kppAT) {
+        this.KppAT = kppAT;
+    }
+
+    public void setKppMT(String kppMT) {
+        this.KppMT = kppMT;
     }
 }
