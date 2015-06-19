@@ -9,4 +9,14 @@
         <kpp>механика и робот</kpp>
         <country>Германия</country>
     </car>
+    <car>
+        <id>audi-q3"</id>
+        <model>Q3</model>
+        <title>Россия – территория quattro</title>
+        <mark>Audi</mark>
+        <imageName1>audi-q3-1.jpg</imageName1>
+        <created>2011</created>
+        <kpp>механика и робот</kpp>
+        <country>Германия</country>
+    </car>
 </car_database>

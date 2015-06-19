@@ -6,8 +6,12 @@ import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -76,6 +80,76 @@ public class XmlParser {
             }
         });
     }
+
+
+
+    public static void parseXMLbyStack(String XMLFILEPATH) {
+        ArrayList<Car> cars = new ArrayList<Car>();
+        XmlPullParserFactory factory = null;
+        try {
+            factory = XmlPullParserFactory.newInstance();
+
+        XmlPullParser xpp = factory.newPullParser();
+        xpp.setInput(new FileReader(XMLFILEPATH));
+        int eventType = xpp.getEventType();
+        String lastTag;
+        while (eventType != XmlPullParser.END_DOCUMENT)
+        {
+            Car car;
+
+        /*
+         * The name of the tag like: <foo> --> foo
+         */
+            String tagName = xpp.getName();
+        /*
+         * Opening tag
+         */
+            if (eventType == XmlPullParser.START_TAG)
+            {
+                if (tagName.equals("car_database"))
+                {
+                    // init your ArrayList
+
+                    cars.clear();
+                } else if (tagName.equals("car"))
+                {
+                    // new user tag opened
+                    car = new Car();
+                } else if(tagName.equals("id")) {
+                    lastTag = "id";
+                }
+
+            /*
+             * Closing tag
+             */
+            } else if (eventType == XmlPullParser.END_TAG)
+            {
+                if (tagName.equals("user"))
+                {
+                    urArrayList.add(user);
+                }
+            } else if (eventType == XmlPullParser.TEXT)
+            {
+                if (lastTag.equals("id"))
+                {
+                    // fill UserSTruct
+                    // do so for the other tags as well
+                }
+            }
+
+            eventType = xpp.next();
+        }
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
 
     public interface LoadListener {

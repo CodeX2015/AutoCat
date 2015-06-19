@@ -24,17 +24,17 @@ public class FragmentDetails extends Fragment {
         mMinusBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity) getActivity()).savePref();
-                Toast.makeText(getActivity(), "Save in garage", Toast.LENGTH_LONG).show();
+                ((MainActivity) getActivity()).loadPref();
+                Toast.makeText(getActivity(),
+                        String.valueOf(((MainActivity) getActivity()).loadPref().size()), Toast.LENGTH_LONG).show();
             }
         });
 
         mPlusBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity) getActivity()).loadPref();
-                Toast.makeText(getActivity(),
-                        String.valueOf(((MainActivity) getActivity()).loadPref().size()), Toast.LENGTH_LONG).show();
+                ((MainActivity) getActivity()).savePref();
+                Toast.makeText(getActivity(), "Save in garage", Toast.LENGTH_LONG).show();
             }
         });
 

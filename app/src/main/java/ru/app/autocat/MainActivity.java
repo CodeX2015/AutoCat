@@ -121,19 +121,6 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mHandler = new Handler();
 
-
-        XmlParser.parseXML(new XmlParser.LoadListener() {
-            @Override
-            public void OnParseComplete(Object result) {
-                Toast.makeText(MainActivity.this, "OnParseComplete", Toast.LENGTH_LONG).show();;
-            }
-
-            @Override
-            public void OnParseError(Exception error) {
-                Toast.makeText(MainActivity.this, "OnParseError", Toast.LENGTH_LONG).show();;
-            }
-        }, getResources().getXml(R.xml.test));
-
     }
 
     void addButton() {

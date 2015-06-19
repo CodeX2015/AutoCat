@@ -12,10 +12,15 @@ import android.view.ViewGroup;
  */
 public class FragmentCatalogList extends Fragment {
 
+    HeaderListView mListview;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_listview, container, false);
+        mListview = (HeaderListView) view.findViewById(R.id.lvMain);
+        //mListview.setAdapter(SectionAdapter adapter)
+
         return view;
     }
 }

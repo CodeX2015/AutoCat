@@ -4,8 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <GridView
+    <Button
+        android:id="@+id/btnParse"
         android:layout_margin="3dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#3c9a7e"
+        android:text="parseXML"/>
+    <GridView
+        android:layout_margin="5dp"
         android:id="@+id/gvMain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,4 +21,5 @@
         android:horizontalSpacing="6dp"
         android:gravity="center">
     </GridView>
+
 </LinearLayout>
