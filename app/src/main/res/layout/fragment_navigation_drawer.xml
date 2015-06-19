@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llDrawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="start"
@@ -22,16 +23,19 @@
         android:padding="5dp">
 
         <Button
+            android:id="@+id/btnUS"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:text="US" />
 
         <Button
+            android:id="@+id/btnJP"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:text="JP" />
 
         <Button
+            android:id="@+id/btnDE"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:text="DE" />

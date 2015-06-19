@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getBaseContext(), "Reserve", Toast.LENGTH_SHORT).show();
                         break;
                 }
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
+                ((TextView) parent.getChildAt(0)).setTextColor(Color.MAGENTA);
                 if (newFragment != null) {
                     changeFragment(newFragment);
                 }
@@ -165,29 +165,30 @@ public class MainActivity extends AppCompatActivity {
         mDrawerBtnJp = (Button) findViewById(R.id.btnJP);
         mDrawerBtnUs = (Button) findViewById(R.id.btnUS);
 
-        /**
-         View.OnClickListener oclBtn = new View.OnClickListener() {
-        @Override public void onClick(View v) {
-        String pattern = "";
-        switch (v.getId()) {
-        case R.id.btnDE:
-        pattern = "Германия";
-        break;
-        case R.id.btnUS:
-        pattern = "США";
-        break;
-        case R.id.btnJP:
-        pattern = "Япония";
-        break;
-        }
-        setCarsDBG(getFilteredDataByCountry(pattern));
-        changeFragment(new FragmentCatalogGrid());
-        }
+        View.OnClickListener oclBtn = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int m = v.getId();
+                String pattern = "";
+                switch (v.getId()) {
+                    case R.id.btnDE:
+                        pattern = "Германия";
+                        break;
+                    case R.id.btnUS:
+                        pattern = "США";
+                        break;
+                    case R.id.btnJP:
+                        pattern = "Япония";
+                        break;
+                }
+                setCarsDBG(getFilteredDataByCountry(pattern));
+                changeFragment(new FragmentCatalogGrid());
+            }
         };
-         */
-        //mDrawerBtnDe.setOnClickListener(oclBtn);
-        //mDrawerBtnJp.setOnClickListener(oclBtn);
-        //mDrawerBtnUs.setOnClickListener(oclBtn);
+
+        mDrawerBtnDe.setOnClickListener(oclBtn);
+        mDrawerBtnJp.setOnClickListener(oclBtn);
+        mDrawerBtnUs.setOnClickListener(oclBtn);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
                 R.string.navigation_drawer_open,
