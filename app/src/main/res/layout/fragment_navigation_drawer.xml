@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:layout_gravity="start"
     android:orientation="vertical"
-    android:padding="5dp">
+    android:padding="5dp"
+    android:background="@color/menu_background_color">
 
     <TextView
         android:layout_width="match_parent"

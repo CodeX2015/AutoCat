@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayAdapter<String> SpinnerAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new String[]{"Каталог", "Гараж", "Резерв"});
-        SpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        SpinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spnTBCat.setAdapter(SpinnerAdapter);
         spnTBCat.setVisibility(View.VISIBLE);
 
