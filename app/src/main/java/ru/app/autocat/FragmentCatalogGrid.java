@@ -1,5 +1,6 @@
 package ru.app.autocat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -41,7 +42,8 @@ public class FragmentCatalogGrid extends Fragment {
         btnParse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                parseXML();
+                Intent myIntent = new Intent(getActivity(), ListSample.class);
+                getActivity().startActivity(myIntent);
             }
         });
 

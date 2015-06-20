@@ -12,7 +12,7 @@
     <Spinner
         android:id="@+id/toolbar_spinner_cat"
         style="@style/Widget.AppCompat.Spinner.DropDown.ActionBar"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="match_parent"
         android:drawSelectorOnTop="true"
         android:popupBackground="#D3D5D3"
@@ -22,7 +22,7 @@
         android:id="@+id/stopBtn"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
+        android:layout_gravity="right"
         app:vc_backgroundTint="#0A9900"
         app:vc_foregroundTint="#ffffff"
         app:vc_startDrawable="@drawable/ic_view_list_white_24dp"
