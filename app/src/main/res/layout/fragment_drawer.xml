@@ -14,6 +14,7 @@
         android:background="@android:color/darker_gray"
         android:padding="3dp"
         android:text="Страна"
+        android:gravity="center"
         android:textColor="@android:color/black" />
 
     <LinearLayout
@@ -49,7 +50,8 @@
         android:background="@android:color/darker_gray"
         android:padding="3dp"
         android:text="Марка"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        android:gravity="center"/>
 
     <ListView
         android:id="@+id/lv_fragment_drawer"

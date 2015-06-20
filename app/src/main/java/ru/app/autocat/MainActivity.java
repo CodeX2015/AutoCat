@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         parseXML();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mTitle = mDrawerTitle = "";
         btnChangeView = (MorphButton) findViewById(R.id.stopBtn);
         spnTBCat = (Spinner) findViewById(R.id.toolbar_spinner_cat);
 
@@ -139,33 +140,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-
-
-        mDrawerList = (ListView) findViewById(R.id.lv_fragment_drawer);
-        setAdapter();
-
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //setFilterPattern(parent.getAdapter().getItem(position).toString());
-                if (!parent.getAdapter().getItem(position).toString().equalsIgnoreCase("Все")) {
-                    setCarsDBG(
-                            getFilteredData(
-                                    parent.getAdapter().getItem(position).toString(), getCarsDB()));
-                } else {
-                    setCarsDBG(getCarsDB());
-                }
-                changeFragment(new FragmentCatalogGrid());
-            }
-        });
 
         mDrawerBtnDe = (Button) findViewById(R.id.btnDE);
         mDrawerBtnJp = (Button) findViewById(R.id.btnJP);
         mDrawerBtnUs = (Button) findViewById(R.id.btnUS);
 
         View.OnClickListener oclBtn = new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 int m = v.getId();
@@ -190,6 +174,27 @@ public class MainActivity extends AppCompatActivity {
         mDrawerBtnJp.setOnClickListener(oclBtn);
         mDrawerBtnUs.setOnClickListener(oclBtn);
 
+        mDrawerList = (ListView) findViewById(R.id.lv_fragment_drawer);
+        setAdapter();
+
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //setFilterPattern(parent.getAdapter().getItem(position).toString());
+                if (!parent.getAdapter().getItem(position).toString().equalsIgnoreCase("Все")) {
+                    setCarsDBG(
+                            getFilteredData(
+                                    parent.getAdapter().getItem(position).toString(), getCarsDB()));
+                } else {
+                    setCarsDBG(getCarsDB());
+                }
+                //todo not work
+                mDrawerList.setItemChecked(position, true);
+                mDrawerLayout.closeDrawer(mDrawerList);
+                changeFragment(new FragmentCatalogGrid());
+            }
+        });
+
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close) {
@@ -205,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mHandler = new Handler();
+
     }
 
     private void parseXML() {
@@ -245,14 +251,7 @@ public class MainActivity extends AppCompatActivity {
         if (cars == null) {
             cars = new ArrayList<Car>();
         }
-        //SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
-        //SharedPreferences.Editor prefsEditor = mPrefs.edit();
-        //Gson gson = new Gson();
         cars.add(carDetails);
-        //String json = gson.toJson(cars);
-        //prefsEditor.clear();
-        //prefsEditor.putString("Cars", json);
-        //prefsEditor.commit();
         savePrefFull(cars);
     }
 
@@ -417,7 +416,7 @@ public class MainActivity extends AppCompatActivity {
             fm.popBackStack();
         } else {
             //todo not work yet
-            //mDrawerLayout.openDrawer(mDrawerList);
+            mDrawerLayout.openDrawer(mDrawerList);
             if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                 appExit();
             }
