@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mDrawerBtnDe;
     private Button mDrawerBtnJp;
     private Button mDrawerBtnUs;
+    LinearLayout DrawerLayoutMain;
 
     public static final String[] DATA = {"Все", "Audi", "BMW", "Ford", "Toyota"};
 
@@ -140,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        DrawerLayoutMain = (LinearLayout) findViewById(R.id.llDrawerLayout);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
@@ -165,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
                         pattern = "Япония";
                         break;
                 }
+                mDrawerLayout.closeDrawer(DrawerLayoutMain);
                 setCarsDBG(getFilteredDataByCountry(pattern));
                 changeFragment(new FragmentCatalogGrid());
             }
@@ -190,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //todo not work
                 mDrawerList.setItemChecked(position, true);
-                mDrawerLayout.closeDrawer(mDrawerList);
+                mDrawerLayout.closeDrawer(DrawerLayoutMain);
                 changeFragment(new FragmentCatalogGrid());
             }
         });
@@ -416,7 +418,7 @@ public class MainActivity extends AppCompatActivity {
             fm.popBackStack();
         } else {
             //todo not work yet
-            mDrawerLayout.openDrawer(mDrawerList);
+            mDrawerLayout.openDrawer(DrawerLayoutMain);
             if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                 appExit();
             }

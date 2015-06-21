@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="start"
     android:orientation="vertical"
-    android:padding="5dp"
+
     android:background="@color/menu_background_color">
 
     <TextView
@@ -15,7 +15,8 @@
         android:padding="3dp"
         android:text="Страна"
         android:gravity="center"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/size_text_large"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,19 +29,30 @@
             android:id="@+id/btnUS"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:text="US" />
+            android:text="US"
+            android:background="@drawable/selector_btn_bg"
+            android:focusable="true"
+            android:textColor="@color/btn_text_color"/>
 
         <Button
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:id="@+id/btnJP"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:text="JP" />
+            android:text="JP"
+            android:background="@drawable/selector_btn_bg"
+            android:focusable="true"
+            android:textColor="@color/btn_text_color"/>
 
         <Button
             android:id="@+id/btnDE"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:text="DE" />
+            android:text="DE"
+            android:background="@drawable/selector_btn_bg"
+            android:focusable="true"
+            android:textColor="@color/btn_text_color"/>
     </LinearLayout>
 
     <TextView
@@ -51,7 +63,8 @@
         android:padding="3dp"
         android:text="Марка"
         android:textColor="@android:color/black"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:textSize="@dimen/size_text_large"/>
 
     <ListView
         android:id="@+id/lv_fragment_drawer"

@@ -3,20 +3,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ll_row_drawer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_centerHorizontal="true"
     android:orientation="horizontal"
     android:paddingBottom="10dp"
     android:paddingLeft="15dp"
     android:paddingTop="5dp"
-    android:background="@android:color/darker_gray">
+    android:background="@drawable/selector_bg_row_drawer">
 
     <TextView
         android:id="@+id/tv_menu_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
-        android:textColor="@android:color/black"
+        android:textColor="@drawable/selector_textcolor_row_drawer"
         android:textSize="@dimen/size_text_large"
-        android:textAlignment="center" />
+        android:gravity="center"/>
 </LinearLayout>
