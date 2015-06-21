@@ -21,13 +21,15 @@
         android:layout_height="match_parent"
         android:drawSelectorOnTop="true"
         android:popupBackground="@color/spn_popup_bg_color"
-        android:layout_gravity=""/>
+        android:layout_gravity="left"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"/>
 
     <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="30dp"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_view_list_white_24dp"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center" />
 
     <!--com.wnafee.vector.MorphButton
         android:id="@+id/stopBtn"
