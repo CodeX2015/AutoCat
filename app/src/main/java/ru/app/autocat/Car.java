@@ -2,6 +2,9 @@ package ru.app.autocat;
 
 import java.io.Serializable;
 
+
+//Todo Сохранение\загрузка кол-ва коробок,
+
 /**
  * Created by Yakovlev on 19.06.2015.
  */

@@ -24,7 +24,7 @@ import ru.app.autocat.R;
 /**
  * Created by CodeX on 18.06.2015.
  */
-public class FragmentGarage extends Fragment {
+public class FragmentGarageGrid extends Fragment {
     private ListView mListView;
 
     @Nullable

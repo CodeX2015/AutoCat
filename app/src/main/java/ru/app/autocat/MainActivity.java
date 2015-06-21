@@ -15,7 +15,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,13 +31,13 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.wnafee.vector.MorphButton;
 
 import java.util.ArrayList;
 
 import ru.app.autocat.fragments.FragmentCatalogGrid;
 import ru.app.autocat.fragments.FragmentCatalogList;
-import ru.app.autocat.fragments.FragmentGarage;
+import ru.app.autocat.fragments.FragmentGarageGrid;
+import ru.app.autocat.fragments.FragmentGarageList;
 import ru.app.autocat.fragments.FragmentReserve;
 import ru.app.autocat.helpers.XmlParserHelper;
 
@@ -49,14 +48,15 @@ public class MainActivity extends AppCompatActivity {
     private CharSequence mDrawerTitle;
     private ListView mDrawerList;
     private Spinner spnTBCat;
-    private MorphButton btnChangeView;
+    //private MorphButton btnChangeView;
     private Handler mHandler;
     public ArrayList<Car> carsDB;
     public ArrayList<Car> carsDBG;
     private Button mDrawerBtnDe;
     private Button mDrawerBtnJp;
     private Button mDrawerBtnUs;
-    LinearLayout DrawerLayoutMain;
+    public static boolean mListUserView;
+    LinearLayout mDrawerLayoutMain;
 
     public static final String[] DATA = {"Все", "Audi", "BMW", "Ford", "Toyota"};
 
@@ -84,8 +84,10 @@ public class MainActivity extends AppCompatActivity {
         parseXML();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mTitle = mDrawerTitle = "";
-        btnChangeView = (MorphButton) findViewById(R.id.stopBtn);
+        //btnChangeView = (MorphButton) findViewById(R.id.stopBtn);
         spnTBCat = (Spinner) findViewById(R.id.toolbar_spinner_cat);
+
+        /**
 
         btnChangeView.setOnStateChangedListener(new MorphButton.OnStateChangedListener() {
 
@@ -96,17 +98,18 @@ public class MainActivity extends AppCompatActivity {
                 switch (String.valueOf(changedTo)) {
                     case "END":
                         Log.d("hhh", "list");
+                        mListUserView = true;
                         changeFragment(new FragmentCatalogList());
                         break;
                     case "START":
                         Log.d("hhh", "grid");
+                        mListUserView = false;
                         changeFragment(new FragmentCatalogGrid());
                         break;
                 }
             }
         });
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(mTitle);
+        */
 
         ArrayAdapter<String> SpinnerAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new String[]{"Каталог", "Гараж", "Резерв"});
@@ -121,11 +124,19 @@ public class MainActivity extends AppCompatActivity {
                 Fragment newFragment = null;
                 switch (position) {
                     case 0:
-                        newFragment = new FragmentCatalogGrid();
+                        if (mListUserView) {
+                            newFragment = new FragmentCatalogList();
+                        } else {
+                            newFragment = new FragmentCatalogGrid();
+                        }
                         Toast.makeText(getBaseContext(), "Catalog", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
-                        newFragment = new FragmentGarage();
+                        if (mListUserView) {
+                            newFragment = new FragmentGarageList();
+                        } else {
+                            newFragment = new FragmentGarageGrid();
+                        }
                         Toast.makeText(getBaseContext(), "Garage", Toast.LENGTH_SHORT).show();
                         break;
                     case 2:
@@ -145,7 +156,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        DrawerLayoutMain = (LinearLayout) findViewById(R.id.llDrawerLayout);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(mTitle);
+
+        mDrawerLayoutMain = (LinearLayout) findViewById(R.id.llDrawerLayout);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
@@ -170,9 +184,13 @@ public class MainActivity extends AppCompatActivity {
                         pattern = "Япония";
                         break;
                 }
-                mDrawerLayout.closeDrawer(DrawerLayoutMain);
+                mDrawerLayout.closeDrawer(mDrawerLayoutMain);
                 setCarsDBG(getFilteredDataByCountry(pattern));
-                changeFragment(new FragmentCatalogGrid());
+                if (mListUserView) {
+                    changeFragment(new FragmentCatalogList());
+                } else {
+                    changeFragment(new FragmentCatalogGrid());
+                }
             }
         };
 
@@ -194,8 +212,12 @@ public class MainActivity extends AppCompatActivity {
                     setCarsDBG(getCarsDB());
                 }
                 mDrawerList.setItemChecked(position, true);
-                mDrawerLayout.closeDrawer(DrawerLayoutMain);
-                changeFragment(new FragmentCatalogGrid());
+                mDrawerLayout.closeDrawer(mDrawerLayoutMain);
+                if (mListUserView) {
+                    changeFragment(new FragmentCatalogList());
+                } else {
+                    changeFragment(new FragmentCatalogGrid());
+                }
             }
         });
 
@@ -410,7 +432,7 @@ public class MainActivity extends AppCompatActivity {
         if (fm.getBackStackEntryCount() > 0 && !mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             fm.popBackStack();
         } else {
-            mDrawerLayout.openDrawer(DrawerLayoutMain);
+            mDrawerLayout.openDrawer(mDrawerLayoutMain);
             if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                 appExit();
             }
