@@ -6,7 +6,9 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:scrollbars="none"
-    android:text="header">
-
+    android:text="header"
+    android:background="@android:color/darker_gray"
+    android:padding="3dp"
+    android:textColor="@android:color/black"
+    android:textSize="@dimen/size_text_large">
 </TextView>
-

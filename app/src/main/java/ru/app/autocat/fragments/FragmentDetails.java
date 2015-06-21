@@ -1,4 +1,4 @@
-package ru.app.autocat;
+package ru.app.autocat.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +13,10 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import ru.app.autocat.Car;
+import ru.app.autocat.MainActivity;
+import ru.app.autocat.R;
 
 /**
  * Created by CodeX on 18.06.2015.

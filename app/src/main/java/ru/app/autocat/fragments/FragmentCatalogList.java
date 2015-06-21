@@ -1,4 +1,4 @@
-package ru.app.autocat;
+package ru.app.autocat.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,43 +17,72 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
+import ru.app.autocat.Car;
+import ru.app.autocat.MainActivity;
+import ru.app.autocat.R;
+import ru.app.autocat.adapters.SeparatedListAdapter;
+import ru.app.autocat.helpers.XmlParserHelper;
+
 /**
- * Created by CodeX on 18.06.2015.
+ * Created by Yakovlev on 19.06.2015.
  */
-public class FragmentGarage extends Fragment {
-    private ListView mListView;
+public class FragmentCatalogList extends Fragment {
+
+    ListView mListView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_listview, container, false);
         mListView = (ListView) view.findViewById(R.id.lvMain);
-        if (loadData() != null){mListView.setAdapter(new MyListAdapter(loadData()));}
+        parseXML();
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FragmentDetailsGarage fragmentDetailsGarage = new FragmentDetailsGarage();
+                FragmentDetails fragmentDetails = new FragmentDetails();
                 Bundle carsArgs = new Bundle();
                 Gson gson = new Gson();
                 String json = gson.toJson(((MyListAdapter) parent.getAdapter()).getItem(position));
                 carsArgs.putString("CarDetails", json);
-                fragmentDetailsGarage.setArguments(carsArgs);
-                ((MainActivity) getActivity()).changeFragmentBack(fragmentDetailsGarage);
+                fragmentDetails.setArguments(carsArgs);
+                ((MainActivity) getActivity()).changeFragmentBack(fragmentDetails);
             }
         });
 
         return view;
     }
 
+    private void parseXML() {
+        XmlParserHelper.parseXMLbyStack(new XmlParserHelper.LoadListener() {
+            @Override
+            public void OnParseComplete(final Object result) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getActivity(),
+                                "OnParseComplete, cars = " + String.valueOf(((ArrayList<Car>) result).size()),
+                                Toast.LENGTH_LONG).show();
+                        SeparatedListAdapter adapter = new SeparatedListAdapter(getActivity());
+                        adapter.addSection("All", new MyListAdapter((ArrayList<Car>) result));
 
-    private ArrayList<Car> loadData() {
-        ArrayList<Car> result = ((MainActivity) getActivity()).loadPref();
-        if (result != null) {
-            Toast.makeText(getActivity(),
-                    String.valueOf(((MainActivity) getActivity()).loadPref().size()), Toast.LENGTH_LONG).show();
-        }
-        return result;
+
+                        mListView.setAdapter(adapter);
+
+                    }
+                });
+            }
+
+            @Override
+            public void OnParseError(final Exception error) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getActivity(), "OnParseError: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }, getActivity().getResources().getXml(R.xml.test));
     }
 
     private class MyListAdapter extends BaseAdapter {

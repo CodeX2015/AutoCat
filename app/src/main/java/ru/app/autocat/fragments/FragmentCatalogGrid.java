@@ -1,4 +1,4 @@
-package ru.app.autocat;
+package ru.app.autocat.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +18,12 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+
+import ru.app.autocat.Car;
+import ru.app.autocat.MainActivity;
+import ru.app.autocat.R;
+import ru.app.autocat.Sample.ListSample;
+import ru.app.autocat.helpers.XmlParserHelper;
 
 /**
  * Created by CodeX on 18.06.2015.
@@ -76,16 +82,16 @@ public class FragmentCatalogGrid extends Fragment {
                     @Override
                     public void run() {
                         /**
-                        if (getArguments() != null && getArguments().getString("FilterPattern","")!="") {
-                            mGridView.setAdapter(new MyListAdapter(((MainActivity) getActivity())
-                                    .getFilteredData(getArguments().getString("FilterPattern", ""), (ArrayList<Car>) result)));
-                        } else {
-                            Toast.makeText(getActivity(),
-                                    "OnParseComplete, cars = " + String.valueOf(((ArrayList<Car>) result).size()),
-                                    Toast.LENGTH_LONG).show();
-                            mGridView.setAdapter(new MyListAdapter((ArrayList<Car>) result));
-                        }
-                        */
+                         if (getArguments() != null && getArguments().getString("FilterPattern","")!="") {
+                         mGridView.setAdapter(new MyListAdapter(((MainActivity) getActivity())
+                         .getFilteredData(getArguments().getString("FilterPattern", ""), (ArrayList<Car>) result)));
+                         } else {
+                         Toast.makeText(getActivity(),
+                         "OnParseComplete, cars = " + String.valueOf(((ArrayList<Car>) result).size()),
+                         Toast.LENGTH_LONG).show();
+                         mGridView.setAdapter(new MyListAdapter((ArrayList<Car>) result));
+                         }
+                         */
 
                         mGridView.setAdapter(new MyListAdapter(((MainActivity) getActivity()).getCarsDBG()));
                     }

@@ -17,6 +17,9 @@ public class Car implements Serializable {
     private String KppAT = null;
     private String KppMT = null;
 
+    public Car(String mark) {this.mark = mark;}
+
+    public Car() {}
 
     public String getId() {
         return id;

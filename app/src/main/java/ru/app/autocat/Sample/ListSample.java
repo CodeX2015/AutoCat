@@ -1,4 +1,4 @@
-package ru.app.autocat;
+package ru.app.autocat.Sample;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import ru.app.autocat.R;
+import ru.app.autocat.adapters.SeparatedListAdapter;
 
 /**
  * Created by CodeX on 20.06.2015.

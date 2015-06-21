@@ -1,4 +1,4 @@
-package ru.app.autocat;
+package ru.app.autocat.adapters;
 
 import android.content.Context;
 import android.view.View;
@@ -9,6 +9,8 @@ import android.widget.BaseAdapter;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import ru.app.autocat.R;
 
 /**
  * Created by CodeX on 20.06.2015.

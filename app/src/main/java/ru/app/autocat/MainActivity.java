@@ -37,6 +37,13 @@ import com.wnafee.vector.MorphButton;
 
 import java.util.ArrayList;
 
+import ru.app.autocat.fragments.FragmentCatalogGrid;
+import ru.app.autocat.fragments.FragmentCatalogList;
+import ru.app.autocat.fragments.FragmentCatalogListGroup;
+import ru.app.autocat.fragments.FragmentGarage;
+import ru.app.autocat.fragments.FragmentReserve;
+import ru.app.autocat.helpers.XmlParserHelper;
+
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -117,7 +124,8 @@ public class MainActivity extends AppCompatActivity {
                 Fragment newFragment = null;
                 switch (position) {
                     case 0:
-                        newFragment = new FragmentCatalogGrid();
+                        //newFragment = new FragmentCatalogGrid();
+                        newFragment = new FragmentCatalogListGroup();
                         Toast.makeText(getBaseContext(), "Catalog", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:

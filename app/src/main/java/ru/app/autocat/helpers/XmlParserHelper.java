@@ -1,4 +1,4 @@
-package ru.app.autocat;
+package ru.app.autocat.helpers;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import ru.app.autocat.Car;
 
 /**
  * Created by CodeX on 19.06.2015.
