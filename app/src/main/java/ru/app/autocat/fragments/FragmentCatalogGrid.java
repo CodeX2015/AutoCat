@@ -1,6 +1,5 @@
 package ru.app.autocat.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 import ru.app.autocat.Car;
 import ru.app.autocat.MainActivity;
 import ru.app.autocat.R;
-import ru.app.autocat.Sample.ListSample;
 import ru.app.autocat.helpers.XmlParserHelper;
 
 /**
@@ -48,8 +46,10 @@ public class FragmentCatalogGrid extends Fragment {
         btnParse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent myIntent = new Intent(getActivity(), ListSample.class);
-                getActivity().startActivity(myIntent);
+                //Intent myIntent = new Intent(getActivity(), ListSample.class);
+                //getActivity().startActivity(myIntent);
+                FragmentCatalogListGroup newFragment = new FragmentCatalogListGroup();
+                ((MainActivity) getActivity()).changeFragmentBack(newFragment);
             }
         });
 

@@ -6,4 +6,5 @@
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:singleLine="true"
-    android:textColor="#f71221" />
+    android:textColor="@color/spn_popup_text_color"
+    android:background="@color/spn_popup_bg_color"/>

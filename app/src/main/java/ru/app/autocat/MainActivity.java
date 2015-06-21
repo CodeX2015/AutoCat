@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -39,7 +38,6 @@ import java.util.ArrayList;
 
 import ru.app.autocat.fragments.FragmentCatalogGrid;
 import ru.app.autocat.fragments.FragmentCatalogList;
-import ru.app.autocat.fragments.FragmentCatalogListGroup;
 import ru.app.autocat.fragments.FragmentGarage;
 import ru.app.autocat.fragments.FragmentReserve;
 import ru.app.autocat.helpers.XmlParserHelper;
@@ -83,13 +81,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         parseXML();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mTitle = mDrawerTitle = "";
         btnChangeView = (MorphButton) findViewById(R.id.stopBtn);
         spnTBCat = (Spinner) findViewById(R.id.toolbar_spinner_cat);
-
 
         btnChangeView.setOnStateChangedListener(new MorphButton.OnStateChangedListener() {
 
@@ -110,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(mTitle);
 
         ArrayAdapter<String> SpinnerAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new String[]{"Каталог", "Гараж", "Резерв"});
@@ -124,8 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 Fragment newFragment = null;
                 switch (position) {
                     case 0:
-                        //newFragment = new FragmentCatalogGrid();
-                        newFragment = new FragmentCatalogListGroup();
+                        newFragment = new FragmentCatalogGrid();
                         Toast.makeText(getBaseContext(), "Catalog", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
@@ -137,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getBaseContext(), "Reserve", Toast.LENGTH_SHORT).show();
                         break;
                 }
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.MAGENTA);
+                ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.spn_selected_item_text_color));
                 if (newFragment != null) {
                     changeFragment(newFragment);
                 }
@@ -190,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //setFilterPattern(parent.getAdapter().getItem(position).toString());
                 if (!parent.getAdapter().getItem(position).toString().equalsIgnoreCase("Все")) {
                     setCarsDBG(
                             getFilteredData(
@@ -198,7 +193,6 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     setCarsDBG(getCarsDB());
                 }
-                //todo not work
                 mDrawerList.setItemChecked(position, true);
                 mDrawerLayout.closeDrawer(DrawerLayoutMain);
                 changeFragment(new FragmentCatalogGrid());
@@ -246,14 +240,6 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         }, getResources().getXml(R.xml.test));
-    }
-
-    void selectItem(int item) {
-        Log.d("hhh", "end");
-    }
-
-    void addButton() {
-        MorphButton mb = new MorphButton(this);
     }
 
     public void savePref(Car carDetails) {
@@ -381,7 +367,6 @@ public class MainActivity extends AppCompatActivity {
             myRow.tvMenuItem.setText(menu[i]);
             return view;
         }
-
     }
 
     public void changeFragmentBack(Fragment fragment) {
@@ -425,7 +410,6 @@ public class MainActivity extends AppCompatActivity {
         if (fm.getBackStackEntryCount() > 0 && !mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             fm.popBackStack();
         } else {
-            //todo not work yet
             mDrawerLayout.openDrawer(DrawerLayoutMain);
             if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                 appExit();
@@ -448,7 +432,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_exit) {
+            appExit();
             return true;
         }
 
