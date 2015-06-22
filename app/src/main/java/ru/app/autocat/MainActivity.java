@@ -141,61 +141,26 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        ivChangeView = (ImageView) findViewById(R.id.iv_change_view);
 
+        ivChangeView = (ImageView) findViewById(R.id.iv_change_view);
+        //ToDo http://stackoverflow.com/questions/9731602/animated-icon-for-actionitem
         ivChangeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!mListUserView) {
                     mListUserView = true;
-
-                    ImageViewAnimatedChange(MainActivity.this, ivChangeView, drawableToBitmap(getResources()
-                            .getDrawable(R.drawable.ic_view_module_white_24dp)));
-                    //ivChangeView.setImageDrawable(getResources()
-                    //        .getDrawable(R.drawable.ic_view_module_white_24dp));
+                    refresh(ivChangeView, getResources().getDrawable(R.drawable.ic_view_module_white_24dp));
                     Toast.makeText(MainActivity.this, "Changed to: List", Toast.LENGTH_SHORT).show();
                     changeFragment(new FragmentCatalogList());
 
                 } else {
                     mListUserView = false;
-                    ImageViewAnimatedChange(MainActivity.this, ivChangeView, drawableToBitmap(getResources()
-                            .getDrawable(R.drawable.ic_view_list_white_24dp)));
-
-                    //ivChangeView.setImageDrawable(getResources()
-                    //        .getDrawable(R.drawable.ic_view_list_white_24dp));
+                    refresh(ivChangeView, getResources().getDrawable(R.drawable.ic_view_list_white_24dp));
                     Toast.makeText(MainActivity.this, "Changed to: Grid", Toast.LENGTH_SHORT).show();
                     changeFragment(new FragmentCatalogGrid());
                 }
             }
         });
-
-        //btnChangeView = (MorphButton) findViewById(R.id.stopBtn);
-
-        /**
-         btnChangeView.setOnStateChangedListener(new MorphButton.OnStateChangedListener() {
-
-        @Override
-        public void onStateChanged(MorphButton.MorphState changedTo, boolean isAnimating) {
-        // Do something here
-        Toast.makeText(MainActivity.this, "Changed to: " + changedTo, Toast.LENGTH_SHORT).show();
-        switch (String.valueOf(changedTo)) {
-        case "END":
-        Log.d("hhh", "list");
-        mListUserView = true;
-        changeFragment(new FragmentCatalogList());
-        break;
-        case "START":
-        Log.d("hhh", "grid");
-        mListUserView = false;
-        changeFragment(new FragmentCatalogGrid());
-        break;
-        }
-        }
-        });
-         */
-
-        //ToDo http://stackoverflow.com/questions/9731602/animated-icon-for-actionitem
-
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(mTitle);
@@ -280,27 +245,31 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void refresh(final ImageView iv, final Drawable icon) {
+     /* Attach a rotating ImageView to the refresh item as an ActionView */
+        Animation rotation = AnimationUtils.loadAnimation(this, R.anim.icon_changer);
+        rotation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
 
-    public static void ImageViewAnimatedChange(Context c, final ImageView v, final Bitmap new_image) {
-        final Animation anim_out = AnimationUtils.loadAnimation(c, android.R.anim.fade_out);
-        final Animation anim_in  = AnimationUtils.loadAnimation(c, android.R.anim.fade_in);
-        anim_out.setAnimationListener(new Animation.AnimationListener()
-        {
-            @Override public void onAnimationStart(Animation animation) {}
-            @Override public void onAnimationRepeat(Animation animation) {}
-            @Override public void onAnimationEnd(Animation animation)
-            {
-                v.setImageBitmap(new_image);
-                anim_in.setAnimationListener(new Animation.AnimationListener() {
-                    @Override public void onAnimationStart(Animation animation) {}
-                    @Override public void onAnimationRepeat(Animation animation) {}
-                    @Override public void onAnimationEnd(Animation animation) {}
-                });
-                v.startAnimation(anim_in);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                iv.setImageDrawable(icon);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
             }
         });
-        v.startAnimation(anim_out);
+        rotation.setRepeatCount(Animation.ABSOLUTE);
+        iv.startAnimation(rotation);
+
+        //TODO trigger loading
     }
+
 
 
 
