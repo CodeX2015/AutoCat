@@ -26,6 +26,7 @@
         android:layout_marginLeft="20dp"/>
 
     <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/iv_change_view"
         android:layout_width="30dp"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_view_list_white_24dp"

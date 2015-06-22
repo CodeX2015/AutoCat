@@ -1,9 +1,15 @@
 package ru.app.autocat;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -19,10 +25,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -49,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView mDrawerList;
     private Spinner spnTBCat;
     //private MorphButton btnChangeView;
+    private ImageView ivChangeView;
     private Handler mHandler;
     public ArrayList<Car> carsDB;
     public ArrayList<Car> carsDBG;
@@ -84,32 +95,7 @@ public class MainActivity extends AppCompatActivity {
         parseXML();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mTitle = mDrawerTitle = "";
-        //btnChangeView = (MorphButton) findViewById(R.id.stopBtn);
         spnTBCat = (Spinner) findViewById(R.id.toolbar_spinner_cat);
-
-        /**
-
-        btnChangeView.setOnStateChangedListener(new MorphButton.OnStateChangedListener() {
-
-            @Override
-            public void onStateChanged(MorphButton.MorphState changedTo, boolean isAnimating) {
-                // Do something here
-                Toast.makeText(MainActivity.this, "Changed to: " + changedTo, Toast.LENGTH_SHORT).show();
-                switch (String.valueOf(changedTo)) {
-                    case "END":
-                        Log.d("hhh", "list");
-                        mListUserView = true;
-                        changeFragment(new FragmentCatalogList());
-                        break;
-                    case "START":
-                        Log.d("hhh", "grid");
-                        mListUserView = false;
-                        changeFragment(new FragmentCatalogGrid());
-                        break;
-                }
-            }
-        });
-        */
 
         ArrayAdapter<String> SpinnerAdapter =
                 new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new String[]{"Каталог", "Гараж", "Резерв"});
@@ -155,6 +141,61 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        ivChangeView = (ImageView) findViewById(R.id.iv_change_view);
+
+        ivChangeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!mListUserView) {
+                    mListUserView = true;
+
+                    ImageViewAnimatedChange(MainActivity.this, ivChangeView, drawableToBitmap(getResources()
+                            .getDrawable(R.drawable.ic_view_module_white_24dp)));
+                    //ivChangeView.setImageDrawable(getResources()
+                    //        .getDrawable(R.drawable.ic_view_module_white_24dp));
+                    Toast.makeText(MainActivity.this, "Changed to: List", Toast.LENGTH_SHORT).show();
+                    changeFragment(new FragmentCatalogList());
+
+                } else {
+                    mListUserView = false;
+                    ImageViewAnimatedChange(MainActivity.this, ivChangeView, drawableToBitmap(getResources()
+                            .getDrawable(R.drawable.ic_view_list_white_24dp)));
+
+                    //ivChangeView.setImageDrawable(getResources()
+                    //        .getDrawable(R.drawable.ic_view_list_white_24dp));
+                    Toast.makeText(MainActivity.this, "Changed to: Grid", Toast.LENGTH_SHORT).show();
+                    changeFragment(new FragmentCatalogGrid());
+                }
+            }
+        });
+
+        //btnChangeView = (MorphButton) findViewById(R.id.stopBtn);
+
+        /**
+         btnChangeView.setOnStateChangedListener(new MorphButton.OnStateChangedListener() {
+
+        @Override
+        public void onStateChanged(MorphButton.MorphState changedTo, boolean isAnimating) {
+        // Do something here
+        Toast.makeText(MainActivity.this, "Changed to: " + changedTo, Toast.LENGTH_SHORT).show();
+        switch (String.valueOf(changedTo)) {
+        case "END":
+        Log.d("hhh", "list");
+        mListUserView = true;
+        changeFragment(new FragmentCatalogList());
+        break;
+        case "START":
+        Log.d("hhh", "grid");
+        mListUserView = false;
+        changeFragment(new FragmentCatalogGrid());
+        break;
+        }
+        }
+        });
+         */
+
+        //ToDo http://stackoverflow.com/questions/9731602/animated-icon-for-actionitem
+
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(mTitle);
@@ -237,6 +278,43 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mHandler = new Handler();
 
+    }
+
+
+    public static void ImageViewAnimatedChange(Context c, final ImageView v, final Bitmap new_image) {
+        final Animation anim_out = AnimationUtils.loadAnimation(c, android.R.anim.fade_out);
+        final Animation anim_in  = AnimationUtils.loadAnimation(c, android.R.anim.fade_in);
+        anim_out.setAnimationListener(new Animation.AnimationListener()
+        {
+            @Override public void onAnimationStart(Animation animation) {}
+            @Override public void onAnimationRepeat(Animation animation) {}
+            @Override public void onAnimationEnd(Animation animation)
+            {
+                v.setImageBitmap(new_image);
+                anim_in.setAnimationListener(new Animation.AnimationListener() {
+                    @Override public void onAnimationStart(Animation animation) {}
+                    @Override public void onAnimationRepeat(Animation animation) {}
+                    @Override public void onAnimationEnd(Animation animation) {}
+                });
+                v.startAnimation(anim_in);
+            }
+        });
+        v.startAnimation(anim_out);
+    }
+
+
+
+    public static Bitmap drawableToBitmap (Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable)drawable).getBitmap();
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
     }
 
     private void parseXML() {
