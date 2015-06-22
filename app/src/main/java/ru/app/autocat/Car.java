@@ -19,6 +19,8 @@ public class Car implements Serializable {
     private String country;
     private String KppAT = null;
     private String KppMT = null;
+    private int AmountKppAt = 0;
+    private int AmountKppMt = 0;
 
     public Car(String mark) {this.mark = mark;}
 
@@ -107,5 +109,21 @@ public class Car implements Serializable {
 
     public void setKppMT(String kppMT) {
         this.KppMT = kppMT;
+    }
+
+    public int getAmountKppAt() {
+        return AmountKppAt;
+    }
+
+    public void setAmountKppAt(int amountKppAt) {
+        AmountKppAt = amountKppAt;
+    }
+
+    public int getAmountKppMt() {
+        return AmountKppMt;
+    }
+
+    public void setAmountKppMt(int amountKppMt) {
+        AmountKppMt = amountKppMt;
     }
 }

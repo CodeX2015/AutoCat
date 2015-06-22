@@ -90,8 +90,10 @@ public class FragmentGarageList extends Fragment {
                 convertView = getActivity().getLayoutInflater().inflate(R.layout.row_listview, parent, false);
                 myRow.tvModel = (TextView) convertView.findViewById(R.id.tvModel);
                 myRow.tvCreate = (TextView) convertView.findViewById(R.id.tv_create);
-                myRow.tvMT = (TextView) convertView.findViewById(R.id.tv_mt);
-                myRow.tvAT = (TextView) convertView.findViewById(R.id.tv_at);
+                myRow.tvMT = (TextView) convertView.findViewById(R.id.tv_mt_header);
+                myRow.tvAT = (TextView) convertView.findViewById(R.id.tv_at_header);
+                myRow.tvAmountMT = (TextView) convertView.findViewById(R.id.tv_mt);
+                myRow.tvAmountAT = (TextView) convertView.findViewById(R.id.tv_at);
                 myRow.ivCarPic = (ImageView) convertView.findViewById(R.id.ivCarPic);
                 convertView.setTag(myRow);
             } else {
@@ -99,8 +101,10 @@ public class FragmentGarageList extends Fragment {
             }
             myRow.tvModel.setText(getItem(position).getModel());
             myRow.tvCreate.setText(getItem(position).getCreated());
-            //myRow.tvMT.setText(getItem(position).getMT);
-            //myRow.tvAT..setText(getItem(position).getAT);
+            myRow.tvMT.setText(getItem(position).getKppMT());
+            myRow.tvAT.setText(getItem(position).getKppAT());
+            myRow.tvAmountMT.setText(String.valueOf(getItem(position).getAmountKppMt()));
+            myRow.tvAmountAT.setText(String.valueOf(getItem(position).getAmountKppAt()));
             return convertView;
         }
 
@@ -109,6 +113,8 @@ public class FragmentGarageList extends Fragment {
             TextView tvCreate;
             TextView tvMT;
             TextView tvAT;
+            TextView tvAmountMT;
+            TextView tvAmountAT;
             ImageView ivCarPic;
         }
     }

@@ -46,6 +46,7 @@ import java.util.ArrayList;
 
 import ru.app.autocat.fragments.FragmentCatalogGrid;
 import ru.app.autocat.fragments.FragmentCatalogList;
+import ru.app.autocat.fragments.FragmentCatalogListGroup;
 import ru.app.autocat.fragments.FragmentGarageGrid;
 import ru.app.autocat.fragments.FragmentGarageList;
 import ru.app.autocat.fragments.FragmentReserve;
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (position) {
                     case 0:
                         if (mListUserView) {
-                            newFragment = new FragmentCatalogList();
+                            newFragment = new FragmentCatalogListGroup();
                         } else {
                             newFragment = new FragmentCatalogGrid();
                         }
@@ -151,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                     mListUserView = true;
                     refresh(ivChangeView, getResources().getDrawable(R.drawable.ic_view_module_white_24dp));
                     Toast.makeText(MainActivity.this, "Changed to: List", Toast.LENGTH_SHORT).show();
-                    changeFragment(new FragmentCatalogList());
+                    changeFragment(new FragmentCatalogListGroup());
 
                 } else {
                     mListUserView = false;

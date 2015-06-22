@@ -36,6 +36,7 @@ public class FragmentDetails extends Fragment {
     TextView mCreated;
     ImageView mCarPic;
     Button mSaveBtn;
+    Car carDetails;
 
     @Nullable
     @Override
@@ -56,6 +57,7 @@ public class FragmentDetails extends Fragment {
         mAmountAT = (TextView) view.findViewById((R.id.tvAmount_at));
         mKppAT = (TextView) view.findViewById(R.id.tv_at);
 
+        carDetails = getData();
 
         mMinusBtnMT.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,17 +94,21 @@ public class FragmentDetails extends Fragment {
         mSaveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                ((MainActivity) getActivity()).savePref(getData());
+                carDetails.setAmountKppMt(Integer.parseInt(mAmountMT.getText().toString()));
+                carDetails.setAmountKppAt(Integer.parseInt(mAmountAT.getText().toString()));
+                ((MainActivity) getActivity()).savePref(carDetails);
                 Toast.makeText(getActivity(), "Save car in garage", Toast.LENGTH_LONG).show();
             }
         });
-        if (getData() != null) {
-            mModel.setText(getData().getModel());
-            mDescription.setText(getData().getTitle());
-            mCreated.setText(getData().getCreated());
-            mKppMT.setText(getData().getKppMT());
-            mKppAT.setText(getData().getKppAT());
+        if (carDetails != null) {
+
+            mModel.setText(carDetails.getModel());
+            mDescription.setText(carDetails.getTitle());
+            mCreated.setText(carDetails.getCreated());
+            mKppMT.setText(carDetails.getKppMT());
+            mKppAT.setText(carDetails.getKppAT());
+            mAmountMT.setText(String.valueOf(carDetails.getAmountKppMt()));
+            mAmountAT.setText(String.valueOf(carDetails.getAmountKppAt()));
         }
 
         return view;
