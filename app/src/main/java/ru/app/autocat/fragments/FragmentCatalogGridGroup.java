@@ -33,6 +33,7 @@ public class FragmentCatalogGridGroup extends Fragment {
 
     private GridView mGridView;
     //ArrayAdapter<String> adapter;
+    //todo https://github.com/TonicArtos/StickyGridHeaders
 
     @Nullable
     @Override
