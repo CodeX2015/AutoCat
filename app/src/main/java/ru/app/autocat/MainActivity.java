@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
     private CharSequence mDrawerTitle;
     private ListView mDrawerList;
     private Spinner spnTBCat;
-    //private MorphButton btnChangeView;
     private ImageView ivChangeView;
     private Handler mHandler;
     public ArrayList<Car> carsDB;
@@ -183,15 +182,24 @@ public class MainActivity extends AppCompatActivity {
                 switch (v.getId()) {
                     case R.id.btnDE:
                         pattern = "Германия";
+                        mDrawerBtnDe.setBackground(getResources().getDrawable(R.drawable.btn_bg_color_pressed));
+                        mDrawerBtnUs.setBackground(getResources().getDrawable(R.drawable.btn_bg_color));
+                        mDrawerBtnJp.setBackground(getResources().getDrawable(R.drawable.btn_bg_color));
                         break;
                     case R.id.btnUS:
                         pattern = "США";
+                        mDrawerBtnDe.setBackground(getResources().getDrawable(R.drawable.btn_bg_color));
+                        mDrawerBtnUs.setBackground(getResources().getDrawable(R.drawable.btn_bg_color_pressed));
+                        mDrawerBtnJp.setBackground(getResources().getDrawable(R.drawable.btn_bg_color));
                         break;
                     case R.id.btnJP:
                         pattern = "Япония";
+                        mDrawerBtnDe.setBackground(getResources().getDrawable(R.drawable.btn_bg_color));
+                        mDrawerBtnUs.setBackground(getResources().getDrawable(R.drawable.btn_bg_color));
+                        mDrawerBtnJp.setBackground(getResources().getDrawable(R.drawable.btn_bg_color_pressed));
                         break;
                 }
-                mDrawerLayout.closeDrawer(mDrawerLayoutMain);
+                //mDrawerLayout.closeDrawer(mDrawerLayoutMain);
                 setCarsDBG(getFilteredDataByCountry(pattern));
                 if (mListUserView) {
                     changeFragment(new FragmentCatalogList());

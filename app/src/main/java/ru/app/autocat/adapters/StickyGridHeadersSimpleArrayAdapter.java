@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import ru.app.autocat.Car;
 import ru.app.autocat.R;
@@ -33,11 +32,6 @@ public class StickyGridHeadersSimpleArrayAdapter<T> extends BaseAdapter implemen
     public StickyGridHeadersSimpleArrayAdapter(Context context, ArrayList<Car> items, int headerResId,
                                                int itemResId) {
         init(context, items, headerResId, itemResId);
-    }
-
-    public StickyGridHeadersSimpleArrayAdapter(Context context, T[] item, int headerResId,
-                                               int itemResId) {
-        //init(context, Arrays.asList(item), headerResId, itemResId);
     }
 
     @Override

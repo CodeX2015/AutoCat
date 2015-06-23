@@ -1,4 +1,4 @@
-package ru.app.autocat.fragments;
+package ru.app.autocat.Sample;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,25 +12,30 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import ru.app.autocat.Car;
 import ru.app.autocat.MainActivity;
 import ru.app.autocat.R;
-import ru.app.autocat.helpers.XmlParserHelper;
+import ru.app.autocat.adapters.Sectionizer;
+import ru.app.autocat.adapters.SimpleSectionAdapter;
+import ru.app.autocat.fragments.FragmentCatalogListGroup;
+import ru.app.autocat.fragments.FragmentDetails;
 
 /**
  * Created by CodeX on 18.06.2015.
  */
 
-public class FragmentCatalogGrid extends Fragment {
+public class FragmentCatalogGridGroupOld extends Fragment {
 
     private GridView mGridView;
     //ArrayAdapter<String> adapter;
+    //todo https://github.com/TonicArtos/StickyGridHeaders
 
     @Nullable
     @Override
@@ -38,22 +43,17 @@ public class FragmentCatalogGrid extends Fragment {
         View view = inflater.inflate(R.layout.fragment_gridview, container, false);
         Button btnParse = (Button) view.findViewById(R.id.btnParse);
         mGridView = (GridView) view.findViewById(R.id.asset_grid);
-        //adapter = new ArrayAdapter<String>(getActivity(), R.layout.row_gridview, R.id.tvText, MainActivity.DATA);
-        //mGridView.setAdapter(adapter);
+        seplisttest();
         adjustGridView();
-        parseXML();
+
 
         btnParse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Intent myIntent = new Intent(getActivity(), ListSample.class);
                 //getActivity().startActivity(myIntent);
-
-                if (MainActivity.mListUserView) {
-                   // ((MainActivity) getActivity()).changeFragmentBack(new FragmentCatalogListGroup());
-                } else {
-                    ((MainActivity) getActivity()).changeFragmentBack(new FragmentCatalogGridGroup());
-                }
+                FragmentCatalogListGroup newFragment = new FragmentCatalogListGroup();
+                ((MainActivity) getActivity()).changeFragmentBack(newFragment);
             }
         });
 
@@ -78,40 +78,47 @@ public class FragmentCatalogGrid extends Fragment {
         return view;
     }
 
-    private void parseXML() {
-        XmlParserHelper.parseXMLbyStack(new XmlParserHelper.LoadListener() {
-            @Override
-            public void OnParseComplete(final Object result) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        /**
-                         if (getArguments() != null && getArguments().getString("FilterPattern","")!="") {
-                         mGridView.setAdapter(new MyListAdapter(((MainActivity) getActivity())
-                         .getFilteredData(getArguments().getString("FilterPattern", ""), (ArrayList<Car>) result)));
-                         } else {
-                         Toast.makeText(getActivity(),
-                         "OnParseComplete, cars = " + String.valueOf(((ArrayList<Car>) result).size()),
-                         Toast.LENGTH_LONG).show();
-                         mGridView.setAdapter(new MyListAdapter((ArrayList<Car>) result));
-                         }
-                         */
+    void seplisttest () {
+        // 1. Your data source
+        ArrayList<Car> cars = ((MainActivity) getActivity()).getCarsDBG();
 
-                        mGridView.setAdapter(new MyListAdapter(((MainActivity) getActivity()).getCarsDBG()));
-                    }
-                });
-            }
+        // 2. Sort them using the distance from the current city
+        Car all = new Car("Все");
+        MarkComparator markComparator = new MarkComparator();
+        Collections.sort(cars, markComparator);
 
-            @Override
-            public void OnParseError(final Exception error) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getActivity(), "OnParseError: " + error.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        }, getActivity().getResources().getXml(R.xml.test));
+        // 3. Create your custom adapter
+        MyListAdapter carAdapter = new MyListAdapter(cars);
+
+        // 4. Create a Sectionizer
+        CarSectionizer carSectionizer = new CarSectionizer(all);
+
+        // 5. Wrap your adapter within the SimpleSectionAdapter
+        SimpleSectionAdapter<Car> sectionAdapter = new SimpleSectionAdapter<Car>(getActivity(),
+                carAdapter, R.layout.list_header, R.id.list_header_title, carSectionizer);
+
+        // 6. Set the adapter to your ListView
+        mGridView.setAdapter(sectionAdapter);
+    }
+
+    class CarSectionizer implements Sectionizer<Car> {
+        private Car car;
+
+        public CarSectionizer(Car car) {
+            this.car = car;
+        }
+
+        @Override
+        public String getSectionTitleForItem(Car car) {
+            return car.getMark();
+        }
+    }
+
+    private class MarkComparator implements Comparator<Car> {
+        @Override
+        public int compare(Car car1, Car car2) {
+            return car1.getMark().compareTo(car2.getMark());
+        }
     }
 
     private void adjustGridView() {
