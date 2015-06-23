@@ -40,7 +40,7 @@ public class FragmentCatalogGridGroup extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gridview, container, false);
         Button btnParse = (Button) view.findViewById(R.id.btnParse);
-        mGridView = (GridView) view.findViewById(R.id.gvMain);
+        mGridView = (GridView) view.findViewById(R.id.asset_grid);
         seplisttest();
         adjustGridView();
 
@@ -108,24 +108,7 @@ public class FragmentCatalogGridGroup extends Fragment {
 
         @Override
         public String getSectionTitleForItem(Car car) {
-            String sectionTitle = "Unknown";
-
-            String mark = car.getMark();
-            switch (mark) {
-                case "Audi":
-                    sectionTitle = mark;
-                    break;
-                case "BMW":
-                    sectionTitle = mark;
-                    break;
-                case "Toyota":
-                    sectionTitle = mark;
-                    break;
-                case "Ford":
-                    sectionTitle = mark;
-                    break;
-            }
-            return sectionTitle;
+            return car.getMark();
         }
     }
 
@@ -137,7 +120,7 @@ public class FragmentCatalogGridGroup extends Fragment {
     }
 
     private void adjustGridView() {
-        //mGridView.setNumColumns(GridView.AUTO_FIT);
+        mGridView.setNumColumns(GridView.AUTO_FIT);
     }
 
     private class MyListAdapter extends BaseAdapter {

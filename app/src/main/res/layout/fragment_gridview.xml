@@ -12,6 +12,19 @@
         android:background="@color/btn_bg_color"
         android:textColor="@color/btn_text_color"
         android:text="ExampleList"/>
+
+    <ru.app.autocat.adapters.StickyGridHeadersGridView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/asset_grid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:columnWidth="90dip"
+        android:horizontalSpacing="3dip"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="3dip" />
+
+    <!--
     <GridView
         android:layout_margin="5dp"
         android:id="@+id/gvMain"
@@ -22,5 +35,6 @@
         android:horizontalSpacing="6dp"
         android:gravity="center">
     </GridView>
+    -->
 
 </LinearLayout>
