@@ -42,13 +42,11 @@ public class StickyGridHeadersBaseAdapterWrapper extends BaseAdapter {
         @Override
         public void onChanged() {
             updateCount();
-            notifyDataSetChanged();
         }
 
         @Override
         public void onInvalidated() {
             mCounted = false;
-            notifyDataSetInvalidated();
         }
     };
 
@@ -215,6 +213,7 @@ public class StickyGridHeadersBaseAdapterWrapper extends BaseAdapter {
 
     @Override
     public void registerDataSetObserver(DataSetObserver observer) {
+        super.registerDataSetObserver(observer);
         mDelegate.registerDataSetObserver(observer);
     }
 
@@ -226,6 +225,7 @@ public class StickyGridHeadersBaseAdapterWrapper extends BaseAdapter {
 
     @Override
     public void unregisterDataSetObserver(DataSetObserver observer) {
+        super.unregisterDataSetObserver(observer);
         mDelegate.unregisterDataSetObserver(observer);
     }
 
@@ -258,6 +258,11 @@ public class StickyGridHeadersBaseAdapterWrapper extends BaseAdapter {
      * @return The count of unfilled spaces in the last row.
      */
     private int unFilledSpacesInHeaderGroup(int header) {
+        //If mNumColumns is equal to zero we will have a divide by 0 exception
+        if(mNumColumns == 0){
+            return 0;
+        }
+
         int remainder = mDelegate.getCountForHeader(header) % mNumColumns;
         return remainder == 0 ? 0 : mNumColumns - remainder;
     }

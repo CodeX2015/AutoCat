@@ -77,18 +77,18 @@ public class StickyGridHeadersSimpleAdapterWrapper extends BaseAdapter implement
     }
 
     protected HeaderData[] generateHeaderList(StickyGridHeadersSimpleAdapter adapter) {
-        Map<Long, HeaderData> mapping = new HashMap<Long, HeaderData>();
+        Map<String, HeaderData> mapping = new HashMap<String, HeaderData>();
         List<HeaderData> headers = new ArrayList<HeaderData>();
 
         for (int i = 0; i < adapter.getCount(); i++) {
-            long headerId = adapter.getHeaderId(i);
-            HeaderData headerData = mapping.get(headerId);
+            String header = adapter.getHeader(i);
+            HeaderData headerData = mapping.get(header);
             if (headerData == null) {
                 headerData = new HeaderData(i);
                 headers.add(headerData);
             }
             headerData.incrementCount();
-            mapping.put(headerId, headerData);
+            mapping.put(header, headerData);
         }
 
         return headers.toArray(new HeaderData[headers.size()]);

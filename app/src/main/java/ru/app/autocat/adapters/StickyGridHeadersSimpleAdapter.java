@@ -39,7 +39,7 @@ public interface StickyGridHeadersSimpleAdapter extends ListAdapter {
      *            header id we want.
      * @return The id of the header at the specified position.
      */
-    long getHeaderId(int position);
+    String getHeader(int position);
 
     /**
      * Get a View that displays the header data at the specified position in the

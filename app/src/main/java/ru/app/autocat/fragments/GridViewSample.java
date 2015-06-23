@@ -7,39 +7,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 
 import ru.app.autocat.Car;
 import ru.app.autocat.MainActivity;
 import ru.app.autocat.R;
-import ru.app.autocat.adapters.Sectionizer;
-import ru.app.autocat.adapters.SimpleSectionAdapter;
-import ru.app.autocat.adapters.StickyGridAdapter;
+import ru.app.autocat.adapters.StickyGridHeadersSimpleArrayAdapter;
 
 /**
  * Created by Yakovlev on 23.06.2015.
  */
+
 public class GridViewSample extends Fragment{
     private GridView mGridView;
-    private List<Car> mGirdList = new ArrayList<Car>();
-    private static int section = 1;
-    private Map<String, Integer> sectionMap = new HashMap<String, Integer>();
-    //ArrayAdapter<String> adapter;
-    //todo https://github.com/TonicArtos/StickyGridHeaders
 
     @Nullable
     @Override
@@ -54,8 +41,6 @@ public class GridViewSample extends Fragment{
         btnParse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Intent myIntent = new Intent(getActivity(), ListSample.class);
-                //getActivity().startActivity(myIntent);
                 FragmentCatalogListGroup newFragment = new FragmentCatalogListGroup();
                 ((MainActivity) getActivity()).changeFragmentBack(newFragment);
             }
@@ -86,44 +71,17 @@ public class GridViewSample extends Fragment{
         // 1. Your data source
         ArrayList<Car> cars = ((MainActivity) getActivity()).getCarsDBG();
 
-        // 2. Sort them using the distance from the current city
-        Car all = new Car("Все");
+        // 2. Sort them using the distance from the current car
         MarkComparator markComparator = new MarkComparator();
         Collections.sort(cars, markComparator);
 
         //sample grid adapter
         //todo https://github.com/TonicArtos/StickyGridHeaders
-        StickyGridAdapter carAdapter = new StickyGridAdapter(getActivity(), cars, mGridView);
-        mGridView.setAdapter(carAdapter);
 
-/**
-        // 3. Create your custom adapter
-        //MyListAdapter carAdapter = new MyListAdapter(cars);
+        // 3. Set adapter
+        mGridView.setAdapter(new StickyGridHeadersSimpleArrayAdapter<Car>(getActivity()
+                .getApplicationContext(), cars, R.layout.grid_header, R.layout.grid_data_item));
 
-        // 4. Create a Sectionizer
-        CarSectionizer carSectionizer = new CarSectionizer(all);
-
-        // 5. Wrap your adapter within the SimpleSectionAdapter
-        SimpleSectionAdapter<Car> sectionAdapter = new SimpleSectionAdapter<Car>(getActivity(),
-                carAdapter, R.layout.list_header, R.id.list_header_title, carSectionizer);
-
-        // 6. Set the adapter to your ListView
-        mGridView.setAdapter(sectionAdapter);
-        */
-
-    }
-
-    class CarSectionizer implements Sectionizer<Car> {
-        private Car car;
-
-        public CarSectionizer(Car car) {
-            this.car = car;
-        }
-
-        @Override
-        public String getSectionTitleForItem(Car car) {
-            return car.getMark();
-        }
     }
 
     private class MarkComparator implements Comparator<Car> {
@@ -135,50 +93,6 @@ public class GridViewSample extends Fragment{
 
     private void adjustGridView() {
         mGridView.setNumColumns(GridView.AUTO_FIT);
-    }
-
-    private class MyListAdapter extends BaseAdapter {
-        ArrayList<Car> cars;
-
-        public MyListAdapter(ArrayList<Car> cars) {
-            this.cars = cars;
-        }
-
-        @Override
-        public int getCount() {
-            return cars.size();
-        }
-
-        @Override
-        public Car getItem(int position) {
-            return cars.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            MyRow myRow;
-            if (convertView == null) {
-                myRow = new MyRow();
-                convertView = getActivity().getLayoutInflater().inflate(R.layout.row_gridview, parent, false);
-                myRow.tvModel = (TextView) convertView.findViewById(R.id.tvModel);
-                myRow.ivCarPic = (ImageView) convertView.findViewById(R.id.ivCarPic);
-                convertView.setTag(myRow);
-            } else {
-                myRow = (MyRow) convertView.getTag();
-            }
-            myRow.tvModel.setText(getItem(position).getModel());
-            return convertView;
-        }
-
-        private class MyRow {
-            TextView tvModel;
-            ImageView ivCarPic;
-        }
     }
 
 }

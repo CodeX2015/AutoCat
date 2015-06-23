@@ -32,8 +32,6 @@ import java.util.List;
  */
 public class StickyGridHeadersGridView extends GridView implements AbsListView.OnScrollListener,
         AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener, AdapterView.OnItemLongClickListener {
-
-
     private static final String ERROR_PLATFORM = "Error supporting platform "
             + Build.VERSION.SDK_INT + ".";
 
@@ -113,7 +111,6 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView.O
     /**
      * Must be set from the wrapped GridView in the constructor.
      */
-
     private int mNumColumns;
 
     private boolean mNumColumnsSet;
@@ -185,7 +182,7 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView.O
      *
      * @param position Position of HeaderFiller.
      * @return Header View wrapped in HeaderFiller or null if no header was
-     * found.
+     *         found.
      */
     public View getHeaderAt(int position) {
         if (position == MATCHED_STICKIED_HEADER) {
@@ -193,7 +190,7 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView.O
         }
 
         try {
-            return (View) getChildAt(position).getTag();
+            return (View)getChildAt(position).getTag();
         } catch (Exception e) {
         }
         return null;
@@ -237,7 +234,7 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView.O
 
     @Override
     public void onRestoreInstanceState(Parcelable state) {
-        SavedState ss = (SavedState) state;
+        SavedState ss = (SavedState)state;
 
         super.onRestoreInstanceState(ss.getSuperState());
         mAreHeadersSticky = ss.areHeadersSticky;
@@ -291,10 +288,10 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView.O
                 tempHeader.invalidate();
                 tempHeader.postDelayed(new Runnable() {
                     public void run() {
-                        invalidate(0, headerHolder.getTop(), getWidth(), headerHolder.getTop() + headerHolder.getHeight());
+                        invalidate(0, headerHolder.getTop(), getWidth(), headerHolder.getTop()+headerHolder.getHeight());
                     }
                 }, ViewConfiguration.getPressedStateDuration());
-                invalidate(0, headerHolder.getTop(), getWidth(), headerHolder.getTop() + headerHolder.getHeight());
+                invalidate(0, headerHolder.getTop(), getWidth(), headerHolder.getTop()+headerHolder.getHeight());
             }
         }
 
@@ -305,7 +302,7 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView.O
                 }
                 postDelayed(mPendingCheckForTap, ViewConfiguration.getTapTimeout());
 
-                final int y = (int) ev.getY();
+                final int y = (int)ev.getY();
                 mMotionY = y;
                 mMotionHeaderPosition = findMotionHeader(y);
                 if (mMotionHeaderPosition == NO_MATCHED_HEADER
@@ -324,7 +321,7 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView.O
                         if (mMotionHeaderPosition != MATCHED_STICKIED_HEADER) {
                             tempHeader = getChildAt(mMotionHeaderPosition);
                         }
-                        invalidate(0, tempHeader.getTop(), getWidth(), tempHeader.getTop() + tempHeader.getHeight());
+                        invalidate(0, tempHeader.getTop(), getWidth(), tempHeader.getTop()+tempHeader.getHeight());
                     }
                 }
                 mTouchMode = TOUCH_MODE_DOWN;
@@ -464,11 +461,11 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView.O
 
         StickyGridHeadersBaseAdapter baseAdapter;
         if (adapter instanceof StickyGridHeadersBaseAdapter) {
-            baseAdapter = (StickyGridHeadersBaseAdapter) adapter;
+            baseAdapter = (StickyGridHeadersBaseAdapter)adapter;
         } else if (adapter instanceof StickyGridHeadersSimpleAdapter) {
             // Wrap up simple adapter to auto-generate the data we need.
             baseAdapter = new StickyGridHeadersSimpleAdapterWrapper(
-                    (StickyGridHeadersSimpleAdapter) adapter);
+                    (StickyGridHeadersSimpleAdapter)adapter);
         } else {
             // Wrap up a list adapter so it is an adapter with zero headers.
             baseAdapter = new StickyGridHeadersListAdapterWrapper(adapter);
@@ -576,7 +573,7 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView.O
         }
 
         int vi = 0;
-        for (int i = getFirstVisiblePosition(); i <= getLastVisiblePosition(); ) {
+        for (int i = getFirstVisiblePosition(); i <= getLastVisiblePosition();) {
             long id = getItemIdAtPosition(i);
             if (id == StickyGridHeadersBaseAdapterWrapper.ID_HEADER) {
                 View headerWrapper = getChildAt(vi);
@@ -629,7 +626,7 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView.O
         } else {
             heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
         }
-        mStickiedHeader.measure(MeasureSpec.makeMeasureSpec(0, 0), MeasureSpec.makeMeasureSpec(0, 0));
+        mStickiedHeader.measure(MeasureSpec.makeMeasureSpec(0,0), MeasureSpec.makeMeasureSpec(0,0));
         mStickiedHeader.measure(widthMeasureSpec, heightMeasureSpec);
 
         if (mHeadersIgnorePadding) {
@@ -780,7 +777,7 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView.O
         int flags = e.getFlags();
 
         View headerHolder = getChildAt(headerPosition);
-        for (int i = 0; i < pointerCount; i++) {
+        for (int i = 0; i < pointerCount;i++) {
             pointerCoords[i].y -= headerHolder.getTop();
         }
         MotionEvent n = MotionEvent.obtain(downTime, eventTime, action,
@@ -823,7 +820,7 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView.O
         // Find headers.
         List<Integer> headerPositions = new ArrayList<Integer>();
         int vi = 0;
-        for (int i = getFirstVisiblePosition(); i <= getLastVisiblePosition(); ) {
+        for (int i = getFirstVisiblePosition(); i <= getLastVisiblePosition();) {
             long id = getItemIdAtPosition(i);
             if (id == StickyGridHeadersBaseAdapterWrapper.ID_HEADER) {
                 headerPositions.add(vi);
@@ -837,12 +834,12 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView.O
             View frame = getChildAt(headerPositions.get(i));
             View header;
             try {
-                header = (View) frame.getTag();
+                header = (View)frame.getTag();
             } catch (Exception e) {
                 return;
             }
 
-            boolean headerIsStickied = ((StickyGridHeadersBaseAdapterWrapper.HeaderFillerView) frame).getHeaderId() == mCurrentHeaderId
+            boolean headerIsStickied = ((StickyGridHeadersBaseAdapterWrapper.HeaderFillerView)frame).getHeaderId() == mCurrentHeaderId
                     && frame.getTop() < 0 && mAreHeadersSticky;
             if (header.getVisibility() != View.VISIBLE || headerIsStickied) {
                 continue;
@@ -857,7 +854,7 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView.O
             }
 
             int heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
-            header.measure(MeasureSpec.makeMeasureSpec(0, 0), MeasureSpec.makeMeasureSpec(0, 0));
+            header.measure(MeasureSpec.makeMeasureSpec(0,0),MeasureSpec.makeMeasureSpec(0,0));
             header.measure(widthMeasureSpec, heightMeasureSpec);
 
             if (mHeadersIgnorePadding) {
@@ -911,7 +908,7 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView.O
                         - getPaddingRight(), MeasureSpec.EXACTLY); // Bug here
             }
             int heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
-            mStickiedHeader.measure(MeasureSpec.makeMeasureSpec(0, 0), MeasureSpec.makeMeasureSpec(0, 0));
+            mStickiedHeader.measure(MeasureSpec.makeMeasureSpec(0,0),MeasureSpec.makeMeasureSpec(0,0));
             mStickiedHeader.measure(widthMeasureSpec, heightMeasureSpec);
             if (mHeadersIgnorePadding) {
                 mStickiedHeader.layout(getLeft(), 0, getRight(), mStickiedHeader.getHeight());
@@ -1200,8 +1197,7 @@ public class StickyGridHeadersGridView extends GridView implements AbsListView.O
         @Override
         public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
-            out.writeByte((byte) (areHeadersSticky ? 1 : 0));
+            out.writeByte((byte)(areHeadersSticky ? 1 : 0));
         }
     }
-
 }
