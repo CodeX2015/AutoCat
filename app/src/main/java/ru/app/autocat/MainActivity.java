@@ -1,12 +1,10 @@
 package ru.app.autocat;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -31,7 +29,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -68,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
     private Button mDrawerBtnUs;
     public static boolean mListUserView;
     LinearLayout mDrawerLayoutMain;
+
+    public final static String FRAGMENT_CATALOG = "fragment_catalog";
+    public final static String FRAGMENT_GARAGE = "fragment_garage";
 
     public static final String[] DATA = {"Все", "Audi", "BMW", "Ford", "Toyota"};
 
@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Fragment newFragment = null;
+                String fragmentTag = "";
                 switch (position) {
                     case 0:
                         if (mListUserView) {
@@ -115,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             newFragment = new FragmentCatalogGrid();
                         }
+                        fragmentTag = FRAGMENT_CATALOG;
                         Toast.makeText(getBaseContext(), "Catalog", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
@@ -123,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             newFragment = new FragmentGarageGrid();
                         }
+                        fragmentTag = FRAGMENT_GARAGE;
                         Toast.makeText(getBaseContext(), "Garage", Toast.LENGTH_SHORT).show();
                         break;
                     case 2:
@@ -132,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.spn_selected_item_text_color));
                 if (newFragment != null) {
-                    changeFragment(newFragment);
+                    changeFragment(newFragment, fragmentTag);
                 }
             }
 
@@ -151,13 +154,20 @@ public class MainActivity extends AppCompatActivity {
                     mListUserView = true;
                     refresh(ivChangeView, getResources().getDrawable(R.drawable.ic_view_module_white_24dp));
                     Toast.makeText(MainActivity.this, "Changed to: List", Toast.LENGTH_SHORT).show();
-                    changeFragment(new FragmentCatalogListGroup());
-
+                    if (checkVisibleFragment(FRAGMENT_CATALOG)) {
+                        changeFragment(new FragmentCatalogList(), FRAGMENT_CATALOG);
+                    } else {
+                        changeFragment(new FragmentGarageList(), FRAGMENT_GARAGE);
+                    }
                 } else {
                     mListUserView = false;
                     refresh(ivChangeView, getResources().getDrawable(R.drawable.ic_view_list_white_24dp));
                     Toast.makeText(MainActivity.this, "Changed to: Grid", Toast.LENGTH_SHORT).show();
-                    changeFragment(new FragmentCatalogGrid());
+                    if (checkVisibleFragment(FRAGMENT_CATALOG)) {
+                        changeFragment(new FragmentCatalogGrid(), FRAGMENT_CATALOG);
+                    } else {
+                        changeFragment(new FragmentGarageGrid(), FRAGMENT_GARAGE);
+                    }
                 }
             }
         });
@@ -202,9 +212,9 @@ public class MainActivity extends AppCompatActivity {
                 //mDrawerLayout.closeDrawer(mDrawerLayoutMain);
                 setCarsDBG(getFilteredDataByCountry(pattern));
                 if (mListUserView) {
-                    changeFragment(new FragmentCatalogList());
+                    changeFragment(new FragmentCatalogList(), FRAGMENT_CATALOG);
                 } else {
-                    changeFragment(new FragmentCatalogGrid());
+                    changeFragment(new FragmentCatalogGrid(), FRAGMENT_CATALOG);
                 }
             }
         };
@@ -229,9 +239,17 @@ public class MainActivity extends AppCompatActivity {
                 mDrawerList.setItemChecked(position, true);
                 mDrawerLayout.closeDrawer(mDrawerLayoutMain);
                 if (mListUserView) {
-                    changeFragment(new FragmentCatalogList());
+                    if (checkVisibleFragment(FRAGMENT_CATALOG)) {
+                        changeFragment(new FragmentCatalogList(), FRAGMENT_CATALOG);
+                    } else {
+                        changeFragment(new FragmentGarageList(), FRAGMENT_GARAGE);
+                    }
                 } else {
-                    changeFragment(new FragmentCatalogGrid());
+                    if (checkVisibleFragment(FRAGMENT_CATALOG)) {
+                        changeFragment(new FragmentCatalogGrid(), FRAGMENT_CATALOG);
+                    } else {
+                        changeFragment(new FragmentGarageGrid(), FRAGMENT_GARAGE);
+                    }
                 }
             }
         });
@@ -253,6 +271,7 @@ public class MainActivity extends AppCompatActivity {
         mHandler = new Handler();
 
     }
+
 
     public void refresh(final ImageView iv, final Drawable icon) {
      /* Attach a rotating ImageView to the refresh item as an ActionView */
@@ -280,11 +299,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
-    public static Bitmap drawableToBitmap (Drawable drawable) {
+    public static Bitmap drawableToBitmap(Drawable drawable) {
         if (drawable instanceof BitmapDrawable) {
-            return ((BitmapDrawable)drawable).getBitmap();
+            return ((BitmapDrawable) drawable).getBitmap();
         }
 
         Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
@@ -375,7 +392,7 @@ public class MainActivity extends AppCompatActivity {
         }
         patternArgs.putString("FilterPattern", pattern);
         fragmentCatalogGrid.setArguments(patternArgs);
-        changeFragment(fragmentCatalogGrid);
+        changeFragment(fragmentCatalogGrid, FRAGMENT_CATALOG);
     }
 
     public ArrayList<Car> getFilteredData(String pattern, ArrayList<Car> dataforfilter) {
@@ -456,16 +473,19 @@ public class MainActivity extends AppCompatActivity {
         trans.commit();
     }
 
-    public void changeFragment(Fragment fragment) {
-        mHandler.post(new CommitFragmentRunnable(fragment));
+    public void changeFragment(Fragment fragment, String fragmentTag) {
+        mHandler.post(new CommitFragmentRunnable(fragment, fragmentTag));
     }
 
     private class CommitFragmentRunnable implements Runnable {
 
         private Fragment fragment;
+        private String fragmentTag;
 
-        public CommitFragmentRunnable(Fragment fragment) {
+        public CommitFragmentRunnable(Fragment fragment, String fragmentTag) {
+
             this.fragment = fragment;
+            this.fragmentTag = fragmentTag;
         }
 
         @Override
@@ -474,12 +494,22 @@ public class MainActivity extends AppCompatActivity {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 fragmentManager.beginTransaction()
-                        .replace(R.id.content_frame, fragment)
+                        .replace(R.id.content_frame, fragment, fragmentTag)
                         .commit();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    boolean checkVisibleFragment(String tag) {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            return false;
+        }
+        if (getSupportFragmentManager().findFragmentByTag(tag) != null && getSupportFragmentManager().findFragmentByTag(tag).isVisible()) {
+            return true;
+        }
+        return false;
     }
 
     @Override
