@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
+<!--
     <Button
         android:id="@+id/btnParse"
         android:layout_width="match_parent"
@@ -12,8 +12,10 @@
         android:background="@color/btn_bg_color"
         android:text="ExampleList"
         android:textColor="@color/btn_text_color" />
+-->
 
-    <ru.app.autocat.adapters.StickyGridHeadersGridView xmlns:android="http://schemas.android.com/apk/res/android"
+    <ru.app.autocat.adapters.StickyGridHeadersGridView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/asset_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,18 +25,5 @@
         android:numColumns="auto_fit"
         android:verticalSpacing="3dp"
         android:gravity="center"/>
-
-    <!--
-    <GridView
-        android:layout_margin="5dp"
-        android:id="@+id/gvMain"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:columnWidth="100dp"
-        android:verticalSpacing="6dp"
-        android:horizontalSpacing="6dp"
-        android:gravity="center">
-    </GridView>
-    -->
 
 </LinearLayout>

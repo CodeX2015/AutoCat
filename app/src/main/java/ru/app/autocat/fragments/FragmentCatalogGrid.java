@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,13 +35,13 @@ public class FragmentCatalogGrid extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gridview, container, false);
-        Button btnParse = (Button) view.findViewById(R.id.btnParse);
+        //Button btnParse = (Button) view.findViewById(R.id.btnParse);
         mGridView = (GridView) view.findViewById(R.id.asset_grid);
         //adapter = new ArrayAdapter<String>(getActivity(), R.layout.row_gridview, R.id.tvText, MainActivity.DATA);
         //mGridView.setAdapter(adapter);
         adjustGridView();
         parseXML();
-
+/**
         btnParse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,6 +55,7 @@ public class FragmentCatalogGrid extends Fragment {
                 }
             }
         });
+ */
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -85,17 +85,6 @@ public class FragmentCatalogGrid extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        /**
-                         if (getArguments() != null && getArguments().getString("FilterPattern","")!="") {
-                         mGridView.setAdapter(new MyListAdapter(((MainActivity) getActivity())
-                         .getFilteredData(getArguments().getString("FilterPattern", ""), (ArrayList<Car>) result)));
-                         } else {
-                         Toast.makeText(getActivity(),
-                         "OnParseComplete, cars = " + String.valueOf(((ArrayList<Car>) result).size()),
-                         Toast.LENGTH_LONG).show();
-                         mGridView.setAdapter(new MyListAdapter((ArrayList<Car>) result));
-                         }
-                         */
 
                         mGridView.setAdapter(new MyListAdapter(((MainActivity) getActivity()).getCarsDBG()));
                     }

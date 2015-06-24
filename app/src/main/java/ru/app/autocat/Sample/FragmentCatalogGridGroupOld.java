@@ -41,12 +41,12 @@ public class FragmentCatalogGridGroupOld extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gridview, container, false);
-        Button btnParse = (Button) view.findViewById(R.id.btnParse);
+        //Button btnParse = (Button) view.findViewById(R.id.btnParse);
         mGridView = (GridView) view.findViewById(R.id.asset_grid);
         seplisttest();
         adjustGridView();
 
-
+/**
         btnParse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,6 +56,7 @@ public class FragmentCatalogGridGroupOld extends Fragment {
                 ((MainActivity) getActivity()).changeFragmentBack(newFragment);
             }
         });
+ */
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

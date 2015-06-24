@@ -7,8 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -22,10 +22,10 @@ import ru.app.autocat.R;
 import ru.app.autocat.adapters.StickyGridHeadersSimpleArrayAdapter;
 
 /**
- * Created by CodeX on 23.06.2015.
+ * Created by CodeX on 18.06.2015.
  */
 
-public class FragmentCatalogGridGroup extends Fragment {
+public class FragmentGarageGridGroup extends Fragment {
     private GridView mGridView;
     ArrayList<Car> cars;
 
@@ -37,23 +37,15 @@ public class FragmentCatalogGridGroup extends Fragment {
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(final AdapterView<?> parent, View view, final int position, long id) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Bundle carsArgs = new Bundle();
+                Gson gson = new Gson();
+                String json = gson.toJson(cars.get(position));
+                carsArgs.putString("CarDetails", json);
 
-                        // create Bundle for fragment
-                        Bundle carsArgs = new Bundle();
-                        Gson gson = new Gson();
-                        String json = gson.toJson(cars.get(position));
-                        carsArgs.putString("CarDetails", json);
-
-                        // create fragment
-                        FragmentDetails fragmentDetails = new FragmentDetails();
-                        fragmentDetails.setArguments(carsArgs);
-                        ((MainActivity) getActivity()).changeFragmentBack(fragmentDetails);
-                    }
-                });
+                FragmentDetailsGarage fragmentDetailsGarage = new FragmentDetailsGarage();
+                fragmentDetailsGarage.setArguments(carsArgs);
+                ((MainActivity) getActivity()).changeFragmentBack(fragmentDetailsGarage);
             }
         });
 
@@ -62,9 +54,17 @@ public class FragmentCatalogGridGroup extends Fragment {
         return view;
     }
 
-    void SeparateByMark() {
+    private ArrayList<Car> loadData() {
+        ArrayList<Car> result = ((MainActivity) getActivity()).loadPref();
+        if (result == null) {
+            Toast.makeText(getActivity(), "No data", Toast.LENGTH_LONG).show();
+        }
+        return result;
+    }
+
+    void SeparateByMark () {
         // 1. Your data source
-        cars = ((MainActivity) getActivity()).getCarsDBG();
+        cars = loadData();
         if (cars != null) {
             // 2. Sort them using the Mark of the current car
             MarkComparator markComparator = new MarkComparator();
@@ -73,8 +73,8 @@ public class FragmentCatalogGridGroup extends Fragment {
             // 3. Set adapter
             mGridView.setAdapter(new StickyGridHeadersSimpleArrayAdapter<Car>(getActivity()
                     .getApplicationContext(), cars, R.layout.grid_header, R.layout.grid_data_item));
-
         }
+
     }
 
     private class MarkComparator implements Comparator<Car> {
@@ -83,5 +83,4 @@ public class FragmentCatalogGridGroup extends Fragment {
             return car1.getMark().compareTo(car2.getMark());
         }
     }
-
 }

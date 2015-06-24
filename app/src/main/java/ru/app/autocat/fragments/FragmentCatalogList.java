@@ -60,9 +60,6 @@ public class FragmentCatalogList extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getActivity(),
-                                "OnParseComplete, cars = " + String.valueOf(((ArrayList<Car>) result).size()),
-                                Toast.LENGTH_LONG).show();
                         SeparatedListAdapter adapter = new SeparatedListAdapter(getActivity());
                         adapter.addSection("All", new MyListAdapter((ArrayList<Car>) result));
 

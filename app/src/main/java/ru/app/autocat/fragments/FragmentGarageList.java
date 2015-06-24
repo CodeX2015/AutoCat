@@ -54,8 +54,8 @@ public class FragmentGarageList extends Fragment {
     private ArrayList<Car> loadData() {
         ArrayList<Car> result = ((MainActivity) getActivity()).loadPref();
         if (result != null) {
-            Toast.makeText(getActivity(),
-                    String.valueOf(((MainActivity) getActivity()).loadPref().size()), Toast.LENGTH_LONG).show();
+            //Toast.makeText(getActivity(),
+             //       String.valueOf(((MainActivity) getActivity()).loadPref().size()), Toast.LENGTH_LONG).show();
         }
         return result;
     }

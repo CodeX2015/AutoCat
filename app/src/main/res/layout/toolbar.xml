@@ -16,14 +16,14 @@
         android:gravity="right">
     <Spinner
         android:id="@+id/toolbar_spinner_cat"
-        style="@style/Widget.AppCompat.Spinner.DropDown.ActionBar"
+        style="@style/Widget.AppCompat.Spinner.DropDown"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:drawSelectorOnTop="true"
         android:popupBackground="@color/spn_popup_bg_color"
         android:layout_gravity="left"
         android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"/>
+        android:layout_marginLeft="20dp" />
 
     <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/iv_change_view"

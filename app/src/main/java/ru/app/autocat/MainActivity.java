@@ -40,11 +40,12 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import ru.app.autocat.fragments.FragmentCatalogGrid;
-import ru.app.autocat.fragments.FragmentCatalogList;
+import ru.app.autocat.fragments.FragmentCatalogGridGroup;
 import ru.app.autocat.fragments.FragmentCatalogListGroup;
-import ru.app.autocat.fragments.FragmentGarageGrid;
+import ru.app.autocat.fragments.FragmentGarageGridGroup;
 import ru.app.autocat.fragments.FragmentGarageList;
 import ru.app.autocat.fragments.FragmentReserve;
 import ru.app.autocat.helpers.XmlParserHelper;
@@ -68,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
 
     public final static String FRAGMENT_CATALOG = "fragment_catalog";
     public final static String FRAGMENT_GARAGE = "fragment_garage";
-
-    public static final String[] DATA = {"Все", "Audi", "BMW", "Ford", "Toyota"};
+    public final static String FRAGMENT_RESERVE = "fragment_reserve";
+    public ArrayList<String> mDATA = new ArrayList<String>();
 
     public void setCarsDBG(ArrayList<Car> carsDBG) {
         this.carsDBG = carsDBG;
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         parseXML();
+        mDATA.add("Все");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mTitle = mDrawerTitle = "";
         spnTBCat = (Spinner) findViewById(R.id.toolbar_spinner_cat);
@@ -111,24 +113,25 @@ public class MainActivity extends AppCompatActivity {
                 String fragmentTag = "";
                 switch (position) {
                     case 0:
+                        fragmentTag = FRAGMENT_CATALOG;
                         if (mListUserView) {
                             newFragment = new FragmentCatalogListGroup();
                         } else {
-                            newFragment = new FragmentCatalogGrid();
+                            newFragment = new FragmentCatalogGridGroup();
                         }
-                        fragmentTag = FRAGMENT_CATALOG;
                         Toast.makeText(getBaseContext(), "Catalog", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
+                        fragmentTag = FRAGMENT_GARAGE;
                         if (mListUserView) {
                             newFragment = new FragmentGarageList();
                         } else {
-                            newFragment = new FragmentGarageGrid();
+                            newFragment = new FragmentGarageGridGroup();
                         }
-                        fragmentTag = FRAGMENT_GARAGE;
                         Toast.makeText(getBaseContext(), "Garage", Toast.LENGTH_SHORT).show();
                         break;
                     case 2:
+                        fragmentTag = FRAGMENT_RESERVE;
                         newFragment = new FragmentReserve();
                         Toast.makeText(getBaseContext(), "Reserve", Toast.LENGTH_SHORT).show();
                         break;
@@ -146,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         ivChangeView = (ImageView) findViewById(R.id.iv_change_view);
-        //ToDo http://stackoverflow.com/questions/9731602/animated-icon-for-actionitem
         ivChangeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -155,18 +157,22 @@ public class MainActivity extends AppCompatActivity {
                     refresh(ivChangeView, getResources().getDrawable(R.drawable.ic_view_module_white_24dp));
                     Toast.makeText(MainActivity.this, "Changed to: List", Toast.LENGTH_SHORT).show();
                     if (checkVisibleFragment(FRAGMENT_CATALOG)) {
-                        changeFragment(new FragmentCatalogList(), FRAGMENT_CATALOG);
-                    } else {
+                        changeFragment(new FragmentCatalogListGroup(), FRAGMENT_CATALOG);
+                    } else if (checkVisibleFragment(FRAGMENT_GARAGE)) {
                         changeFragment(new FragmentGarageList(), FRAGMENT_GARAGE);
+                    } else {
+                        changeFragment(new FragmentReserve(), FRAGMENT_RESERVE);
                     }
                 } else {
                     mListUserView = false;
                     refresh(ivChangeView, getResources().getDrawable(R.drawable.ic_view_list_white_24dp));
                     Toast.makeText(MainActivity.this, "Changed to: Grid", Toast.LENGTH_SHORT).show();
                     if (checkVisibleFragment(FRAGMENT_CATALOG)) {
-                        changeFragment(new FragmentCatalogGrid(), FRAGMENT_CATALOG);
+                        changeFragment(new FragmentCatalogGridGroup(), FRAGMENT_CATALOG);
+                    } else if (checkVisibleFragment(FRAGMENT_GARAGE)) {
+                        changeFragment(new FragmentGarageGridGroup(), FRAGMENT_GARAGE);
                     } else {
-                        changeFragment(new FragmentGarageGrid(), FRAGMENT_GARAGE);
+                        changeFragment(new FragmentReserve(), FRAGMENT_RESERVE);
                     }
                 }
             }
@@ -187,7 +193,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                int m = v.getId();
                 String pattern = "";
                 switch (v.getId()) {
                     case R.id.btnDE:
@@ -211,10 +216,12 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //mDrawerLayout.closeDrawer(mDrawerLayoutMain);
                 setCarsDBG(getFilteredDataByCountry(pattern));
+                mDATA = setMarkListByCountry();
+                setAdapter();
                 if (mListUserView) {
-                    changeFragment(new FragmentCatalogList(), FRAGMENT_CATALOG);
+                    changeFragment(new FragmentCatalogGridGroup(), FRAGMENT_CATALOG);
                 } else {
-                    changeFragment(new FragmentCatalogGrid(), FRAGMENT_CATALOG);
+                    changeFragment(new FragmentCatalogGridGroup(), FRAGMENT_CATALOG);
                 }
             }
         };
@@ -240,15 +247,15 @@ public class MainActivity extends AppCompatActivity {
                 mDrawerLayout.closeDrawer(mDrawerLayoutMain);
                 if (mListUserView) {
                     if (checkVisibleFragment(FRAGMENT_CATALOG)) {
-                        changeFragment(new FragmentCatalogList(), FRAGMENT_CATALOG);
+                        changeFragment(new FragmentCatalogListGroup(), FRAGMENT_CATALOG);
                     } else {
                         changeFragment(new FragmentGarageList(), FRAGMENT_GARAGE);
                     }
                 } else {
                     if (checkVisibleFragment(FRAGMENT_CATALOG)) {
-                        changeFragment(new FragmentCatalogGrid(), FRAGMENT_CATALOG);
+                        changeFragment(new FragmentCatalogGridGroup(), FRAGMENT_CATALOG);
                     } else {
-                        changeFragment(new FragmentGarageGrid(), FRAGMENT_GARAGE);
+                        changeFragment(new FragmentGarageGridGroup(), FRAGMENT_GARAGE);
                     }
                 }
             }
@@ -272,6 +279,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private ArrayList<String> setMarkListByCountry() {
+        ArrayList<String> mArrayListMarks =new ArrayList<>();
+        ArrayList<Car> cars = getCarsDBG();
+        HashMap<String, String> marks = new HashMap<String, String>();
+        if (cars != null) {
+            for (Car car : cars) {
+                if (!marks.containsKey(car.getMark())){marks.put(car.getMark(),"");}
+            }
+            mArrayListMarks.addAll(marks.keySet());
+        }
+        mArrayListMarks.add(0, "Все");
+        return mArrayListMarks;
+    }
 
     public void refresh(final ImageView iv, final Drawable icon) {
      /* Attach a rotating ImageView to the refresh item as an ActionView */
@@ -295,9 +315,7 @@ public class MainActivity extends AppCompatActivity {
         rotation.setRepeatCount(Animation.ABSOLUTE);
         iv.startAnimation(rotation);
 
-        //TODO trigger loading
     }
-
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
         if (drawable instanceof BitmapDrawable) {
@@ -430,16 +448,17 @@ public class MainActivity extends AppCompatActivity {
             LinearLayout llRowDrawer;
         }
 
-        public String[] menu = DATA;
+        public ArrayList<String> menu = mDATA;
+
 
         @Override
         public int getCount() {
-            return menu.length;
+            return menu.size();
         }
 
         @Override
         public Object getItem(int i) {
-            return menu[i];
+            return menu.get(i);
         }
 
         @Override
@@ -459,7 +478,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 myRow = (MyRow) view.getTag();
             }
-            myRow.tvMenuItem.setText(menu[i]);
+            myRow.tvMenuItem.setText(menu.get(i));
             return view;
         }
     }
@@ -471,10 +490,12 @@ public class MainActivity extends AppCompatActivity {
         trans.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         trans.addToBackStack(null);
         trans.commit();
+        ivChangeView.setVisibility(View.INVISIBLE);
     }
 
     public void changeFragment(Fragment fragment, String fragmentTag) {
         mHandler.post(new CommitFragmentRunnable(fragment, fragmentTag));
+        ivChangeView.setVisibility(View.VISIBLE);
     }
 
     private class CommitFragmentRunnable implements Runnable {
@@ -503,11 +524,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     boolean checkVisibleFragment(String tag) {
-        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-            return false;
-        }
-        if (getSupportFragmentManager().findFragmentByTag(tag) != null && getSupportFragmentManager().findFragmentByTag(tag).isVisible()) {
-            return true;
+        Fragment myFragment = getSupportFragmentManager().findFragmentByTag(tag);
+        if (myFragment != null) {
+            boolean isVisible = myFragment.isVisible();
+            if (isVisible) {
+                return true;
+            }
         }
         return false;
     }
@@ -517,6 +539,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         if (fm.getBackStackEntryCount() > 0 && !mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             fm.popBackStack();
+            ivChangeView.setVisibility(View.VISIBLE);
         } else {
             mDrawerLayout.openDrawer(mDrawerLayoutMain);
             if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {

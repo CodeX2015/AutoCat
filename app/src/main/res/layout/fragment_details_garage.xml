@@ -113,7 +113,7 @@
                         android:text="-"
                         android:textColor="@color/btn_text_color"
                         android:textSize="@dimen/size_text_normal"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                     <Button
                         android:id="@+id/btn_plus_mt"
@@ -124,7 +124,7 @@
                         android:text="+"
                         android:textColor="@color/btn_text_color"
                         android:textSize="@dimen/size_text_normal"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -169,7 +169,7 @@
                         android:text="-"
                         android:textColor="@color/btn_text_color"
                         android:textSize="@dimen/size_text_normal"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                     <Button
                         android:id="@+id/btn_plus_at"
@@ -180,7 +180,7 @@
                         android:text="+"
                         android:textColor="@color/btn_text_color"
                         android:textSize="@dimen/size_text_normal"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -189,9 +189,11 @@
 
         <Button
             android:id="@+id/btn_remove_car"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="20dp"
             android:background="@color/btn_bg_color"
             android:text="Remove Car"

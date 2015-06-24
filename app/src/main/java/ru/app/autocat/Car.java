@@ -3,10 +3,8 @@ package ru.app.autocat;
 import java.io.Serializable;
 
 
-//Todo Сохранение\загрузка кол-ва коробок,
-
 /**
- * Created by Yakovlev on 19.06.2015.
+ * Created by CodeX on 19.06.2015.
  */
 public class Car implements Serializable {
     private String id;
