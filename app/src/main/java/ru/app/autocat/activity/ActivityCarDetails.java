@@ -35,6 +35,7 @@ public class ActivityCarDetails extends AppCompatActivity {
     ImageView mCarPic;
     Button mSaveBtn;
     Car carDetails;
+    TextView mTbTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +51,7 @@ public class ActivityCarDetails extends AppCompatActivity {
                 onBackPressed();
             }
         });
-
+        mTbTitle = (TextView) findViewById(R.id.tb_title);
         mModel = (TextView) findViewById(R.id.tvModel);
         mCarPic = (ImageView) findViewById(R.id.ivCarPic);
         mDescription = (TextView) findViewById(R.id.tvDescripion);
@@ -113,7 +114,7 @@ public class ActivityCarDetails extends AppCompatActivity {
             }
         });
         if (carDetails != null) {
-
+            mTbTitle.setText(carDetails.getMark());
             mModel.setText(carDetails.getModel());
             mDescription.setText(carDetails.getTitle());
             mCreated.setText(carDetails.getCreated());
