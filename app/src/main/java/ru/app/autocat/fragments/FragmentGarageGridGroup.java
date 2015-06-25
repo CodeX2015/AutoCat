@@ -1,5 +1,6 @@
 package ru.app.autocat.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,8 @@ import java.util.Comparator;
 import ru.app.autocat.Car;
 import ru.app.autocat.MainActivity;
 import ru.app.autocat.R;
+import ru.app.autocat.Utils;
+import ru.app.autocat.activity.ActivityCarDetails;
 import ru.app.autocat.adapters.StickyGridHeadersSimpleArrayAdapter;
 
 /**
@@ -38,14 +41,22 @@ public class FragmentGarageGridGroup extends Fragment {
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Bundle carsArgs = new Bundle();
+
                 Gson gson = new Gson();
                 String json = gson.toJson(cars.get(position));
+
+                Intent myIntent = new Intent(getActivity(), ActivityCarDetails.class);
+                myIntent.putExtra("CarDetails", json);
+                getActivity().startActivityForResult(myIntent, 1);
+
+/**
+                Bundle carsArgs = new Bundle();
                 carsArgs.putString("CarDetails", json);
 
                 FragmentDetailsGarage fragmentDetailsGarage = new FragmentDetailsGarage();
                 fragmentDetailsGarage.setArguments(carsArgs);
                 ((MainActivity) getActivity()).changeFragmentBack(fragmentDetailsGarage);
+ */
             }
         });
 
@@ -54,8 +65,20 @@ public class FragmentGarageGridGroup extends Fragment {
         return view;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        SeparateByMark();
+    }
+
     private ArrayList<Car> loadData() {
+        /**
         ArrayList<Car> result = ((MainActivity) getActivity()).loadPref();
+        if (result == null) {
+            Toast.makeText(getActivity(), "No data", Toast.LENGTH_LONG).show();
+        }
+         */
+
+        ArrayList<Car> result = Utils.loadData(getActivity());
         if (result == null) {
             Toast.makeText(getActivity(), "No data", Toast.LENGTH_LONG).show();
         }

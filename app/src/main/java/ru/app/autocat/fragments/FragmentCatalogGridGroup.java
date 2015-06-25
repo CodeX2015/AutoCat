@@ -1,5 +1,6 @@
 package ru.app.autocat.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,8 @@ import java.util.Comparator;
 import ru.app.autocat.Car;
 import ru.app.autocat.MainActivity;
 import ru.app.autocat.R;
+import ru.app.autocat.Utils;
+import ru.app.autocat.activity.ActivityCarDetails;
 import ru.app.autocat.adapters.StickyGridHeadersSimpleArrayAdapter;
 
 /**
@@ -41,30 +44,34 @@ public class FragmentCatalogGridGroup extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
-                        // create Bundle for fragment
-                        Bundle carsArgs = new Bundle();
+                        //convert object to string
                         Gson gson = new Gson();
                         String json = gson.toJson(cars.get(position));
-                        carsArgs.putString("CarDetails", json);
+
+                        Intent myIntent = new Intent(getActivity(), ActivityCarDetails.class);
+                        myIntent.putExtra("CarDetails", json);
+                        getActivity().startActivity(myIntent);
+
+                        // create Bundle for fragment
+                        //Bundle carsArgs = new Bundle();
+                        //carsArgs.putString("CarDetails", json);
 
                         // create fragment
-                        FragmentDetails fragmentDetails = new FragmentDetails();
-                        fragmentDetails.setArguments(carsArgs);
-                        ((MainActivity) getActivity()).changeFragmentBack(fragmentDetails);
+                        //FragmentDetails fragmentDetails = new FragmentDetails();
+                        //fragmentDetails.setArguments(carsArgs);
+                        //((MainActivity) getActivity()).changeFragmentBack(fragmentDetails);
                     }
                 });
             }
         });
 
         SeparateByMark();
-
         return view;
     }
 
     void SeparateByMark() {
         // 1. Your data source
-        cars = ((MainActivity) getActivity()).getCarsDBG();
+        cars = Utils.hashById(((MainActivity) getActivity()).getCarsDBG());
         if (cars != null) {
             // 2. Sort them using the Mark of the current car
             MarkComparator markComparator = new MarkComparator();

@@ -1,5 +1,6 @@
 package ru.app.autocat.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +23,8 @@ import java.util.Comparator;
 import ru.app.autocat.Car;
 import ru.app.autocat.MainActivity;
 import ru.app.autocat.R;
+import ru.app.autocat.Utils;
+import ru.app.autocat.activity.ActivityCarDetails;
 import ru.app.autocat.adapters.Sectionizer;
 import ru.app.autocat.adapters.SimpleSectionAdapter;
 
@@ -30,36 +34,60 @@ import ru.app.autocat.adapters.SimpleSectionAdapter;
 
 public class FragmentCatalogListGroup extends Fragment {
 
+    ArrayList<Car> cars;
+    ListView mListView;
 
-        ListView mListView;
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_listview, container, false);
+        mListView = (ListView) view.findViewById(R.id.lvMain);
+        separateList();
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //convert object to string
+                Gson gson = new Gson();
+                String json = gson.toJson(cars.get(position));
 
-        @Nullable
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.fragment_listview, container, false);
-            mListView = (ListView) view.findViewById(R.id.lvMain);
-            seplisttest();
-            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    FragmentDetails fragmentDetails = new FragmentDetails();
-                    Bundle carsArgs = new Bundle();
-                    Gson gson = new Gson();
-                    String json = gson.toJson(parent.getAdapter().getItem(position));
-                    carsArgs.putString("CarDetails", json);
-                    fragmentDetails.setArguments(carsArgs);
-                    ((MainActivity) getActivity()).changeFragmentBack(fragmentDetails);
-                }
-            });
-
-            return view;
-        }
+                Intent myIntent = new Intent(getActivity(), ActivityCarDetails.class);
+                myIntent.putExtra("CarDetails", json);
+                getActivity().startActivity(myIntent);
 
 
-    void seplisttest () {
-        // 1. Your data source
+                /**
+                 Bundle carsArgs = new Bundle();
+                 carsArgs.putString("CarDetails", json);
+                 FragmentDetails fragmentDetails = new FragmentDetails();
+                 fragmentDetails.setArguments(carsArgs);
+                 ((MainActivity) getActivity()).changeFragmentBack(fragmentDetails);
+                 */
+            }
+        });
+
+        return view;
+    }
+
+
+    private ArrayList<Car> getData() {
         ArrayList<Car> cars = ((MainActivity) getActivity()).getCarsDBG();
+        if (cars != null) {
+            ArrayList<Car> carsLoad = Utils.compareData(getActivity(), cars);
+            if (carsLoad != null) {
+                return carsLoad;
+            }
+            return cars;
+        } else {
+            return null;
+        }
+    }
 
+    void separateList() {
+        // 1. Your data source
+        ArrayList<Car> cars = getData();
+        if (cars == null) {
+            return;
+        }
         // 2. Sort them using the distance from the current city
         Car all = new Car("Все");
         MarkComparator markComparator = new MarkComparator();
@@ -88,24 +116,7 @@ public class FragmentCatalogListGroup extends Fragment {
 
         @Override
         public String getSectionTitleForItem(Car car) {
-            String sectionTitle = "Unknown";
-
-            String mark = car.getMark();
-            switch (mark) {
-                case "Audi":
-                    sectionTitle = mark;
-                    break;
-                case "BMW":
-                    sectionTitle = mark;
-                    break;
-                case "Toyota":
-                    sectionTitle = mark;
-                    break;
-                case "Ford":
-                    sectionTitle = mark;
-                    break;
-            }
-            return sectionTitle;
+            return car.getMark();
         }
     }
 
@@ -137,15 +148,13 @@ public class FragmentCatalogListGroup extends Fragment {
             if (convertView == null) {
                 myRow = new MyRow();
                 convertView = getActivity().getLayoutInflater().inflate(R.layout.row_listview, parent, false);
+                myRow.ivCarPic = (ImageView) convertView.findViewById(R.id.ivCarPic);
                 myRow.tvModel = (TextView) convertView.findViewById(R.id.tvModel);
                 myRow.tvCreate = (TextView) convertView.findViewById(R.id.tv_create);
-                myRow.tvMT = (TextView) convertView.findViewById(R.id.tv_mt);
-                myRow.tvAT = (TextView) convertView.findViewById(R.id.tv_at);
                 myRow.tvMT = (TextView) convertView.findViewById(R.id.tv_mt_header);
                 myRow.tvAT = (TextView) convertView.findViewById(R.id.tv_at_header);
                 myRow.tvAmountMT = (TextView) convertView.findViewById(R.id.tv_mt);
                 myRow.tvAmountAT = (TextView) convertView.findViewById(R.id.tv_at);
-                myRow.ivCarPic = (ImageView) convertView.findViewById(R.id.ivCarPic);
                 convertView.setTag(myRow);
             } else {
                 myRow = (MyRow) convertView.getTag();

@@ -25,15 +25,15 @@
             android:visibility="gone"/>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/str_car_details"
             android:gravity="center"
             android:textSize="18sp"
             android:textColor="@android:color/white"
-            android:layout_weight="1"
-            android:paddingBottom="2dp"/>
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1" />
 
         <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/iv_change_view"

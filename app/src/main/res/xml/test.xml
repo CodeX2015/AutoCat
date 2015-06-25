@@ -100,10 +100,10 @@
         <country>Япония</country>
     </car>
     <car>
-        <id>Nissan-Camry</id>
+        <id>Toyota-Camry</id>
         <model>Camry</model>
         <title>Toyota - управляй мечтой</title>
-        <mark>Nissan</mark>
+        <mark>Toyota</mark>
         <imageName1>Toyota-Camry-1.jpg</imageName1>
         <created>2013</created>
         <kpp>механика и автомат</kpp>
@@ -120,10 +120,10 @@
         <country>Япония</country>
     </car>
     <car>
-        <id>Nissan-Camry</id>
+        <id>Toyota-Camry</id>
         <model>Camry</model>
         <title>Toyota - управляй мечтой</title>
-        <mark>Nissan</mark>
+        <mark>Toyota</mark>
         <imageName1>Toyota-Camry-1.jpg</imageName1>
         <created>2013</created>
         <kpp>механика и автомат</kpp>

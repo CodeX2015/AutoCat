@@ -46,11 +46,13 @@ import ru.app.autocat.fragments.FragmentCatalogGrid;
 import ru.app.autocat.fragments.FragmentCatalogGridGroup;
 import ru.app.autocat.fragments.FragmentCatalogListGroup;
 import ru.app.autocat.fragments.FragmentGarageGridGroup;
-import ru.app.autocat.fragments.FragmentGarageList;
+import ru.app.autocat.fragments.FragmentGarageListGroup;
 import ru.app.autocat.fragments.FragmentReserve;
 import ru.app.autocat.helpers.XmlParserHelper;
 
 public class MainActivity extends AppCompatActivity {
+    Drawable mPressed;
+    Drawable mUnPressed;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mTitle;
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     public final static String FRAGMENT_CATALOG = "fragment_catalog";
     public final static String FRAGMENT_GARAGE = "fragment_garage";
     public final static String FRAGMENT_RESERVE = "fragment_reserve";
+
     public ArrayList<String> mDATA = new ArrayList<String>();
 
     public void setCarsDBG(ArrayList<Car> carsDBG) {
@@ -100,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         spnTBCat = (Spinner) findViewById(R.id.toolbar_spinner_cat);
 
         ArrayAdapter<String> SpinnerAdapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, new String[]{"Каталог", "Гараж", "Резерв"});
+                new ArrayAdapter<String>(this, R.layout.spinner_item, new String[]{"Каталог", "Гараж", "Резерв"});
         SpinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spnTBCat.setAdapter(SpinnerAdapter);
         spnTBCat.setVisibility(View.VISIBLE);
@@ -124,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                     case 1:
                         fragmentTag = FRAGMENT_GARAGE;
                         if (mListUserView) {
-                            newFragment = new FragmentGarageList();
+                            newFragment = new FragmentGarageListGroup();
                         } else {
                             newFragment = new FragmentGarageGridGroup();
                         }
@@ -159,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
                     if (checkVisibleFragment(FRAGMENT_CATALOG)) {
                         changeFragment(new FragmentCatalogListGroup(), FRAGMENT_CATALOG);
                     } else if (checkVisibleFragment(FRAGMENT_GARAGE)) {
-                        changeFragment(new FragmentGarageList(), FRAGMENT_GARAGE);
+                        changeFragment(new FragmentGarageListGroup(), FRAGMENT_GARAGE);
                     } else {
                         changeFragment(new FragmentReserve(), FRAGMENT_RESERVE);
                     }
@@ -194,8 +197,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String pattern = "";
-                Drawable mPressed = getResources().getDrawable(R.drawable.btn_bg_color_pressed);
-                Drawable mUnPressed = getResources().getDrawable(R.drawable.btn_bg_color);
+                mPressed = getResources().getDrawable(R.drawable.btn_bg_color_pressed);
+                mUnPressed = getResources().getDrawable(R.drawable.btn_bg_color);
                 switch (v.getId()) {
                     case R.id.btnDE:
                         pattern = "Германия";
@@ -218,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //mDrawerLayout.closeDrawer(mDrawerLayoutMain);
                 setCarsDBG(getFilteredDataByCountry(pattern));
-                mDATA = setMarkListByCountry();
+                mDATA = getMarkListByCountry();
                 setAdapter();
                 if (mListUserView) {
                     changeFragment(new FragmentCatalogGridGroup(), FRAGMENT_CATALOG);
@@ -243,6 +246,9 @@ public class MainActivity extends AppCompatActivity {
                             getFilteredData(
                                     parent.getAdapter().getItem(position).toString(), getCarsDB()));
                 } else {
+                    mDrawerBtnDe.setBackgroundDrawable(mUnPressed);
+                    mDrawerBtnUs.setBackgroundDrawable(mUnPressed);
+                    mDrawerBtnJp.setBackgroundDrawable(mUnPressed);
                     setCarsDBG(getCarsDB());
                 }
                 mDrawerList.setItemChecked(position, true);
@@ -251,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
                     if (checkVisibleFragment(FRAGMENT_CATALOG)) {
                         changeFragment(new FragmentCatalogListGroup(), FRAGMENT_CATALOG);
                     } else {
-                        changeFragment(new FragmentGarageList(), FRAGMENT_GARAGE);
+                        changeFragment(new FragmentGarageListGroup(), FRAGMENT_GARAGE);
                     }
                 } else {
                     if (checkVisibleFragment(FRAGMENT_CATALOG)) {
@@ -283,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private ArrayList<String> setMarkListByCountry() {
+    private ArrayList<String> getMarkListByCountry() {
         ArrayList<String> mArrayListMarks =new ArrayList<>();
         ArrayList<Car> cars = getCarsDBG();
         HashMap<String, String> marks = new HashMap<String, String>();

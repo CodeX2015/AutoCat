@@ -56,6 +56,7 @@ public class ActivityCarDetails extends AppCompatActivity {
         mDescription = (TextView) findViewById(R.id.tvDescripion);
         mCreated = (TextView) findViewById(R.id.tv_create);
         mSaveBtn = (Button) findViewById(R.id.btn_save_car);
+        mSaveBtn.setVisibility(View.INVISIBLE);
         mMinusBtnMT = (Button) findViewById(R.id.btn_minus_mt);
         mPlusBtnMT = (Button) findViewById(R.id.btn_plus_mt);
         mAmountMT = (TextView) findViewById((R.id.tvAmount_mt));
@@ -65,7 +66,7 @@ public class ActivityCarDetails extends AppCompatActivity {
         mAmountAT = (TextView) findViewById((R.id.tvAmount_at));
         mKppAT = (TextView) findViewById(R.id.tv_at);
 
-        //carDetails = getData();
+        carDetails = getData();
 
         mMinusBtnMT.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +106,9 @@ public class ActivityCarDetails extends AppCompatActivity {
                 carDetails.setAmountKppMt(Integer.parseInt(mAmountMT.getText().toString()));
                 carDetails.setAmountKppAt(Integer.parseInt(mAmountAT.getText().toString()));
                 //MainActivity.savePref(carDetails);
+
+                Utils.saveData(ActivityCarDetails.this, carDetails);
+
                 Toast.makeText(ActivityCarDetails.this, "Save car in garage", Toast.LENGTH_LONG).show();
             }
         });
@@ -144,12 +148,43 @@ public class ActivityCarDetails extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private Car getData() {
+        if (getIntent() != null) {
+            Gson gson = new Gson();
+            String json = getIntent().getExtras().getString("CarDetails");
+            Car carDetails = gson.fromJson(json, new TypeToken<Car>() {
+            }.getType());
+            if (Utils.loadItem(ActivityCarDetails.this, carDetails) != null) {
+                Utils.loadItem(ActivityCarDetails.this, carDetails);
+            }
+            return carDetails;
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         Toast.makeText(this, "BackArrowPressed", Toast.LENGTH_LONG).show();
-
+        if (Integer.parseInt(mAmountMT.getText().toString()) > 0
+                | Integer.parseInt(mAmountAT.getText().toString()) > 0) {
+            saveData();
+        } else {
+            deleteItem();
+        }
         //todo save data to preferenses
 
+    }
+
+    private void deleteItem() {
+        Utils.deleteItem(ActivityCarDetails.this, carDetails);
+    }
+
+    private void saveData() {
+        carDetails.setAmountKppMt(Integer.parseInt(mAmountMT.getText().toString()));
+        carDetails.setAmountKppAt(Integer.parseInt(mAmountAT.getText().toString()));
+        Utils.saveData(ActivityCarDetails.this, carDetails);
+        Toast.makeText(ActivityCarDetails.this, "Save car in garage", Toast.LENGTH_LONG).show();
     }
 }
