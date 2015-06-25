@@ -348,8 +348,8 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        setCarsDB((ArrayList<Car>) result);
-                        setCarsDBG(getCarsDB());
+                        //setCarsDB((ArrayList<Car>) result);
+                        //setCarsDBG(getCarsDB());
 
                         Utils.setCarsDBOrig((ArrayList<Car>) result);
                     }
