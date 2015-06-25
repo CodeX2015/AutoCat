@@ -1,4 +1,4 @@
-package ru.app.autocat.Sample;
+package ru.app.autocat.samples;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,7 +23,6 @@ import ru.app.autocat.MainActivity;
 import ru.app.autocat.R;
 import ru.app.autocat.adapters.Sectionizer;
 import ru.app.autocat.adapters.SimpleSectionAdapter;
-import ru.app.autocat.fragments.FragmentCatalogListGroup;
 import ru.app.autocat.fragments.FragmentDetails;
 
 /**

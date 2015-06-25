@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
         parseXML();
         mDATA.add("Все");
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_new);
         mTitle = mDrawerTitle = "";
         spnTBCat = (Spinner) findViewById(R.id.toolbar_spinner_cat);
 
@@ -194,24 +194,26 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String pattern = "";
+                Drawable mPressed = getResources().getDrawable(R.drawable.btn_bg_color_pressed);
+                Drawable mUnPressed = getResources().getDrawable(R.drawable.btn_bg_color);
                 switch (v.getId()) {
                     case R.id.btnDE:
                         pattern = "Германия";
-                        mDrawerBtnDe.setBackground(getResources().getDrawable(R.drawable.btn_bg_color_pressed));
-                        mDrawerBtnUs.setBackground(getResources().getDrawable(R.drawable.btn_bg_color));
-                        mDrawerBtnJp.setBackground(getResources().getDrawable(R.drawable.btn_bg_color));
+                        mDrawerBtnDe.setBackgroundDrawable(mPressed);
+                        mDrawerBtnUs.setBackgroundDrawable(mUnPressed);
+                        mDrawerBtnJp.setBackgroundDrawable(mUnPressed);
                         break;
                     case R.id.btnUS:
                         pattern = "США";
-                        mDrawerBtnDe.setBackground(getResources().getDrawable(R.drawable.btn_bg_color));
-                        mDrawerBtnUs.setBackground(getResources().getDrawable(R.drawable.btn_bg_color_pressed));
-                        mDrawerBtnJp.setBackground(getResources().getDrawable(R.drawable.btn_bg_color));
+                        mDrawerBtnDe.setBackgroundDrawable(mUnPressed);
+                        mDrawerBtnUs.setBackgroundDrawable(mPressed);
+                        mDrawerBtnJp.setBackgroundDrawable(mUnPressed);
                         break;
                     case R.id.btnJP:
                         pattern = "Япония";
-                        mDrawerBtnDe.setBackground(getResources().getDrawable(R.drawable.btn_bg_color));
-                        mDrawerBtnUs.setBackground(getResources().getDrawable(R.drawable.btn_bg_color));
-                        mDrawerBtnJp.setBackground(getResources().getDrawable(R.drawable.btn_bg_color_pressed));
+                        mDrawerBtnDe.setBackgroundDrawable(mUnPressed);
+                        mDrawerBtnUs.setBackgroundDrawable(mUnPressed);
+                        mDrawerBtnJp.setBackgroundDrawable(mPressed);
                         break;
                 }
                 //mDrawerLayout.closeDrawer(mDrawerLayoutMain);
@@ -265,12 +267,14 @@ public class MainActivity extends AppCompatActivity {
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close) {
             public void onDrawerClosed(View view) {
+                spnTBCat.setVisibility(View.VISIBLE);
                 getSupportActionBar().setTitle(mTitle);
                 invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
-                getSupportActionBar().setTitle(mDrawerTitle);
+                spnTBCat.setVisibility(View.INVISIBLE);
+                getSupportActionBar().setTitle(getString(R.string.app_name));
                 invalidateOptionsMenu();
             }
         };
@@ -532,6 +536,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+
+    @Override
+    public void setTitle(CharSequence title) {
+        mTitle = title;
+        getSupportActionBar().setTitle(mTitle);
     }
 
     @Override

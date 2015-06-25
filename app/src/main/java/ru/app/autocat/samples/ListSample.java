@@ -1,4 +1,4 @@
-package ru.app.autocat.Sample;
+package ru.app.autocat.samples;
 
 import android.app.Activity;
 import android.os.Bundle;
