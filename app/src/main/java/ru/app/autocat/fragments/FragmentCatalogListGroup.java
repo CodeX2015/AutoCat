@@ -34,8 +34,8 @@ import ru.app.autocat.adapters.SimpleSectionAdapter;
 
 public class FragmentCatalogListGroup extends Fragment {
 
-    ArrayList<Car> cars;
-    ListView mListView;
+    private ArrayList<Car> cars;
+    private ListView mListView;
 
     @Nullable
     @Override

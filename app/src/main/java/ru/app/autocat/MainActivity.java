@@ -350,6 +350,8 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         setCarsDB((ArrayList<Car>) result);
                         setCarsDBG(getCarsDB());
+
+                        Utils.setCarsDBOrig((ArrayList<Car>) result);
                     }
                 });
             }

@@ -1,5 +1,6 @@
 package ru.app.autocat.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,30 +21,44 @@ import java.util.ArrayList;
 import ru.app.autocat.Car;
 import ru.app.autocat.MainActivity;
 import ru.app.autocat.R;
+import ru.app.autocat.Utils;
+import ru.app.autocat.activity.ActivityCarDetails;
 
 /**
  * Created by CodeX on 18.06.2015.
  */
 public class FragmentGarageListGroup extends Fragment {
     private ListView mListView;
+    private ArrayList<Car> cars;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_listview, container, false);
         mListView = (ListView) view.findViewById(R.id.lvMain);
-        if (loadData() != null){mListView.setAdapter(new MyListAdapter(loadData()));}
+        if (loadData() != null) {
+            mListView.setAdapter(new MyListAdapter(loadData()));
+        }
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FragmentDetailsGarage fragmentDetailsGarage = new FragmentDetailsGarage();
-                Bundle carsArgs = new Bundle();
+
+
                 Gson gson = new Gson();
-                String json = gson.toJson(((MyListAdapter) parent.getAdapter()).getItem(position));
+                String json = gson.toJson(cars.get(position));
+
+                Intent myIntent = new Intent(getActivity(), ActivityCarDetails.class);
+                myIntent.putExtra("CarDetails", json);
+                getActivity().startActivityForResult(myIntent, 1);
+
+                /**
+                Bundle carsArgs = new Bundle();
                 carsArgs.putString("CarDetails", json);
+                FragmentDetailsGarage fragmentDetailsGarage = new FragmentDetailsGarage();
                 fragmentDetailsGarage.setArguments(carsArgs);
                 ((MainActivity) getActivity()).changeFragmentBack(fragmentDetailsGarage);
+                */
             }
         });
 
@@ -52,10 +67,11 @@ public class FragmentGarageListGroup extends Fragment {
 
 
     private ArrayList<Car> loadData() {
-        ArrayList<Car> result = ((MainActivity) getActivity()).loadPref();
-        if (result != null) {
-            //Toast.makeText(getActivity(),
-             //       String.valueOf(((MainActivity) getActivity()).loadPref().size()), Toast.LENGTH_LONG).show();
+        //ArrayList<Car> result = ((MainActivity) getActivity()).loadPref();
+
+        ArrayList<Car> result = Utils.loadData(getActivity());
+        if (result == null) {
+            Toast.makeText(getActivity(), "No data", Toast.LENGTH_LONG).show();
         }
         return result;
     }

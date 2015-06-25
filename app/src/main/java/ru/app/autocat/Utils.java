@@ -20,6 +20,25 @@ public class Utils {
     private static ExecutorService mExecService = Executors.newCachedThreadPool();
     private Context context;
     static SharedPreferences mPrefs = null;
+    public static ArrayList<Car> carsDBOrig;
+    public static ArrayList<Car> carsDBFiltered;
+
+    public static void setCarsDBOrig(ArrayList<Car> cars) {
+        carsDBOrig = cars;
+    }
+
+    public ArrayList<Car> getCarsDBOrig() {
+        return carsDBOrig;
+    }
+
+    public static void setCarsDBFiltered(ArrayList<Car> cars) {
+        carsDBFiltered = cars;
+    }
+
+    public ArrayList<Car> getCarsDBFiltered() {
+        if (carsDBFiltered == null){return carsDBOrig;}
+        return carsDBFiltered;
+    }
 
     public Context getContext() {
         return context;

@@ -30,7 +30,7 @@ import ru.app.autocat.adapters.StickyGridHeadersSimpleArrayAdapter;
 
 public class FragmentCatalogGridGroup extends Fragment {
     private GridView mGridView;
-    ArrayList<Car> cars;
+    private ArrayList<Car> cars;
 
     @Nullable
     @Override
