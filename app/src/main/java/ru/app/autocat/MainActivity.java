@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                String pattern = "";
+                String pattern = "Все";
                 mPressed = getResources().getDrawable(R.drawable.btn_bg_color_pressed);
                 mUnPressed = getResources().getDrawable(R.drawable.btn_bg_color);
                 switch (v.getId()) {
@@ -242,14 +242,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (!parent.getAdapter().getItem(position).toString().equalsIgnoreCase("Все")) {
-                    setCarsDBG(
-                            getFilteredData(
-                                    parent.getAdapter().getItem(position).toString(), getCarsDB()));
+                    Utils.setCarsDBFiltered(
+                            getFilteredDataByMark(
+                                    parent.getAdapter().getItem(position).toString(), Utils.getCarsDBOrig()));
                 } else {
                     mDrawerBtnDe.setBackgroundDrawable(mUnPressed);
                     mDrawerBtnUs.setBackgroundDrawable(mUnPressed);
                     mDrawerBtnJp.setBackgroundDrawable(mUnPressed);
-                    setCarsDBG(getCarsDB());
+                    Utils.setCarsDBFiltered(Utils.getCarsDBOrig());
                 }
                 mDrawerList.setItemChecked(position, true);
                 mDrawerLayout.closeDrawer(mDrawerLayoutMain);
@@ -425,7 +425,7 @@ public class MainActivity extends AppCompatActivity {
 //        changeFragment(fragmentCatalogGrid, FRAGMENT_CATALOG);
 //    }
 
-    public ArrayList<Car> getFilteredData(String pattern, ArrayList<Car> dataforfilter) {
+    public ArrayList<Car> getFilteredDataByMark(String pattern, ArrayList<Car> dataforfilter) {
         ArrayList<Car> filteredData = new ArrayList<Car>();
         if (dataforfilter != null) {
             for (Car car : dataforfilter) {

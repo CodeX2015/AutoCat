@@ -137,7 +137,7 @@ public class FragmentCatalogListGroup extends Fragment {
     }
 
     private ArrayList<Car> getData() {
-        ArrayList<Car> cars = Utils.getCarsDBOrig();
+        ArrayList<Car> cars = Utils.getCarsDBFiltered();
         if (cars != null) {
             ArrayList<Car> carsLoad = Utils.compareData(getActivity(), cars);
             if (carsLoad != null) {

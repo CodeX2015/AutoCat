@@ -10,11 +10,51 @@
         <country>Германия</country>
     </car>
     <car>
+        <id>audi-q5</id>
+        <model>Q5</model>
+        <title>Россия – территория quattro</title>
+        <mark>Audi</mark>
+        <imageName1>audi-q5-1.jpg</imageName1>
+        <created>2011</created>
+        <kpp>механика и автомат</kpp>
+        <country>Германия</country>
+    </car>
+    <car>
         <id>audi-q6</id>
         <model>Q6</model>
         <title>Россия – территория quattro</title>
         <mark>Audi</mark>
         <imageName1>audi-q6-1.jpg</imageName1>
+        <created>2011</created>
+        <kpp>механика и автомат</kpp>
+        <country>Германия</country>
+    </car>
+    <car>
+        <id>audi-A5</id>
+        <model>A5</model>
+        <title>Россия – территория quattro</title>
+        <mark>Audi</mark>
+        <imageName1>audi-A5-1.jpg</imageName1>
+        <created>2011</created>
+        <kpp>механика и автомат</kpp>
+        <country>Германия</country>
+    </car>
+    <car>
+        <id>audi-A3</id>
+        <model>A3</model>
+        <title>Россия – территория quattro</title>
+        <mark>Audi</mark>
+        <imageName1>audi-A3-1.jpg</imageName1>
+        <created>2011</created>
+        <kpp>механика и автомат</kpp>
+        <country>Германия</country>
+    </car>
+    <car>
+        <id>audi-A6</id>
+        <model>A6</model>
+        <title>Россия – территория quattro</title>
+        <mark>Audi</mark>
+        <imageName1>audi-A6-1.jpg</imageName1>
         <created>2011</created>
         <kpp>механика и автомат</kpp>
         <country>Германия</country>
@@ -70,11 +110,11 @@
         <country>США</country>
     </car>
     <car>
-        <id>audi-q3</id>
-        <model>Q3</model>
-        <title>Россия – территория quattro</title>
-        <mark>Audi</mark>
-        <imageName1>audi-q3-1.jpg</imageName1>
+        <id>Mercedes-CLK</id>
+        <model>CLK</model>
+        <title>merin</title>
+        <mark>Mercedes</mark>
+        <imageName1>Mercedes-q3-1.jpg</imageName1>
         <created>2011</created>
         <kpp>механика и робот</kpp>
         <country>Германия</country>

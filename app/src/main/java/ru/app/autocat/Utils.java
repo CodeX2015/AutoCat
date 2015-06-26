@@ -19,9 +19,10 @@ import ru.app.autocat.activity.ActivityCarDetails;
 public class Utils {
     private static ExecutorService mExecService = Executors.newCachedThreadPool();
     private Context context;
-    static SharedPreferences mPrefs = null;
-    public static ArrayList<Car> carsDBOrig;
-    public static ArrayList<Car> carsDBFiltered;
+    private static SharedPreferences mPrefs = null;
+    private static ArrayList<Car> carsDBOrig;
+    private static ArrayList<Car> carsDBFiltered;
+    private String mCarMarkFilter = "Все"; //
 
     public static void setCarsDBOrig(ArrayList<Car> cars) {
         carsDBOrig = cars;
@@ -35,8 +36,8 @@ public class Utils {
         carsDBFiltered = cars;
     }
 
-    public ArrayList<Car> getCarsDBFiltered() {
-        if (carsDBFiltered == null){return carsDBOrig;}
+    public static ArrayList<Car> getCarsDBFiltered() {
+        if (carsDBFiltered == null){return getCarsDBOrig();}
         return carsDBFiltered;
     }
 
@@ -193,5 +194,19 @@ public class Utils {
             }
         }
         return filteredData;
+    }
+
+    public static ArrayList<Car> getFilteredDataByMark(String pattern) {
+        ArrayList<Car> filteredData = new ArrayList<Car>();
+        if (getCarsDBOrig() != null) {
+            for (Car car : getCarsDBOrig()) {
+                if (car.getMark().equalsIgnoreCase(pattern)) {
+                    filteredData.add(car);
+                }
+            }
+            return filteredData;
+        } else {
+            return null;
+        }
     }
 }
