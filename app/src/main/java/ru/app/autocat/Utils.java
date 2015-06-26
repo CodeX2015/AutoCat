@@ -184,4 +184,14 @@ public class Utils {
         return gson.fromJson(json, new TypeToken<ArrayList<Car>>() {
         }.getType());
     }
+
+    public static ArrayList<Car> getFilteredDataByCountry(String pattern) {
+        ArrayList<Car> filteredData = new ArrayList<Car>();
+        for (Car car : getCarsDBOrig()) {
+            if (car.getCountry().equalsIgnoreCase(pattern)) {
+                filteredData.add(car);
+            }
+        }
+        return filteredData;
+    }
 }

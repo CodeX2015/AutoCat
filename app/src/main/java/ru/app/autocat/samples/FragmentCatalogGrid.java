@@ -1,4 +1,4 @@
-package ru.app.autocat.fragments;
+package ru.app.autocat.samples;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import ru.app.autocat.Car;
 import ru.app.autocat.MainActivity;
 import ru.app.autocat.R;
+import ru.app.autocat.fragments.FragmentDetails;
 import ru.app.autocat.helpers.XmlParserHelper;
 
 /**
@@ -41,21 +42,6 @@ public class FragmentCatalogGrid extends Fragment {
         //mGridView.setAdapter(adapter);
         adjustGridView();
         parseXML();
-/**
-        btnParse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Intent myIntent = new Intent(getActivity(), ListSample.class);
-                //getActivity().startActivity(myIntent);
-
-                if (MainActivity.mListUserView) {
-                   // ((MainActivity) getActivity()).changeFragmentBack(new FragmentCatalogListGroup());
-                } else {
-                    ((MainActivity) getActivity()).changeFragmentBack(new FragmentCatalogGridGroup());
-                }
-            }
-        });
- */
 
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

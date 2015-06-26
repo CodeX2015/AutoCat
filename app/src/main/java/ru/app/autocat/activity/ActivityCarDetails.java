@@ -166,7 +166,7 @@ public class ActivityCarDetails extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Toast.makeText(this, "BackArrowPressed", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "BackArrowPressed", Toast.LENGTH_LONG).show();
         if (Integer.parseInt(mAmountMT.getText().toString()) > 0
                 | Integer.parseInt(mAmountAT.getText().toString()) > 0) {
             saveData();
@@ -175,7 +175,6 @@ public class ActivityCarDetails extends AppCompatActivity {
         }
         setResult(RESULT_OK);
         super.onBackPressed();
-        //todo save data to preferenses
 
     }
 
@@ -187,6 +186,6 @@ public class ActivityCarDetails extends AppCompatActivity {
         carDetails.setAmountKppMt(Integer.parseInt(mAmountMT.getText().toString()));
         carDetails.setAmountKppAt(Integer.parseInt(mAmountAT.getText().toString()));
         Utils.saveData(ActivityCarDetails.this, carDetails);
-        Toast.makeText(ActivityCarDetails.this, "Save car in garage", Toast.LENGTH_LONG).show();
+        //Toast.makeText(ActivityCarDetails.this, "Save car in garage", Toast.LENGTH_LONG).show();
     }
 }

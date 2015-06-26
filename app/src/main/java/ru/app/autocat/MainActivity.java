@@ -43,9 +43,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import ru.app.autocat.fragments.FragmentCatalogGrid;
 import ru.app.autocat.fragments.FragmentCatalogGridGroup;
-import ru.app.autocat.fragments.FragmentCatalogList;
 import ru.app.autocat.fragments.FragmentCatalogListGroup;
 import ru.app.autocat.fragments.FragmentGarageGridGroup;
 import ru.app.autocat.fragments.FragmentGarageListGroup;
@@ -162,8 +160,7 @@ public class MainActivity extends AppCompatActivity {
                     refresh(ivChangeView, getResources().getDrawable(R.drawable.ic_view_module_white_24dp));
                     Toast.makeText(MainActivity.this, "Changed to: List", Toast.LENGTH_SHORT).show();
                     if (checkVisibleFragment(FRAGMENT_CATALOG)) {
-                        //changeFragment(new FragmentCatalogListGroup(), FRAGMENT_CATALOG);
-                        changeFragment(new FragmentCatalogList(), FRAGMENT_CATALOG);
+                        changeFragment(new FragmentCatalogListGroup(), FRAGMENT_CATALOG);
                     } else if (checkVisibleFragment(FRAGMENT_GARAGE)) {
                         changeFragment(new FragmentGarageListGroup(), FRAGMENT_GARAGE);
                     } else {
@@ -223,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                 }
                 //mDrawerLayout.closeDrawer(mDrawerLayoutMain);
-                setCarsDBG(getFilteredDataByCountry(pattern));
+                setCarsDBG(Utils.getFilteredDataByCountry(pattern));
                 mDATA = getMarkListByCountry();
                 setAdapter();
                 if (mListUserView) {
@@ -417,16 +414,16 @@ public class MainActivity extends AppCompatActivity {
         }.getType());
     }
 
-    private void setFilterPattern(String pattern) {
-        FragmentCatalogGrid fragmentCatalogGrid = new FragmentCatalogGrid();
-        Bundle patternArgs = new Bundle();
-        if (pattern.equalsIgnoreCase("Все")) {
-            pattern = "";
-        }
-        patternArgs.putString("FilterPattern", pattern);
-        fragmentCatalogGrid.setArguments(patternArgs);
-        changeFragment(fragmentCatalogGrid, FRAGMENT_CATALOG);
-    }
+//    private void setFilterPattern(String pattern) {
+//        FragmentCatalogGrid fragmentCatalogGrid = new FragmentCatalogGrid();
+//        Bundle patternArgs = new Bundle();
+//        if (pattern.equalsIgnoreCase("Все")) {
+//            pattern = "";
+//        }
+//        patternArgs.putString("FilterPattern", pattern);
+//        fragmentCatalogGrid.setArguments(patternArgs);
+//        changeFragment(fragmentCatalogGrid, FRAGMENT_CATALOG);
+//    }
 
     public ArrayList<Car> getFilteredData(String pattern, ArrayList<Car> dataforfilter) {
         ArrayList<Car> filteredData = new ArrayList<Car>();

@@ -1,5 +1,7 @@
 package ru.app.autocat.fragments;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,25 +10,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.WeakHashMap;
 
 import ru.app.autocat.Car;
-import ru.app.autocat.MainActivity;
 import ru.app.autocat.R;
 import ru.app.autocat.Utils;
 import ru.app.autocat.activity.ActivityCarDetails;
-import ru.app.autocat.adapters.Sectionizer;
-import ru.app.autocat.adapters.SimpleSectionAdapter;
+import ru.app.autocat.adapters.StickyListHeaderAdapter;
+import se.emilsjolander.stickylistheaders.ExpandableStickyListHeadersListView;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 /**
  * Created by CodeX on 21.06.2015.
@@ -35,14 +31,30 @@ import ru.app.autocat.adapters.SimpleSectionAdapter;
 public class FragmentCatalogListGroup extends Fragment {
 
     private ArrayList<Car> cars;
-    private ListView mListView;
+    private ExpandableStickyListHeadersListView mListView;
+    StickyListHeaderAdapter mStickyListHeaderAdapter;
+    WeakHashMap<View, Integer> mOriginalViewHeightPool = new WeakHashMap<View, Integer>();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_listview, container, false);
-        mListView = (ListView) view.findViewById(R.id.lvMain);
-        separateList();
+        cars = getData();
+        View view = inflater.inflate(R.layout.fragment_listview_sticky, container, false);
+        mListView = (ExpandableStickyListHeadersListView) view.findViewById(R.id.list);
+        mListView.setAnimExecutor(new AnimationExecutor());
+        mStickyListHeaderAdapter = new StickyListHeaderAdapter(getActivity(), cars);
+        mListView.setAdapter(mStickyListHeaderAdapter);
+        mListView.setOnHeaderClickListener(new StickyListHeadersListView.OnHeaderClickListener() {
+            @Override
+            public void onHeaderClick(StickyListHeadersListView l, View header, int itemPosition, long headerId, boolean currentlySticky) {
+                if (mListView.isHeaderCollapsed(headerId)) {
+                    //mListView.expand(headerId);
+                } else {
+                    //mListView.collapse(headerId);
+                }
+            }
+        });
+
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -55,19 +67,71 @@ public class FragmentCatalogListGroup extends Fragment {
                 getActivity().startActivity(myIntent);
 
 
-                /**
-                 Bundle carsArgs = new Bundle();
-                 carsArgs.putString("CarDetails", json);
-                 FragmentDetails fragmentDetails = new FragmentDetails();
-                 fragmentDetails.setArguments(carsArgs);
-                 ((MainActivity) getActivity()).changeFragmentBack(fragmentDetails);
-                 */
             }
         });
-
+        //separateList();
         return view;
     }
 
+
+    //animation executor
+    class AnimationExecutor implements ExpandableStickyListHeadersListView.IAnimationExecutor {
+
+        @Override
+        public void executeAnim(final View target, final int animType) {
+            if (ExpandableStickyListHeadersListView.ANIMATION_EXPAND == animType && target.getVisibility() == View.VISIBLE) {
+                return;
+            }
+            if (ExpandableStickyListHeadersListView.ANIMATION_COLLAPSE == animType && target.getVisibility() != View.VISIBLE) {
+                return;
+            }
+            if (mOriginalViewHeightPool.get(target) == null) {
+                mOriginalViewHeightPool.put(target, target.getHeight());
+            }
+            final int viewHeight = mOriginalViewHeightPool.get(target);
+            float animStartY = animType == ExpandableStickyListHeadersListView.ANIMATION_EXPAND ? 0f : viewHeight;
+            float animEndY = animType == ExpandableStickyListHeadersListView.ANIMATION_EXPAND ? viewHeight : 0f;
+            final ViewGroup.LayoutParams lp = target.getLayoutParams();
+            ValueAnimator animator = ValueAnimator.ofFloat(animStartY, animEndY);
+            animator.setDuration(200);
+            target.setVisibility(View.VISIBLE);
+            animator.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    if (animType == ExpandableStickyListHeadersListView.ANIMATION_EXPAND) {
+                        target.setVisibility(View.VISIBLE);
+                    } else {
+                        target.setVisibility(View.GONE);
+                    }
+                    target.getLayoutParams().height = viewHeight;
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    lp.height = ((Float) valueAnimator.getAnimatedValue()).intValue();
+                    target.setLayoutParams(lp);
+                    target.requestLayout();
+                }
+            });
+            animator.start();
+
+        }
+    }
 
     private ArrayList<Car> getData() {
         ArrayList<Car> cars = Utils.getCarsDBOrig();
@@ -81,111 +145,4 @@ public class FragmentCatalogListGroup extends Fragment {
             return null;
         }
     }
-
-    void separateList() {
-        // 1. Your data source
-        cars = getData();
-        if (cars == null) {
-            return;
-        }
-        // 2. Sort them using the car
-        Car all = new Car("Все");
-        MarkComparator markComparator = new MarkComparator();
-        Collections.sort(cars, markComparator);
-
-        // 3. Create your custom adapter
-        MyListAdapter carAdapter = new MyListAdapter(cars);
-
-        // 4. Create a Sectionizer
-        CarSectionizer carSectionizer = new CarSectionizer(all);
-
-        // 5. Wrap your adapter within the SimpleSectionAdapter
-        SimpleSectionAdapter<Car> sectionAdapter = new SimpleSectionAdapter<Car>(getActivity(),
-                carAdapter, R.layout.list_header, R.id.list_header_title, carSectionizer);
-
-        // 6. Set the adapter to your ListView
-        mListView.setAdapter(sectionAdapter);
-    }
-
-    class CarSectionizer implements Sectionizer<Car> {
-        private Car car;
-
-        public CarSectionizer(Car car) {
-            this.car = car;
-        }
-
-        @Override
-        public String getSectionTitleForItem(Car car) {
-            return car.getMark();
-        }
-
-    }
-
-    private class MarkComparator implements Comparator<Car> {
-        @Override
-        public int compare(Car car1, Car car2) {
-            return car1.getMark().compareTo(car2.getMark());
-        }
-    }
-
-
-    private class MyListAdapter extends BaseAdapter {
-        ArrayList<Car> cars;
-
-        public MyListAdapter(ArrayList<Car> cars) {
-            this.cars = cars;
-        }
-
-        @Override
-        public int getCount() {
-            return cars.size();
-        }
-
-        @Override
-        public Car getItem(int position) {
-            return cars.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            MyRow myRow;
-            if (convertView == null) {
-                myRow = new MyRow();
-                convertView = getActivity().getLayoutInflater().inflate(R.layout.row_listview, parent, false);
-                myRow.ivCarPic = (ImageView) convertView.findViewById(R.id.ivCarPic);
-                myRow.tvModel = (TextView) convertView.findViewById(R.id.tvModel);
-                myRow.tvCreate = (TextView) convertView.findViewById(R.id.tv_create);
-                myRow.tvMT = (TextView) convertView.findViewById(R.id.tv_mt_header);
-                myRow.tvAT = (TextView) convertView.findViewById(R.id.tv_at_header);
-                myRow.tvAmountMT = (TextView) convertView.findViewById(R.id.tv_mt);
-                myRow.tvAmountAT = (TextView) convertView.findViewById(R.id.tv_at);
-                convertView.setTag(myRow);
-            } else {
-                myRow = (MyRow) convertView.getTag();
-            }
-            myRow.tvModel.setText(getItem(position).getModel());
-            myRow.tvCreate.setText(getItem(position).getCreated());
-            myRow.tvMT.setText(getItem(position).getKppMT());
-            myRow.tvAT.setText(getItem(position).getKppAT());
-            myRow.tvAmountMT.setText(String.valueOf(getItem(position).getAmountKppMt()));
-            myRow.tvAmountAT.setText(String.valueOf(getItem(position).getAmountKppAt()));
-            return convertView;
-        }
-
-        private class MyRow {
-            TextView tvModel;
-            TextView tvCreate;
-            TextView tvMT;
-            TextView tvAT;
-            TextView tvAmountMT;
-            TextView tvAmountAT;
-            ImageView ivCarPic;
-        }
-    }
-
 }

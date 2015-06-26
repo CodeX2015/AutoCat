@@ -1,5 +1,6 @@
 package ru.app.autocat.samples;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,11 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,55 +23,72 @@ import java.util.Comparator;
 import ru.app.autocat.Car;
 import ru.app.autocat.MainActivity;
 import ru.app.autocat.R;
+import ru.app.autocat.Utils;
+import ru.app.autocat.activity.ActivityCarDetails;
 import ru.app.autocat.adapters.Sectionizer;
 import ru.app.autocat.adapters.SimpleSectionAdapter;
-import ru.app.autocat.fragments.FragmentDetails;
 
 /**
- * Created by CodeX on 18.06.2015.
+ * Created by CodeX on 21.06.2015.
  */
 
-public class FragmentCatalogGridGroupOld extends Fragment {
+public class FragmentCatalogListGroupOLD extends Fragment {
 
-    private GridView mGridView;
-    //ArrayAdapter<String> adapter;
-    //todo https://github.com/TonicArtos/StickyGridHeaders
+    private ArrayList<Car> cars;
+    private ListView mListView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_gridview, container, false);
-        //Button btnParse = (Button) view.findViewById(R.id.btnParse);
-        mGridView = (GridView) view.findViewById(R.id.asset_grid);
-        seplisttest();
-        adjustGridView();
-
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        View view = inflater.inflate(R.layout.fragment_listview, container, false);
+        mListView = (ListView) view.findViewById(R.id.lvMain);
+        separateList();
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(final AdapterView<?> parent, View view, final int position, long id) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        FragmentDetails fragmentDetails = new FragmentDetails();
-                        Bundle carsArgs = new Bundle();
-                        Gson gson = new Gson();
-                        String json = gson.toJson(parent.getAdapter().getItem(position));
-                        carsArgs.putString("CarDetails", json);
-                        fragmentDetails.setArguments(carsArgs);
-                        ((MainActivity) getActivity()).changeFragmentBack(fragmentDetails);
-                    }
-                });
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                //convert object to string
+                Gson gson = new Gson();
+                String json = gson.toJson(cars.get(position));
+
+                Intent myIntent = new Intent(getActivity(), ActivityCarDetails.class);
+                myIntent.putExtra("CarDetails", json);
+                getActivity().startActivity(myIntent);
+
+
+                /**
+                 Bundle carsArgs = new Bundle();
+                 carsArgs.putString("CarDetails", json);
+                 FragmentDetails fragmentDetails = new FragmentDetails();
+                 fragmentDetails.setArguments(carsArgs);
+                 ((MainActivity) getActivity()).changeFragmentBack(fragmentDetails);
+                 */
             }
         });
 
         return view;
     }
 
-    void seplisttest () {
-        // 1. Your data source
-        ArrayList<Car> cars = ((MainActivity) getActivity()).getCarsDBG();
 
-        // 2. Sort them using the distance from the current city
+    private ArrayList<Car> getData() {
+        ArrayList<Car> cars = Utils.getCarsDBOrig();
+        if (cars != null) {
+            ArrayList<Car> carsLoad = Utils.compareData(getActivity(), cars);
+            if (carsLoad != null) {
+                return carsLoad;
+            }
+            return cars;
+        } else {
+            return null;
+        }
+    }
+
+    void separateList() {
+        // 1. Your data source
+        cars = getData();
+        if (cars == null) {
+            return;
+        }
+        // 2. Sort them using the car
         Car all = new Car("Все");
         MarkComparator markComparator = new MarkComparator();
         Collections.sort(cars, markComparator);
@@ -85,7 +104,7 @@ public class FragmentCatalogGridGroupOld extends Fragment {
                 carAdapter, R.layout.list_header, R.id.list_header_title, carSectionizer);
 
         // 6. Set the adapter to your ListView
-        mGridView.setAdapter(sectionAdapter);
+        mListView.setAdapter(sectionAdapter);
     }
 
     class CarSectionizer implements Sectionizer<Car> {
@@ -99,6 +118,7 @@ public class FragmentCatalogGridGroupOld extends Fragment {
         public String getSectionTitleForItem(Car car) {
             return car.getMark();
         }
+
     }
 
     private class MarkComparator implements Comparator<Car> {
@@ -108,9 +128,6 @@ public class FragmentCatalogGridGroupOld extends Fragment {
         }
     }
 
-    private void adjustGridView() {
-        mGridView.setNumColumns(GridView.AUTO_FIT);
-    }
 
     private class MyListAdapter extends BaseAdapter {
         ArrayList<Car> cars;
@@ -139,20 +156,36 @@ public class FragmentCatalogGridGroupOld extends Fragment {
             MyRow myRow;
             if (convertView == null) {
                 myRow = new MyRow();
-                convertView = getActivity().getLayoutInflater().inflate(R.layout.row_gridview, parent, false);
-                myRow.tvModel = (TextView) convertView.findViewById(R.id.tvModel);
+                convertView = getActivity().getLayoutInflater().inflate(R.layout.row_listview, parent, false);
                 myRow.ivCarPic = (ImageView) convertView.findViewById(R.id.ivCarPic);
+                myRow.tvModel = (TextView) convertView.findViewById(R.id.tvModel);
+                myRow.tvCreate = (TextView) convertView.findViewById(R.id.tv_create);
+                myRow.tvMT = (TextView) convertView.findViewById(R.id.tv_mt_header);
+                myRow.tvAT = (TextView) convertView.findViewById(R.id.tv_at_header);
+                myRow.tvAmountMT = (TextView) convertView.findViewById(R.id.tv_mt);
+                myRow.tvAmountAT = (TextView) convertView.findViewById(R.id.tv_at);
                 convertView.setTag(myRow);
             } else {
                 myRow = (MyRow) convertView.getTag();
             }
             myRow.tvModel.setText(getItem(position).getModel());
+            myRow.tvCreate.setText(getItem(position).getCreated());
+            myRow.tvMT.setText(getItem(position).getKppMT());
+            myRow.tvAT.setText(getItem(position).getKppAT());
+            myRow.tvAmountMT.setText(String.valueOf(getItem(position).getAmountKppMt()));
+            myRow.tvAmountAT.setText(String.valueOf(getItem(position).getAmountKppAt()));
             return convertView;
         }
 
         private class MyRow {
             TextView tvModel;
+            TextView tvCreate;
+            TextView tvMT;
+            TextView tvAT;
+            TextView tvAmountMT;
+            TextView tvAmountAT;
             ImageView ivCarPic;
         }
     }
+
 }
