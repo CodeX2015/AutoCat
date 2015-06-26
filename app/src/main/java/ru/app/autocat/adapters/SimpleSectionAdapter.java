@@ -215,7 +215,7 @@ public class SimpleSectionAdapter<T> extends BaseAdapter {
         }
     }
 
-    private int getSectionCount() {
+    public int getSectionCount() {
         return mSections.size();
     }
 

@@ -45,6 +45,7 @@ import java.util.HashMap;
 
 import ru.app.autocat.fragments.FragmentCatalogGrid;
 import ru.app.autocat.fragments.FragmentCatalogGridGroup;
+import ru.app.autocat.fragments.FragmentCatalogList;
 import ru.app.autocat.fragments.FragmentCatalogListGroup;
 import ru.app.autocat.fragments.FragmentGarageGridGroup;
 import ru.app.autocat.fragments.FragmentGarageListGroup;
@@ -161,7 +162,8 @@ public class MainActivity extends AppCompatActivity {
                     refresh(ivChangeView, getResources().getDrawable(R.drawable.ic_view_module_white_24dp));
                     Toast.makeText(MainActivity.this, "Changed to: List", Toast.LENGTH_SHORT).show();
                     if (checkVisibleFragment(FRAGMENT_CATALOG)) {
-                        changeFragment(new FragmentCatalogListGroup(), FRAGMENT_CATALOG);
+                        //changeFragment(new FragmentCatalogListGroup(), FRAGMENT_CATALOG);
+                        changeFragment(new FragmentCatalogList(), FRAGMENT_CATALOG);
                     } else if (checkVisibleFragment(FRAGMENT_GARAGE)) {
                         changeFragment(new FragmentGarageListGroup(), FRAGMENT_GARAGE);
                     } else {

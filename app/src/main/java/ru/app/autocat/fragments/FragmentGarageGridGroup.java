@@ -65,11 +65,6 @@ public class FragmentGarageGridGroup extends Fragment {
         return view;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Toast.makeText(getActivity(), "Return to fragment", Toast.LENGTH_LONG).show();
-    }
-
     private ArrayList<Car> loadData() {
         /**
         ArrayList<Car> result = ((MainActivity) getActivity()).loadPref();

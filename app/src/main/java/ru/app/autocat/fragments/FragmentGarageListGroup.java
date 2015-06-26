@@ -36,8 +36,9 @@ public class FragmentGarageListGroup extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_listview, container, false);
         mListView = (ListView) view.findViewById(R.id.lvMain);
-        if (loadData() != null) {
-            mListView.setAdapter(new MyListAdapter(loadData()));
+        cars = loadData();
+        if (cars != null) {
+            mListView.setAdapter(new MyListAdapter(cars));
         }
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -69,11 +70,11 @@ public class FragmentGarageListGroup extends Fragment {
     private ArrayList<Car> loadData() {
         //ArrayList<Car> result = ((MainActivity) getActivity()).loadPref();
 
-        ArrayList<Car> result = Utils.loadData(getActivity());
-        if (result == null) {
+        ArrayList<Car> cars = Utils.loadData(getActivity());
+        if (cars == null) {
             Toast.makeText(getActivity(), "No data", Toast.LENGTH_LONG).show();
         }
-        return result;
+        return cars;
     }
 
     private class MyListAdapter extends BaseAdapter {

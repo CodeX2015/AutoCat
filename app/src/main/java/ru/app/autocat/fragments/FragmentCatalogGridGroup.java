@@ -71,7 +71,9 @@ public class FragmentCatalogGridGroup extends Fragment {
 
     void SeparateByMark() {
         // 1. Your data source
-        cars = Utils.hashById(((MainActivity) getActivity()).getCarsDBG());
+        //cars = Utils.hashById(((MainActivity) getActivity()).getCarsDBG());
+        cars = Utils.getCarsDBOrig();
+
         if (cars != null) {
             // 2. Sort them using the Mark of the current car
             MarkComparator markComparator = new MarkComparator();

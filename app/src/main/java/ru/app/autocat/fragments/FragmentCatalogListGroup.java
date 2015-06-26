@@ -45,7 +45,7 @@ public class FragmentCatalogListGroup extends Fragment {
         separateList();
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 //convert object to string
                 Gson gson = new Gson();
                 String json = gson.toJson(cars.get(position));
@@ -70,7 +70,7 @@ public class FragmentCatalogListGroup extends Fragment {
 
 
     private ArrayList<Car> getData() {
-        ArrayList<Car> cars = ((MainActivity) getActivity()).getCarsDBG();
+        ArrayList<Car> cars = Utils.getCarsDBOrig();
         if (cars != null) {
             ArrayList<Car> carsLoad = Utils.compareData(getActivity(), cars);
             if (carsLoad != null) {
@@ -84,11 +84,11 @@ public class FragmentCatalogListGroup extends Fragment {
 
     void separateList() {
         // 1. Your data source
-        ArrayList<Car> cars = getData();
+        cars = getData();
         if (cars == null) {
             return;
         }
-        // 2. Sort them using the distance from the current city
+        // 2. Sort them using the car
         Car all = new Car("Все");
         MarkComparator markComparator = new MarkComparator();
         Collections.sort(cars, markComparator);
@@ -118,7 +118,16 @@ public class FragmentCatalogListGroup extends Fragment {
         public String getSectionTitleForItem(Car car) {
             return car.getMark();
         }
+
     }
+
+    private class MarkComparator implements Comparator<Car> {
+        @Override
+        public int compare(Car car1, Car car2) {
+            return car1.getMark().compareTo(car2.getMark());
+        }
+    }
+
 
     private class MyListAdapter extends BaseAdapter {
         ArrayList<Car> cars;
@@ -179,10 +188,4 @@ public class FragmentCatalogListGroup extends Fragment {
         }
     }
 
-    private class MarkComparator implements Comparator<Car> {
-        @Override
-        public int compare(Car car1, Car car2) {
-            return car1.getMark().compareTo(car2.getMark());
-        }
-    }
 }

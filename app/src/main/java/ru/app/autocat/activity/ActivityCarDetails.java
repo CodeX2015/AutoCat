@@ -166,7 +166,6 @@ public class ActivityCarDetails extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         Toast.makeText(this, "BackArrowPressed", Toast.LENGTH_LONG).show();
         if (Integer.parseInt(mAmountMT.getText().toString()) > 0
                 | Integer.parseInt(mAmountAT.getText().toString()) > 0) {
@@ -174,6 +173,8 @@ public class ActivityCarDetails extends AppCompatActivity {
         } else {
             deleteItem();
         }
+        setResult(RESULT_OK);
+        super.onBackPressed();
         //todo save data to preferenses
 
     }

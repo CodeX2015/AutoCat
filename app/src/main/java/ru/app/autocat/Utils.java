@@ -27,8 +27,8 @@ public class Utils {
         carsDBOrig = cars;
     }
 
-    public ArrayList<Car> getCarsDBOrig() {
-        return carsDBOrig;
+    public static ArrayList<Car> getCarsDBOrig() {
+        return hashById(carsDBOrig);
     }
 
     public static void setCarsDBFiltered(ArrayList<Car> cars) {

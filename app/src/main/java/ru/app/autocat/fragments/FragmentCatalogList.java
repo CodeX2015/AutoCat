@@ -1,5 +1,8 @@
 package ru.app.autocat.fragments;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,79 +10,187 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.WeakHashMap;
 
 import ru.app.autocat.Car;
-import ru.app.autocat.MainActivity;
 import ru.app.autocat.R;
-import ru.app.autocat.adapters.SeparatedListAdapter;
-import ru.app.autocat.helpers.XmlParserHelper;
+import ru.app.autocat.Utils;
+import ru.app.autocat.activity.ActivityCarDetails;
+import ru.app.autocat.adapters.StickyListHeaderAdapter;
+import se.emilsjolander.stickylistheaders.ExpandableStickyListHeadersListView;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 /**
- * Created by Yakovlev on 19.06.2015.
+ * Created by CodeX on 21.06.2015.
  */
+
 public class FragmentCatalogList extends Fragment {
 
-    ListView mListView;
+    private ArrayList<Car> cars;
+    private ExpandableStickyListHeadersListView mListView;
+    StickyListHeaderAdapter mStickyListHeaderAdapter;
+    WeakHashMap<View,Integer> mOriginalViewHeightPool = new WeakHashMap<View, Integer>();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_listview, container, false);
-        mListView = (ListView) view.findViewById(R.id.lvMain);
-        parseXML();
-
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        cars = getData();
+        View view = inflater.inflate(R.layout.fragment_listview_sticky, container, false);
+        mListView = (ExpandableStickyListHeadersListView) view.findViewById(R.id.list);
+        mListView.setAnimExecutor(new AnimationExecutor());
+        mStickyListHeaderAdapter = new StickyListHeaderAdapter(getActivity(), cars);
+        mListView.setAdapter(mStickyListHeaderAdapter);
+        mListView.setOnHeaderClickListener(new StickyListHeadersListView.OnHeaderClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FragmentDetails fragmentDetails = new FragmentDetails();
-                Bundle carsArgs = new Bundle();
-                Gson gson = new Gson();
-                String json = gson.toJson(((MyListAdapter) parent.getAdapter()).getItem(position));
-                carsArgs.putString("CarDetails", json);
-                fragmentDetails.setArguments(carsArgs);
-                ((MainActivity) getActivity()).changeFragmentBack(fragmentDetails);
+            public void onHeaderClick(StickyListHeadersListView l, View header, int itemPosition, long headerId, boolean currentlySticky) {
+                if(mListView.isHeaderCollapsed(headerId)){
+                    mListView.expand(headerId);
+                }else {
+                    mListView.collapse(headerId);
+                }
             }
         });
 
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                //convert object to string
+                Gson gson = new Gson();
+                String json = gson.toJson(cars.get(position));
+
+                Intent myIntent = new Intent(getActivity(), ActivityCarDetails.class);
+                myIntent.putExtra("CarDetails", json);
+                getActivity().startActivity(myIntent);
+
+
+                /**
+                 Bundle carsArgs = new Bundle();
+                 carsArgs.putString("CarDetails", json);
+                 FragmentDetails fragmentDetails = new FragmentDetails();
+                 fragmentDetails.setArguments(carsArgs);
+                 ((MainActivity) getActivity()).changeFragmentBack(fragmentDetails);
+                 */
+            }
+        });
+        //separateList();
         return view;
     }
 
-    private void parseXML() {
-        XmlParserHelper.parseXMLbyStack(new XmlParserHelper.LoadListener() {
-            @Override
-            public void OnParseComplete(final Object result) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        SeparatedListAdapter adapter = new SeparatedListAdapter(getActivity());
-                        adapter.addSection("All", new MyListAdapter((ArrayList<Car>) result));
 
+    //animation executor
+    class AnimationExecutor implements ExpandableStickyListHeadersListView.IAnimationExecutor {
 
-                        mListView.setAdapter(adapter);
-
-                    }
-                });
+        @Override
+        public void executeAnim(final View target, final int animType) {
+            if(ExpandableStickyListHeadersListView.ANIMATION_EXPAND==animType&&target.getVisibility()==View.VISIBLE){
+                return;
             }
-
-            @Override
-            public void OnParseError(final Exception error) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getActivity(), "OnParseError: " + error.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
+            if(ExpandableStickyListHeadersListView.ANIMATION_COLLAPSE==animType&&target.getVisibility()!=View.VISIBLE){
+                return;
             }
-        }, getActivity().getResources().getXml(R.xml.test));
+            if(mOriginalViewHeightPool.get(target)==null){
+                mOriginalViewHeightPool.put(target,target.getHeight());
+            }
+            final int viewHeight = mOriginalViewHeightPool.get(target);
+            float animStartY = animType == ExpandableStickyListHeadersListView.ANIMATION_EXPAND ? 0f : viewHeight;
+            float animEndY = animType == ExpandableStickyListHeadersListView.ANIMATION_EXPAND ? viewHeight : 0f;
+            final ViewGroup.LayoutParams lp = target.getLayoutParams();
+            ValueAnimator animator = ValueAnimator.ofFloat(animStartY, animEndY);
+            animator.setDuration(200);
+            target.setVisibility(View.VISIBLE);
+            animator.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    if (animType == ExpandableStickyListHeadersListView.ANIMATION_EXPAND) {
+                        target.setVisibility(View.VISIBLE);
+                    } else {
+                        target.setVisibility(View.GONE);
+                    }
+                    target.getLayoutParams().height = viewHeight;
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    lp.height = ((Float) valueAnimator.getAnimatedValue()).intValue();
+                    target.setLayoutParams(lp);
+                    target.requestLayout();
+                }
+            });
+            animator.start();
+
+        }
+    }
+
+
+    private ArrayList<Car> getData() {
+        ArrayList<Car> cars = Utils.getCarsDBOrig();
+        if (cars != null) {
+            ArrayList<Car> carsLoad = Utils.compareData(getActivity(), cars);
+            if (carsLoad != null) {
+                return carsLoad;
+            }
+            return cars;
+        } else {
+            return null;
+        }
+    }
+/**
+    void separateList() {
+        // 1. Your data source
+        cars = getData();
+        if (cars == null) {
+            return;
+        }
+        // 2. Sort them using the car
+        Car all = new Car("Все");
+        MarkComparator markComparator = new MarkComparator();
+        Collections.sort(cars, markComparator);
+
+        // 3. Create your custom adapter
+        MyListAdapter carAdapter = new MyListAdapter(cars);
+
+        // 4. Create a Sectionizer
+        CarSectionizer carSectionizer = new CarSectionizer(all);
+
+        // 5. Wrap your adapter within the SimpleSectionAdapter
+        SimpleSectionAdapter<Car> sectionAdapter = new SimpleSectionAdapter<Car>(getActivity(),
+                carAdapter, R.layout.list_header, R.id.list_header_title, carSectionizer);
+
+        // 6. Set the adapter to your ListView
+        mListView.setAdapter(sectionAdapter);
+    }
+
+    class CarSectionizer implements Sectionizer<Car> {
+        private Car car;
+
+        public CarSectionizer(Car car) {
+            this.car = car;
+        }
+
+        @Override
+        public String getSectionTitleForItem(Car car) {
+            return car.getMark();
+        }
+
     }
 
     private class MyListAdapter extends BaseAdapter {
@@ -110,19 +221,23 @@ public class FragmentCatalogList extends Fragment {
             if (convertView == null) {
                 myRow = new MyRow();
                 convertView = getActivity().getLayoutInflater().inflate(R.layout.row_listview, parent, false);
+                myRow.ivCarPic = (ImageView) convertView.findViewById(R.id.ivCarPic);
                 myRow.tvModel = (TextView) convertView.findViewById(R.id.tvModel);
                 myRow.tvCreate = (TextView) convertView.findViewById(R.id.tv_create);
-                myRow.tvMT = (TextView) convertView.findViewById(R.id.tv_mt);
-                myRow.tvAT = (TextView) convertView.findViewById(R.id.tv_at);
-                myRow.ivCarPic = (ImageView) convertView.findViewById(R.id.ivCarPic);
+                myRow.tvMT = (TextView) convertView.findViewById(R.id.tv_mt_header);
+                myRow.tvAT = (TextView) convertView.findViewById(R.id.tv_at_header);
+                myRow.tvAmountMT = (TextView) convertView.findViewById(R.id.tv_mt);
+                myRow.tvAmountAT = (TextView) convertView.findViewById(R.id.tv_at);
                 convertView.setTag(myRow);
             } else {
                 myRow = (MyRow) convertView.getTag();
             }
             myRow.tvModel.setText(getItem(position).getModel());
             myRow.tvCreate.setText(getItem(position).getCreated());
-            //myRow.tvMT.setText(getItem(position).getMT);
-            //myRow.tvAT..setText(getItem(position).getAT);
+            myRow.tvMT.setText(getItem(position).getKppMT());
+            myRow.tvAT.setText(getItem(position).getKppAT());
+            myRow.tvAmountMT.setText(String.valueOf(getItem(position).getAmountKppMt()));
+            myRow.tvAmountAT.setText(String.valueOf(getItem(position).getAmountKppAt()));
             return convertView;
         }
 
@@ -131,7 +246,17 @@ public class FragmentCatalogList extends Fragment {
             TextView tvCreate;
             TextView tvMT;
             TextView tvAT;
+            TextView tvAmountMT;
+            TextView tvAmountAT;
             ImageView ivCarPic;
         }
     }
+
+    private class MarkComparator implements Comparator<Car> {
+        @Override
+        public int compare(Car car1, Car car2) {
+            return car1.getMark().compareTo(car2.getMark());
+        }
+    }
+        **/
 }
