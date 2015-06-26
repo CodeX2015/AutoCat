@@ -256,7 +256,7 @@ public class Utils {
         ArrayList<Car> filteredData = new ArrayList<Car>();
         if (carsForFilter != null) {
             for (Car car : carsForFilter) {
-                if (pattern.equalsIgnoreCase("Все") | car.getMark().equalsIgnoreCase(pattern)) {
+                if (pattern.equalsIgnoreCase("Все") || car.getMark().equalsIgnoreCase(pattern)) {
                     filteredData.add(car);
                 }
             }

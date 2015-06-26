@@ -71,7 +71,7 @@ public class FragmentCatalogGrid extends Fragment {
                     @Override
                     public void run() {
 
-                        mGridView.setAdapter(new MyListAdapter(((MainActivity) getActivity()).getCarsDBG()));
+                       // mGridView.setAdapter(new MyListAdapter(((MainActivity) getActivity()).getCarsDBG()));
                     }
                 });
             }

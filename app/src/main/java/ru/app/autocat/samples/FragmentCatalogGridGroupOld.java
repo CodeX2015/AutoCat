@@ -66,7 +66,7 @@ public class FragmentCatalogGridGroupOld extends Fragment {
 
     void seplisttest () {
         // 1. Your data source
-        ArrayList<Car> cars = ((MainActivity) getActivity()).getCarsDBG();
+        /*ArrayList<Car> cars = ((MainActivity) getActivity()).getCarsDBG();
 
         // 2. Sort them using the distance from the current city
         Car all = new Car("Все");
@@ -84,7 +84,7 @@ public class FragmentCatalogGridGroupOld extends Fragment {
                 carAdapter, R.layout.list_header, R.id.list_header_title, carSectionizer);
 
         // 6. Set the adapter to your ListView
-        mGridView.setAdapter(sectionAdapter);
+        mGridView.setAdapter(sectionAdapter);*/
     }
 
     class CarSectionizer implements Sectionizer<Car> {

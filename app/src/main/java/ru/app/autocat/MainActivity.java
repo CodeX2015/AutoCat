@@ -32,6 +32,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import java.util.ArrayList;
 
@@ -44,6 +45,7 @@ import ru.app.autocat.fragments.FragmentReserve;
 public class MainActivity extends AppCompatActivity {
     Drawable mPressed;
     Drawable mUnPressed;
+    private ViewFlipper vfSpinnerTitleChng;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mTitle;
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         mDATA.add("Все");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_new);
         mTitle = mDrawerTitle = "";
+        vfSpinnerTitleChng = (ViewFlipper) findViewById(R.id.vf_spinner_title);
         spnTBCat = (Spinner) findViewById(R.id.toolbar_spinner_cat);
 
         ArrayAdapter<String> SpinnerAdapter =
@@ -213,8 +216,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //mDrawerLayout.closeDrawer(mDrawerLayoutMain);
                 //setCarsDBG(Utils.getFilteredDataByCountry(pattern));
+
                 mDATA = Utils.getListOfMarkByCountry(pattern);
                 setAdapter();
+
 //                if (mListUserView) {
 //                    changeFragment(new FragmentCatalogGridGroup(), FRAGMENT_CATALOG);
 //                } else {
@@ -228,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerBtnUs.setOnClickListener(oclBtn);
 
         mDrawerList = (ListView) findViewById(R.id.lv_fragment_drawer);
-        setAdapter();
+        //setAdapter();
 
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -263,14 +268,16 @@ public class MainActivity extends AppCompatActivity {
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close) {
             public void onDrawerClosed(View view) {
-                spnTBCat.setVisibility(View.VISIBLE);
-                getSupportActionBar().setTitle(mTitle);
+                vfSpinnerTitleChng.setDisplayedChild(0);
+                //spnTBCat.setVisibility(View.VISIBLE);
+                //getSupportActionBar().setTitle(mTitle);
                 invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
-                spnTBCat.setVisibility(View.INVISIBLE);
-                getSupportActionBar().setTitle(getString(R.string.app_name));
+                vfSpinnerTitleChng.setDisplayedChild(1);
+                //spnTBCat.setVisibility(View.INVISIBLE);
+                //getSupportActionBar().setTitle(getString(R.string.app_name));
                 invalidateOptionsMenu();
             }
         };
@@ -537,6 +544,23 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Toast.makeText(this, "Return to main", Toast.LENGTH_LONG).show();
+        if (mListUserView) {
+            if (checkVisibleFragment(FRAGMENT_CATALOG)) {
+                changeFragment(new FragmentCatalogListGroup(), FRAGMENT_CATALOG);
+            } else {
+                changeFragment(new FragmentGarageListGroup(), FRAGMENT_GARAGE);
+            }
+        } else {
+            if (checkVisibleFragment(FRAGMENT_CATALOG)) {
+                changeFragment(new FragmentCatalogGridGroup(), FRAGMENT_CATALOG);
+            } else {
+                changeFragment(new FragmentGarageGridGroup(), FRAGMENT_GARAGE);
+            }
+        }
+    }
 
     @Override
     public void setTitle(CharSequence title) {
@@ -592,11 +616,6 @@ public class MainActivity extends AppCompatActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Toast.makeText(this, "Return to main", Toast.LENGTH_LONG).show();
     }
 
     public void appExit() {

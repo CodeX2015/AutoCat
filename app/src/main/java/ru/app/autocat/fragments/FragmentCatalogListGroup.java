@@ -46,9 +46,9 @@ public class FragmentCatalogListGroup extends Fragment {
             @Override
             public void onHeaderClick(StickyListHeadersListView l, View header, int itemPosition, long headerId, boolean currentlySticky) {
                 if (mListView.isHeaderCollapsed(headerId)) {
-                    mListView.expand(headerId);
+                    //mListView.expand(headerId);
                 } else {
-                    mListView.collapse(headerId);
+                    //mListView.collapse(headerId);
                 }
             }
         });
