@@ -41,48 +41,45 @@ public class FragmentGarageGridGroup extends Fragment {
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 Gson gson = new Gson();
                 String json = gson.toJson(cars.get(position));
-
                 Intent myIntent = new Intent(getActivity(), ActivityCarDetails.class);
                 myIntent.putExtra("CarDetails", json);
                 getActivity().startActivityForResult(myIntent, 1);
-
-/**
-                Bundle carsArgs = new Bundle();
-                carsArgs.putString("CarDetails", json);
-
-                FragmentDetailsGarage fragmentDetailsGarage = new FragmentDetailsGarage();
-                fragmentDetailsGarage.setArguments(carsArgs);
-                ((MainActivity) getActivity()).changeFragmentBack(fragmentDetailsGarage);
- */
             }
         });
-
-        SeparateByMark();
-
+        // 1. Your data source
+        loadData();
         return view;
     }
 
-    private ArrayList<Car> loadData() {
-        /**
-        ArrayList<Car> result = ((MainActivity) getActivity()).loadPref();
-        if (result == null) {
-            Toast.makeText(getActivity(), "No data", Toast.LENGTH_LONG).show();
-        }
-         */
+    private void loadData() {
+        Utils.loadData(new Utils.LoadListener() {
+            @Override
+            public void OnLoadComplete(Object result) {
+                cars = (ArrayList<Car>) result;
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        SeparateByMark();
+                    }
+                });
 
-        ArrayList<Car> result = Utils.loadData(getActivity());
-        if (result == null) {
-            Toast.makeText(getActivity(), "No data", Toast.LENGTH_LONG).show();
-        }
-        return result;
+            }
+
+            @Override
+            public void OnLoadError(String error) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getActivity(), "No data", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }, getActivity());
     }
 
-    void SeparateByMark () {
-        // 1. Your data source
-        cars = loadData();
+    void SeparateByMark() {
         if (cars != null) {
             // 2. Sort them using the Mark of the current car
             MarkComparator markComparator = new MarkComparator();

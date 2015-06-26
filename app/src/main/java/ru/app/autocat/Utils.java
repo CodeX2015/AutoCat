@@ -2,6 +2,7 @@ package ru.app.autocat;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -12,6 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import ru.app.autocat.activity.ActivityCarDetails;
+import ru.app.autocat.helpers.XmlParserHelper;
 
 /**
  * Created by CodeX on 22.06.2015.
@@ -22,6 +24,7 @@ public class Utils {
     private static SharedPreferences mPrefs = null;
     private static ArrayList<Car> carsDBOrig;
     private static ArrayList<Car> carsDBFiltered;
+    private static ArrayList<Car> carsDBPrefs;
     private String mCarMarkFilter = "Все"; //
 
     public static void setCarsDBOrig(ArrayList<Car> cars) {
@@ -37,8 +40,18 @@ public class Utils {
     }
 
     public static ArrayList<Car> getCarsDBFiltered() {
-        if (carsDBFiltered == null){return getCarsDBOrig();}
+        if (carsDBFiltered == null) {
+            return getCarsDBOrig();
+        }
         return carsDBFiltered;
+    }
+
+    public static ArrayList<Car> getCarsDBPrefs() {
+        return carsDBPrefs;
+    }
+
+    public static void setCarsDBPrefs(ArrayList<Car> carsDBPrefs) {
+        Utils.carsDBPrefs = carsDBPrefs;
     }
 
     public Context getContext() {
@@ -62,9 +75,19 @@ public class Utils {
         return compareCars(cars);
     }
 
-    public static ArrayList<Car> loadData(Context context) {
+    public static void loadData(final LoadListener listener, final Context context) {
         mPrefs = context.getSharedPreferences("Cars", 0);
-        return loadPref();
+        mExecService.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    loadPref();
+                    listener.OnLoadComplete(getCarsDBPrefs());
+                } catch (Exception e) {
+                    listener.OnLoadError(e.getMessage());
+                }
+            }
+        });
     }
 
     public static void saveData(Context context, Car carDetails) {
@@ -83,7 +106,8 @@ public class Utils {
     }
 
     private static ArrayList<Car> compareCars(ArrayList<Car> cars) {
-        ArrayList<Car> loadCars = loadPref();
+        loadPref();
+        ArrayList<Car> loadCars = getCarsDBPrefs();
         if (loadCars != null) {
             HashMap<String, Car> carsHash = new HashMap<String, Car>();
             for (int i = 0; i < cars.size(); i++) {
@@ -103,7 +127,8 @@ public class Utils {
     }
 
     private static Car loadSelectPref(Car carDetails) {
-        ArrayList<Car> cars = loadPref();
+        loadPref();
+        ArrayList<Car> cars = getCarsDBPrefs();
         if (cars != null && cars.size() > 1) {
             for (int i = 0; i < cars.size(); i++) {
                 if (cars.get(i).getId().equalsIgnoreCase(carDetails.getId())) {
@@ -115,7 +140,8 @@ public class Utils {
     }
 
     private static void deleteSelectPref(Car carDetails) {
-        ArrayList<Car> cars = loadPref();
+        loadPref();
+        ArrayList<Car> cars = getCarsDBPrefs();
         if (cars != null && cars.size() > 1) {
             for (int i = 0; i <= cars.size() - 1; i++) {
                 if (cars.get(i).getId().equalsIgnoreCase(carDetails.getId())) {
@@ -129,7 +155,8 @@ public class Utils {
     }
 
     private static void savePref(Car carDetails) {
-        ArrayList<Car> cars = loadPref();
+        loadPref();
+        ArrayList<Car> cars = getCarsDBPrefs();
         if (cars != null) {
             HashMap<String, Car> carsId = new HashMap<String, Car>();
             for (int i = 0; i < cars.size(); i++) {
@@ -173,17 +200,17 @@ public class Utils {
         prefsEditor.apply();
     }
 
-    private static ArrayList<Car> loadPref() {
+    private static void loadPref() {
         if (mPrefs == null) {
-            return null;
+            return;
         }
         Gson gson = new Gson();
         String json = mPrefs.getString("Cars", null);
         if (json == null) {
-            return null;
+            return;
         }
-        return gson.fromJson(json, new TypeToken<ArrayList<Car>>() {
-        }.getType());
+        setCarsDBPrefs((ArrayList<Car>) gson.fromJson(json, new TypeToken<ArrayList<Car>>() {
+        }.getType()));
     }
 
     public static ArrayList<Car> getFilteredDataByCountry(String pattern) {
@@ -208,5 +235,29 @@ public class Utils {
         } else {
             return null;
         }
+    }
+
+    private static void loadPrefBackground(final LoadListener listener) {
+        mExecService.submit(new Runnable() {
+            @Override
+            public void run() {
+                if (mPrefs == null) {
+                    listener.OnLoadError("mPrefs is null");
+                }
+                Gson gson = new Gson();
+                String json = mPrefs.getString("Cars", null);
+                if (json == null) {
+                    listener.OnLoadError("json is null");
+                }
+                listener.OnLoadComplete(gson.fromJson(json, new TypeToken<ArrayList<Car>>() {
+                }.getType()));
+            }
+        });
+    }
+
+    public interface LoadListener {
+        void OnLoadComplete(Object result);
+
+        void OnLoadError(String error);
     }
 }

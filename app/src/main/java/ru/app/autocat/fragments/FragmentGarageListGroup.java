@@ -44,15 +44,6 @@ public class FragmentGarageListGroup extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_listview_sticky, container, false);
         mListView = (ExpandableStickyListHeadersListView) view.findViewById(R.id.list);
-        cars = loadData();
-
-//        if (cars != null) {
-//            mListView.setAdapter(new MyListAdapter(cars));
-//        }
-
-        mListView.setAnimExecutor(new AnimationExecutor());
-        mStickyListHeaderAdapter = new StickyListHeaderAdapter(getActivity(), cars);
-        mListView.setAdapter(mStickyListHeaderAdapter);
         mListView.setOnHeaderClickListener(new StickyListHeadersListView.OnHeaderClickListener() {
             @Override
             public void onHeaderClick(StickyListHeadersListView l, View header, int itemPosition, long headerId, boolean currentlySticky) {
@@ -84,7 +75,7 @@ public class FragmentGarageListGroup extends Fragment {
                 */
             }
         });
-
+        loadData();
         return view;
     }
 
@@ -148,72 +139,36 @@ public class FragmentGarageListGroup extends Fragment {
         }
     }
 
-    private ArrayList<Car> loadData() {
-        //ArrayList<Car> result = ((MainActivity) getActivity()).loadPref();
+    private void loadData() {
+        Utils.loadData(new Utils.LoadListener() {
+            @Override
+            public void OnLoadComplete(Object result) {
+                cars = (ArrayList<Car>) result;
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setAdapter();
+                    }
+                });
 
-        ArrayList<Car> cars = Utils.loadData(getActivity());
-        if (cars == null) {
-            Toast.makeText(getActivity(), "No data", Toast.LENGTH_LONG).show();
-        }
-        return cars;
+            }
+
+            @Override
+            public void OnLoadError(String error) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getActivity(), "No data", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }, getActivity());
     }
 
-    /*private class MyListAdapter extends BaseAdapter {
-        ArrayList<Car> cars;
+    private void setAdapter() {
+        mListView.setAnimExecutor(new AnimationExecutor());
+        mStickyListHeaderAdapter = new StickyListHeaderAdapter(getActivity(), cars);
+        mListView.setAdapter(mStickyListHeaderAdapter);
+    }
 
-        public MyListAdapter(ArrayList<Car> cars) {
-            this.cars = cars;
-        }
-
-        @Override
-        public int getCount() {
-            return cars.size();
-        }
-
-        @Override
-        public Car getItem(int position) {
-            return cars.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            MyRow myRow;
-            if (convertView == null) {
-                myRow = new MyRow();
-                convertView = getActivity().getLayoutInflater().inflate(R.layout.row_listview, parent, false);
-                myRow.tvModel = (TextView) convertView.findViewById(R.id.tvModel);
-                myRow.tvCreate = (TextView) convertView.findViewById(R.id.tv_create);
-                myRow.tvMT = (TextView) convertView.findViewById(R.id.tv_mt_header);
-                myRow.tvAT = (TextView) convertView.findViewById(R.id.tv_at_header);
-                myRow.tvAmountMT = (TextView) convertView.findViewById(R.id.tv_mt);
-                myRow.tvAmountAT = (TextView) convertView.findViewById(R.id.tv_at);
-                myRow.ivCarPic = (ImageView) convertView.findViewById(R.id.ivCarPic);
-                convertView.setTag(myRow);
-            } else {
-                myRow = (MyRow) convertView.getTag();
-            }
-            myRow.tvModel.setText(getItem(position).getModel());
-            myRow.tvCreate.setText(getItem(position).getCreated());
-            myRow.tvMT.setText(getItem(position).getKppMT());
-            myRow.tvAT.setText(getItem(position).getKppAT());
-            myRow.tvAmountMT.setText(String.valueOf(getItem(position).getAmountKppMt()));
-            myRow.tvAmountAT.setText(String.valueOf(getItem(position).getAmountKppAt()));
-            return convertView;
-        }
-
-        private class MyRow {
-            TextView tvModel;
-            TextView tvCreate;
-            TextView tvMT;
-            TextView tvAT;
-            TextView tvAmountMT;
-            TextView tvAmountAT;
-            ImageView ivCarPic;
-        }
-    }*/
 }
