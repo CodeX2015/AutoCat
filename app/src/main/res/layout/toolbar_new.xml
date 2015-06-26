@@ -7,13 +7,15 @@
     android:background="@color/tb_background_color"
     android:theme="@style/ToolbarColoredBackArrow"
     app:popupTheme="@style/Theme.AppCompat.Light.NoActionBar"
-    app:titleTextAppearance="@style/Toolbar.TitleText" >
+    app:titleTextAppearance="@style/Toolbar.TitleText">
 
     <Spinner
         android:id="@+id/toolbar_spinner_cat"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginTop="0dp" />
+        android:layout_marginTop="0dp"
+        />
+
 
     <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/iv_change_view"

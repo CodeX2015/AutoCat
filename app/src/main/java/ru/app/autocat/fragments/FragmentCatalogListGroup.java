@@ -42,11 +42,6 @@ public class FragmentCatalogListGroup extends Fragment {
         View view = inflater.inflate(R.layout.fragment_listview_sticky, container, false);
         mListView = (ExpandableStickyListHeadersListView) view.findViewById(R.id.list);
 
-
-
-        mListView.setAnimExecutor(new AnimationExecutor());
-        mStickyListHeaderAdapter = new StickyListHeaderAdapter(getActivity(), cars);
-        mListView.setAdapter(mStickyListHeaderAdapter);
         mListView.setOnHeaderClickListener(new StickyListHeadersListView.OnHeaderClickListener() {
             @Override
             public void onHeaderClick(StickyListHeadersListView l, View header, int itemPosition, long headerId, boolean currentlySticky) {
@@ -68,12 +63,16 @@ public class FragmentCatalogListGroup extends Fragment {
                 Intent myIntent = new Intent(getActivity(), ActivityCarDetails.class);
                 myIntent.putExtra("CarDetails", json);
                 getActivity().startActivity(myIntent);
-
-
             }
         });
-        //separateList();
+        setAdapter();
         return view;
+    }
+
+    private void setAdapter() {
+        mListView.setAnimExecutor(new AnimationExecutor());
+        mStickyListHeaderAdapter = new StickyListHeaderAdapter(getActivity(), cars);
+        mListView.setAdapter(mStickyListHeaderAdapter);
     }
 
 

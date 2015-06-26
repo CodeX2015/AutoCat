@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import ru.app.autocat.activity.ActivityCarDetails;
 import ru.app.autocat.helpers.XmlParserHelper;
 
 /**
@@ -20,12 +19,12 @@ import ru.app.autocat.helpers.XmlParserHelper;
  */
 public class Utils {
     private static ExecutorService mExecService = Executors.newCachedThreadPool();
-    private Context context;
+    private static Context context;
     private static SharedPreferences mPrefs = null;
     private static ArrayList<Car> carsDBOrig;
     private static ArrayList<Car> carsDBFiltered;
     private static ArrayList<Car> carsDBPrefs;
-    private String mCarMarkFilter = "Все"; //
+    private static String mCarMarkFilter = "Все"; //
 
     public static void setCarsDBOrig(ArrayList<Car> cars) {
         carsDBOrig = cars;
@@ -36,7 +35,7 @@ public class Utils {
     }
 
     public static void setCarsDBFiltered(ArrayList<Car> cars) {
-        carsDBFiltered = cars;
+        carsDBFiltered = getFilteredDataByMark(mCarMarkFilter, cars);
     }
 
     public static ArrayList<Car> getCarsDBFiltered() {
@@ -60,6 +59,14 @@ public class Utils {
 
     public void setContext(Context context) {
         this.context = context;
+    }
+
+    public static String getmCarMarkFilter() {
+        return mCarMarkFilter;
+    }
+
+    public static void setmCarMarkFilter(String mCarMarkFilter) {
+        Utils.mCarMarkFilter = mCarMarkFilter;
     }
 
     public Utils(Context context) {
@@ -90,9 +97,19 @@ public class Utils {
         });
     }
 
-    public static void saveData(Context context, Car carDetails) {
+    public static void saveData(final SaveListener listener, Context context, final Car carDetails) {
         mPrefs = context.getSharedPreferences("Cars", 0);
-        savePref(carDetails);
+        mExecService.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    savePref(carDetails);
+                    listener.OnSaveComplete(true);
+                } catch (Exception e) {
+                    listener.OnSaveError(e.getMessage());
+                }
+            }
+        });
     }
 
     public static void deleteItem(Context context, Car carDetails) {
@@ -100,9 +117,30 @@ public class Utils {
         deleteSelectPref(carDetails);
     }
 
-    public static Car loadItem(Context context, Car carDetails) {
+    public static void loadItem(final LoadListener listener, Context context, final Car carDetails) {
         mPrefs = context.getSharedPreferences("Cars", 0);
-        return loadSelectPref(carDetails);
+        mExecService.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    listener.OnLoadComplete(loadSelectPref(carDetails));
+                } catch (Exception e) {
+                    listener.OnLoadError(e.getMessage());
+                }
+            }
+        });
+    }
+
+    public static ArrayList<Car> hashById(ArrayList<Car> cars) {
+        if (cars != null) {
+            HashMap<String, Car> carsId = new HashMap<String, Car>();
+            for (int i = 0; i < cars.size(); i++) {
+                carsId.put(cars.get(i).getId(), cars.get(i));
+            }
+            cars.clear();
+            cars.addAll(carsId.values());
+        }
+        return cars;
     }
 
     private static ArrayList<Car> compareCars(ArrayList<Car> cars) {
@@ -174,18 +212,6 @@ public class Utils {
         savePrefFull(cars);
     }
 
-    public static ArrayList<Car> hashById(ArrayList<Car> cars) {
-        if (cars != null) {
-            HashMap<String, Car> carsId = new HashMap<String, Car>();
-            for (int i = 0; i < cars.size(); i++) {
-                carsId.put(cars.get(i).getId(), cars.get(i));
-            }
-            cars.clear();
-            cars.addAll(carsId.values());
-        }
-        return cars;
-    }
-
     private static void savePrefFull(ArrayList<Car> cars) {
         if (mPrefs == null) {
             return;
@@ -209,8 +235,11 @@ public class Utils {
         if (json == null) {
             return;
         }
-        setCarsDBPrefs((ArrayList<Car>) gson.fromJson(json, new TypeToken<ArrayList<Car>>() {
-        }.getType()));
+        setCarsDBPrefs(
+                getFilteredDataByMark(mCarMarkFilter,
+                        (ArrayList<Car>) gson.fromJson(json,
+                                new TypeToken<ArrayList<Car>>() {
+                                }.getType())));
     }
 
     public static ArrayList<Car> getFilteredDataByCountry(String pattern) {
@@ -223,11 +252,11 @@ public class Utils {
         return filteredData;
     }
 
-    public static ArrayList<Car> getFilteredDataByMark(String pattern) {
+    public static ArrayList<Car> getFilteredDataByMark(String pattern, ArrayList<Car> carsForFilter) {
         ArrayList<Car> filteredData = new ArrayList<Car>();
-        if (getCarsDBOrig() != null) {
-            for (Car car : getCarsDBOrig()) {
-                if (car.getMark().equalsIgnoreCase(pattern)) {
+        if (carsForFilter != null) {
+            for (Car car : carsForFilter) {
+                if (pattern.equalsIgnoreCase("Все") | car.getMark().equalsIgnoreCase(pattern)) {
                     filteredData.add(car);
                 }
             }
@@ -235,6 +264,37 @@ public class Utils {
         } else {
             return null;
         }
+    }
+
+    public static ArrayList<String> getListOfMarkByCountry(String filterCountry) {
+        ArrayList<String> mArrayListMarks = new ArrayList<>();
+        ArrayList<Car> cars = getFilteredDataByCountry(filterCountry);
+        HashMap<String, String> marks = new HashMap<String, String>();
+        if (cars != null) {
+            for (Car car : cars) {
+                if (!marks.containsKey(car.getMark())) {
+                    marks.put(car.getMark(), "");
+                }
+            }
+            mArrayListMarks.addAll(marks.keySet());
+        }
+        mArrayListMarks.add(0, "Все");
+        return mArrayListMarks;
+    }
+
+
+    protected static void parseXML(Context context) {
+        XmlParserHelper.parseXMLbyStack(new XmlParserHelper.LoadListener() {
+            @Override
+            public void OnParseComplete(final Object result) {
+                setCarsDBOrig((ArrayList<Car>) result);
+            }
+
+            @Override
+            public void OnParseError(final Exception error) {
+                Log.d("OnParseError: ", error.getMessage());
+            }
+        }, context.getResources().getXml(R.xml.test));
     }
 
     private static void loadPrefBackground(final LoadListener listener) {
@@ -257,7 +317,14 @@ public class Utils {
 
     public interface LoadListener {
         void OnLoadComplete(Object result);
-
         void OnLoadError(String error);
+    }
+    public interface SaveListener {
+        void OnSaveComplete(boolean result);
+        void OnSaveError(String error);
+    }
+    public interface DeleteListener {
+        void OnDeleteComplete(boolean result);
+        void OnDeleteError(String error);
     }
 }

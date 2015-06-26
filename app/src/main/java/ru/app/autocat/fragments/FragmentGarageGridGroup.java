@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import ru.app.autocat.Car;
-import ru.app.autocat.MainActivity;
 import ru.app.autocat.R;
 import ru.app.autocat.Utils;
 import ru.app.autocat.activity.ActivityCarDetails;

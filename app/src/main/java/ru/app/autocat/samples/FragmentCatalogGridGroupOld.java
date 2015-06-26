@@ -23,7 +23,6 @@ import ru.app.autocat.MainActivity;
 import ru.app.autocat.R;
 import ru.app.autocat.adapters.Sectionizer;
 import ru.app.autocat.adapters.SimpleSectionAdapter;
-import ru.app.autocat.fragments.FragmentDetails;
 
 /**
  * Created by CodeX on 18.06.2015.

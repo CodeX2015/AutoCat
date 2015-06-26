@@ -1,4 +1,4 @@
-package ru.app.autocat.fragments;
+package ru.app.autocat.samples;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,7 +15,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import ru.app.autocat.Car;
-import ru.app.autocat.MainActivity;
 import ru.app.autocat.R;
 
 /**
@@ -96,7 +95,7 @@ public class FragmentDetails extends Fragment {
             public void onClick(View v) {
                 carDetails.setAmountKppMt(Integer.parseInt(mAmountMT.getText().toString()));
                 carDetails.setAmountKppAt(Integer.parseInt(mAmountAT.getText().toString()));
-                ((MainActivity) getActivity()).savePref(carDetails);
+                //((MainActivity) getActivity()).savePref(carDetails);
                 Toast.makeText(getActivity(), "Save car in garage", Toast.LENGTH_LONG).show();
             }
         });

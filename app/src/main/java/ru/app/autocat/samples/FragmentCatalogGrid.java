@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import ru.app.autocat.Car;
 import ru.app.autocat.MainActivity;
 import ru.app.autocat.R;
-import ru.app.autocat.fragments.FragmentDetails;
 import ru.app.autocat.helpers.XmlParserHelper;
 
 /**

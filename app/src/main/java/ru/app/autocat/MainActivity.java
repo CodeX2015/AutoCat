@@ -3,11 +3,7 @@ package ru.app.autocat;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,18 +33,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import ru.app.autocat.fragments.FragmentCatalogGridGroup;
 import ru.app.autocat.fragments.FragmentCatalogListGroup;
 import ru.app.autocat.fragments.FragmentGarageGridGroup;
 import ru.app.autocat.fragments.FragmentGarageListGroup;
 import ru.app.autocat.fragments.FragmentReserve;
-import ru.app.autocat.helpers.XmlParserHelper;
 
 public class MainActivity extends AppCompatActivity {
     Drawable mPressed;
@@ -96,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        parseXML();
+        Utils.parseXML(this);
         mDATA.add("Все");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_new);
         mTitle = mDrawerTitle = "";
@@ -182,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         setSupportActionBar(toolbar);
+
         getSupportActionBar().setTitle(mTitle);
 
         mDrawerLayoutMain = (LinearLayout) findViewById(R.id.llDrawerLayout);
@@ -220,14 +212,14 @@ public class MainActivity extends AppCompatActivity {
                         break;
                 }
                 //mDrawerLayout.closeDrawer(mDrawerLayoutMain);
-                setCarsDBG(Utils.getFilteredDataByCountry(pattern));
-                mDATA = getMarkListByCountry();
+                //setCarsDBG(Utils.getFilteredDataByCountry(pattern));
+                mDATA = Utils.getListOfMarkByCountry(pattern);
                 setAdapter();
-                if (mListUserView) {
-                    changeFragment(new FragmentCatalogGridGroup(), FRAGMENT_CATALOG);
-                } else {
-                    changeFragment(new FragmentCatalogGridGroup(), FRAGMENT_CATALOG);
-                }
+//                if (mListUserView) {
+//                    changeFragment(new FragmentCatalogGridGroup(), FRAGMENT_CATALOG);
+//                } else {
+//                    changeFragment(new FragmentCatalogGridGroup(), FRAGMENT_CATALOG);
+//                }
             }
         };
 
@@ -241,16 +233,14 @@ public class MainActivity extends AppCompatActivity {
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (!parent.getAdapter().getItem(position).toString().equalsIgnoreCase("Все")) {
-                    Utils.setCarsDBFiltered(
-                            getFilteredDataByMark(
-                                    parent.getAdapter().getItem(position).toString(), Utils.getCarsDBOrig()));
-                } else {
+                Utils.setmCarMarkFilter(parent.getAdapter().getItem(position).toString());
+                Utils.setCarsDBFiltered(Utils.getCarsDBOrig());
+                if (parent.getAdapter().getItem(position).toString().equalsIgnoreCase("Все")) {
                     mDrawerBtnDe.setBackgroundDrawable(mUnPressed);
                     mDrawerBtnUs.setBackgroundDrawable(mUnPressed);
                     mDrawerBtnJp.setBackgroundDrawable(mUnPressed);
-                    Utils.setCarsDBFiltered(Utils.getCarsDBOrig());
                 }
+
                 mDrawerList.setItemChecked(position, true);
                 mDrawerLayout.closeDrawer(mDrawerLayoutMain);
                 if (mListUserView) {
@@ -286,21 +276,6 @@ public class MainActivity extends AppCompatActivity {
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mHandler = new Handler();
-
-    }
-
-    private ArrayList<String> getMarkListByCountry() {
-        ArrayList<String> mArrayListMarks =new ArrayList<>();
-        ArrayList<Car> cars = getCarsDBG();
-        HashMap<String, String> marks = new HashMap<String, String>();
-        if (cars != null) {
-            for (Car car : cars) {
-                if (!marks.containsKey(car.getMark())){marks.put(car.getMark(),"");}
-            }
-            mArrayListMarks.addAll(marks.keySet());
-        }
-        mArrayListMarks.add(0, "Все");
-        return mArrayListMarks;
     }
 
     public void refresh(final ImageView iv, final Drawable icon) {
@@ -327,92 +302,108 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public static Bitmap drawableToBitmap(Drawable drawable) {
-        if (drawable instanceof BitmapDrawable) {
-            return ((BitmapDrawable) drawable).getBitmap();
-        }
-
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-
-        return bitmap;
-    }
-
-    private void parseXML() {
-        XmlParserHelper.parseXMLbyStack(new XmlParserHelper.LoadListener() {
-            @Override
-            public void OnParseComplete(final Object result) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //setCarsDB((ArrayList<Car>) result);
-                        //setCarsDBG(getCarsDB());
-
-                        Utils.setCarsDBOrig((ArrayList<Car>) result);
-                    }
-                });
-            }
-
-            @Override
-            public void OnParseError(final Exception error) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(MainActivity.this, "OnParseError: " + error.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        }, getResources().getXml(R.xml.test));
-    }
-
-    public void savePref(Car carDetails) {
-        ArrayList<Car> cars = loadPref();
-        if (cars == null) {
-            cars = new ArrayList<Car>();
-        }
-        cars.add(carDetails);
-        savePrefFull(cars);
-    }
-
-    public void savePrefFull(ArrayList<Car> cars) {
-        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = mPrefs.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(cars);
-        prefsEditor.clear();
-        if (cars != null) {
-            prefsEditor.putString("Cars", json);
-        }
-        prefsEditor.apply();
-    }
-
-    public void deleteSelectPref(Car carDetails) {
-        ArrayList<Car> cars = loadPref();
-        if (cars != null && cars.size() > 1) {
-
-            for (int i = 0; i <= cars.size() - 1; i++) {
-                if (cars.get(i).getId().equalsIgnoreCase(carDetails.getId())) {
-                    cars.remove(i);
-                }
-            }
-        } else if (cars != null && cars.size() <= 1) {
-            cars = null;
-        }
-        savePrefFull(cars);
-    }
-
-    public ArrayList<Car> loadPref() {
-        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = mPrefs.getString("Cars", null);
-        if (json == null) {
-            return null;
-        }
-        return gson.fromJson(json, new TypeToken<ArrayList<Car>>() {
-        }.getType());
-    }
+//    private ArrayList<String> getMarkListByCountry() {
+//        ArrayList<String> mArrayListMarks = new ArrayList<>();
+//        ArrayList<Car> cars = getCarsDBG();
+//        HashMap<String, String> marks = new HashMap<String, String>();
+//        if (cars != null) {
+//            for (Car car : cars) {
+//                if (!marks.containsKey(car.getMark())) {
+//                    marks.put(car.getMark(), "");
+//                }
+//            }
+//            mArrayListMarks.addAll(marks.keySet());
+//        }
+//        mArrayListMarks.add(0, "Все");
+//        return mArrayListMarks;
+//    }
+//
+//    public static Bitmap drawableToBitmap(Drawable drawable) {
+//        if (drawable instanceof BitmapDrawable) {
+//            return ((BitmapDrawable) drawable).getBitmap();
+//        }
+//
+//        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+//        Canvas canvas = new Canvas(bitmap);
+//        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+//        drawable.draw(canvas);
+//
+//        return bitmap;
+//    }
+//
+//    private void parseXML() {
+//        XmlParserHelper.parseXMLbyStack(new XmlParserHelper.LoadListener() {
+//            @Override
+//            public void OnParseComplete(final Object result) {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        //setCarsDB((ArrayList<Car>) result);
+//                        //setCarsDBG(getCarsDB());
+//
+//                        Utils.setCarsDBOrig((ArrayList<Car>) result);
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void OnParseError(final Exception error) {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Toast.makeText(MainActivity.this, "OnParseError: " + error.getMessage(), Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//            }
+//        }, getResources().getXml(R.xml.test));
+//    }
+//
+//    public void savePref(Car carDetails) {
+//        ArrayList<Car> cars = loadPref();
+//        if (cars == null) {
+//            cars = new ArrayList<Car>();
+//        }
+//        cars.add(carDetails);
+//        savePrefFull(cars);
+//    }
+//
+//    public void savePrefFull(ArrayList<Car> cars) {
+//        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+//        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+//        Gson gson = new Gson();
+//        String json = gson.toJson(cars);
+//        prefsEditor.clear();
+//        if (cars != null) {
+//            prefsEditor.putString("Cars", json);
+//        }
+//        prefsEditor.apply();
+//    }
+//
+//    public void deleteSelectPref(Car carDetails) {
+//        ArrayList<Car> cars = loadPref();
+//        if (cars != null && cars.size() > 1) {
+//
+//            for (int i = 0; i <= cars.size() - 1; i++) {
+//                if (cars.get(i).getId().equalsIgnoreCase(carDetails.getId())) {
+//                    cars.remove(i);
+//                }
+//            }
+//        } else if (cars != null && cars.size() <= 1) {
+//            cars = null;
+//        }
+//        savePrefFull(cars);
+//    }
+//
+//    public ArrayList<Car> loadPref() {
+//        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+//        Gson gson = new Gson();
+//        String json = mPrefs.getString("Cars", null);
+//        if (json == null) {
+//            return null;
+//        }
+//        return gson.fromJson(json, new TypeToken<ArrayList<Car>>() {
+//        }.getType());
+//    }
 
 //    private void setFilterPattern(String pattern) {
 //        FragmentCatalogGrid fragmentCatalogGrid = new FragmentCatalogGrid();
@@ -425,30 +416,30 @@ public class MainActivity extends AppCompatActivity {
 //        changeFragment(fragmentCatalogGrid, FRAGMENT_CATALOG);
 //    }
 
-    public ArrayList<Car> getFilteredDataByMark(String pattern, ArrayList<Car> dataforfilter) {
-        ArrayList<Car> filteredData = new ArrayList<Car>();
-        if (dataforfilter != null) {
-            for (Car car : dataforfilter) {
-                if (car.getMark().equalsIgnoreCase(pattern)) {
-                    filteredData.add(car);
-                }
-            }
-            return filteredData;
-        } else {
-            return null;
-        }
-    }
-
-    public ArrayList<Car> getFilteredDataByCountry(String pattern) {
-        ArrayList<Car> filteredData = new ArrayList<Car>();
-
-        for (Car car : getCarsDB()) {
-            if (car.getCountry().equalsIgnoreCase(pattern)) {
-                filteredData.add(car);
-            }
-        }
-        return filteredData;
-    }
+//    public ArrayList<Car> getFilteredDataByMark(String pattern, ArrayList<Car> dataforfilter) {
+//        ArrayList<Car> filteredData = new ArrayList<Car>();
+//        if (dataforfilter != null) {
+//            for (Car car : dataforfilter) {
+//                if (car.getMark().equalsIgnoreCase(pattern)) {
+//                    filteredData.add(car);
+//                }
+//            }
+//            return filteredData;
+//        } else {
+//            return null;
+//        }
+//    }
+//
+//    public ArrayList<Car> getFilteredDataByCountry(String pattern) {
+//        ArrayList<Car> filteredData = new ArrayList<Car>();
+//
+//        for (Car car : getCarsDB()) {
+//            if (car.getCountry().equalsIgnoreCase(pattern)) {
+//                filteredData.add(car);
+//            }
+//        }
+//        return filteredData;
+//    }
 
     private void setAdapter() {
         mDrawerList.setAdapter(new AppSectionAdapter());

@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
 
 import com.google.gson.Gson;
@@ -18,7 +17,6 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import ru.app.autocat.Car;
-import ru.app.autocat.MainActivity;
 import ru.app.autocat.R;
 import ru.app.autocat.Utils;
 import ru.app.autocat.activity.ActivityCarDetails;

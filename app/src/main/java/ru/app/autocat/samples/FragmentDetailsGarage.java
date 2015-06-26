@@ -1,4 +1,4 @@
-package ru.app.autocat.fragments;
+package ru.app.autocat.samples;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,7 +15,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import ru.app.autocat.Car;
-import ru.app.autocat.MainActivity;
 import ru.app.autocat.R;
 
 /**
@@ -95,7 +94,7 @@ public class FragmentDetailsGarage extends Fragment {
             @Override
             public void onClick(View v) {
 
-                ((MainActivity) getActivity()).deleteSelectPref(carDetails);
+                //((MainActivity) getActivity()).deleteSelectPref(carDetails);
                 Toast.makeText(getActivity(), "Delete car from garage", Toast.LENGTH_LONG).show();
             }
         });

@@ -1,46 +1,46 @@
 package ru.app.autocat.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import ru.app.autocat.Car;
-import ru.app.autocat.MainActivity;
 import ru.app.autocat.R;
 import ru.app.autocat.Utils;
 
 public class ActivityCarDetails extends AppCompatActivity {
 
-    Button mMinusBtnMT;
-    Button mPlusBtnMT;
-    TextView mAmountMT;
-    TextView mKppMT;
-    Button mMinusBtnAT;
-    Button mPlusBtnAT;
-    TextView mAmountAT;
-    TextView mKppAT;
-    TextView mModel;
-    TextView mDescription;
-    TextView mCreated;
-    ImageView mCarPic;
-    Button mSaveBtn;
-    Car carDetails;
-    TextView mTbTitle;
+    private Button mMinusBtnMT;
+    private Button mPlusBtnMT;
+    private TextView mAmountMT;
+    private TextView mKppMT;
+    private Button mMinusBtnAT;
+    private Button mPlusBtnAT;
+    private TextView mAmountAT;
+    private TextView mKppAT;
+    private TextView mModel;
+    private TextView mDescription;
+    private TextView mCreated;
+    private ImageView mCarPic;
+    private Button mSaveBtn;
+    private Car carDetails;
+    private TextView mTbTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_details);
+        getData();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -66,8 +66,6 @@ public class ActivityCarDetails extends AppCompatActivity {
         mPlusBtnAT = (Button) findViewById(R.id.btn_plus_at);
         mAmountAT = (TextView) findViewById((R.id.tvAmount_at));
         mKppAT = (TextView) findViewById(R.id.tv_at);
-
-        carDetails = getData();
 
         mMinusBtnMT.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,18 +99,6 @@ public class ActivityCarDetails extends AppCompatActivity {
             }
         });
 
-        mSaveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                carDetails.setAmountKppMt(Integer.parseInt(mAmountMT.getText().toString()));
-                carDetails.setAmountKppAt(Integer.parseInt(mAmountAT.getText().toString()));
-                //MainActivity.savePref(carDetails);
-
-                Utils.saveData(ActivityCarDetails.this, carDetails);
-
-                Toast.makeText(ActivityCarDetails.this, "Save car in garage", Toast.LENGTH_LONG).show();
-            }
-        });
         if (carDetails != null) {
             mTbTitle.setText(carDetails.getMark());
             mModel.setText(carDetails.getModel());
@@ -123,14 +109,43 @@ public class ActivityCarDetails extends AppCompatActivity {
             mAmountMT.setText(String.valueOf(carDetails.getAmountKppMt()));
             mAmountAT.setText(String.valueOf(carDetails.getAmountKppAt()));
         }
+    }
 
+    private void getData() {
+        if (getIntent() != null) {
+            Gson gson = new Gson();
+            String json = getIntent().getExtras().getString("CarDetails");
+            carDetails = gson.fromJson(json, new TypeToken<Car>() {
+            }.getType());
+        }
+    }
 
+    private void deleteItem() {
+        Utils.deleteItem(ActivityCarDetails.this, carDetails);
+    }
+
+    private void saveData() {
+        carDetails.setAmountKppMt(Integer.parseInt(mAmountMT.getText().toString()));
+        carDetails.setAmountKppAt(Integer.parseInt(mAmountAT.getText().toString()));
+        Utils.saveData(new Utils.SaveListener() {
+            @Override
+            public void OnSaveComplete(boolean result) {
+
+            }
+
+            @Override
+            public void OnSaveError(String error) {
+                Log.d("Save ERR", error);
+
+            }
+        },ActivityCarDetails.this, carDetails);
+        //Toast.makeText(ActivityCarDetails.this, "Save car in garage", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_activity_car_details, menu);
+        //etMenuInflater().inflate(R.menu.menu_activity_car_details, menu);
         return true;
     }
 
@@ -149,21 +164,6 @@ public class ActivityCarDetails extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private Car getData() {
-        if (getIntent() != null) {
-            Gson gson = new Gson();
-            String json = getIntent().getExtras().getString("CarDetails");
-            Car carDetails = gson.fromJson(json, new TypeToken<Car>() {
-            }.getType());
-            if (Utils.loadItem(ActivityCarDetails.this, carDetails) != null) {
-                Utils.loadItem(ActivityCarDetails.this, carDetails);
-            }
-            return carDetails;
-        } else {
-            return null;
-        }
-    }
-
     @Override
     public void onBackPressed() {
         //Toast.makeText(this, "BackArrowPressed", Toast.LENGTH_LONG).show();
@@ -176,16 +176,5 @@ public class ActivityCarDetails extends AppCompatActivity {
         setResult(RESULT_OK);
         super.onBackPressed();
 
-    }
-
-    private void deleteItem() {
-        Utils.deleteItem(ActivityCarDetails.this, carDetails);
-    }
-
-    private void saveData() {
-        carDetails.setAmountKppMt(Integer.parseInt(mAmountMT.getText().toString()));
-        carDetails.setAmountKppAt(Integer.parseInt(mAmountAT.getText().toString()));
-        Utils.saveData(ActivityCarDetails.this, carDetails);
-        //Toast.makeText(ActivityCarDetails.this, "Save car in garage", Toast.LENGTH_LONG).show();
     }
 }
