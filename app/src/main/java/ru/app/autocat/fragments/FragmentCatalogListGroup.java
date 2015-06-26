@@ -41,6 +41,9 @@ public class FragmentCatalogListGroup extends Fragment {
         cars = getData();
         View view = inflater.inflate(R.layout.fragment_listview_sticky, container, false);
         mListView = (ExpandableStickyListHeadersListView) view.findViewById(R.id.list);
+
+
+
         mListView.setAnimExecutor(new AnimationExecutor());
         mStickyListHeaderAdapter = new StickyListHeaderAdapter(getActivity(), cars);
         mListView.setAdapter(mStickyListHeaderAdapter);
