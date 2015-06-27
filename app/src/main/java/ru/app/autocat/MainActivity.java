@@ -54,8 +54,6 @@ public class MainActivity extends AppCompatActivity {
     private Spinner spnTBCat;
     private ImageView ivChangeView;
     private Handler mHandler;
-    public ArrayList<Car> carsDB;
-    public ArrayList<Car> carsDBG;
     private Button mDrawerBtnDe;
     private Button mDrawerBtnJp;
     private Button mDrawerBtnUs;
@@ -67,22 +65,6 @@ public class MainActivity extends AppCompatActivity {
     public final static String FRAGMENT_RESERVE = "fragment_reserve";
 
     public ArrayList<String> mDATA = new ArrayList<String>();
-
-    public void setCarsDBG(ArrayList<Car> carsDBG) {
-        this.carsDBG = carsDBG;
-    }
-
-    public ArrayList<Car> getCarsDBG() {
-        return carsDBG;
-    }
-
-    public void setCarsDB(ArrayList<Car> carsDB) {
-        this.carsDB = carsDB;
-    }
-
-    public ArrayList<Car> getCarsDB() {
-        return carsDB;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             newFragment = new FragmentCatalogGridGroup();
                         }
-                        Toast.makeText(getBaseContext(), "Catalog", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getBaseContext(), "Catalog", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
                         fragmentTag = FRAGMENT_GARAGE;
@@ -125,12 +107,12 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             newFragment = new FragmentGarageGridGroup();
                         }
-                        Toast.makeText(getBaseContext(), "Garage", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getBaseContext(), "Garage", Toast.LENGTH_SHORT).show();
                         break;
                     case 2:
                         fragmentTag = FRAGMENT_RESERVE;
                         newFragment = new FragmentReserve();
-                        Toast.makeText(getBaseContext(), "Reserve", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getBaseContext(), "Reserve", Toast.LENGTH_SHORT).show();
                         break;
                 }
                 ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.spn_selected_item_text_color));
@@ -152,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!mListUserView) {
                     mListUserView = true;
                     refresh(ivChangeView, getResources().getDrawable(R.drawable.ic_view_module_white_24dp));
-                    Toast.makeText(MainActivity.this, "Changed to: List", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "Changed to: List", Toast.LENGTH_SHORT).show();
                     if (checkVisibleFragment(FRAGMENT_CATALOG)) {
                         changeFragment(new FragmentCatalogListGroup(), FRAGMENT_CATALOG);
                     } else if (checkVisibleFragment(FRAGMENT_GARAGE)) {
@@ -163,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     mListUserView = false;
                     refresh(ivChangeView, getResources().getDrawable(R.drawable.ic_view_list_white_24dp));
-                    Toast.makeText(MainActivity.this, "Changed to: Grid", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "Changed to: Grid", Toast.LENGTH_SHORT).show();
                     if (checkVisibleFragment(FRAGMENT_CATALOG)) {
                         changeFragment(new FragmentCatalogGridGroup(), FRAGMENT_CATALOG);
                     } else if (checkVisibleFragment(FRAGMENT_GARAGE)) {
@@ -215,7 +197,6 @@ public class MainActivity extends AppCompatActivity {
                         break;
                 }
                 //mDrawerLayout.closeDrawer(mDrawerLayoutMain);
-                //setCarsDBG(Utils.getFilteredDataByCountry(pattern));
 
                 mDATA = Utils.getListOfMarkByCountry(pattern);
                 setAdapter();
@@ -546,7 +527,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Toast.makeText(this, "Return to main", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Return to main", Toast.LENGTH_LONG).show();
         if (mListUserView) {
             if (checkVisibleFragment(FRAGMENT_CATALOG)) {
                 changeFragment(new FragmentCatalogListGroup(), FRAGMENT_CATALOG);

@@ -4,4 +4,5 @@
     <!--Button-->
     <drawable name="btn_bg_color">#1d5ff0</drawable>
     <drawable name="btn_bg_color_pressed">#103281</drawable>
+    <drawable name="btn_bg_hhhhh_color">#25f044</drawable>
 </resources>

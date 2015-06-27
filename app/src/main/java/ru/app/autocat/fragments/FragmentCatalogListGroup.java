@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import android.widget.AdapterView;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.WeakHashMap;
 
 import ru.app.autocat.Car;
@@ -38,7 +41,6 @@ public class FragmentCatalogListGroup extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        cars = getData();
         View view = inflater.inflate(R.layout.fragment_listview_sticky, container, false);
         mListView = (ExpandableStickyListHeadersListView) view.findViewById(R.id.list);
 
@@ -62,9 +64,10 @@ public class FragmentCatalogListGroup extends Fragment {
 
                 Intent myIntent = new Intent(getActivity(), ActivityCarDetails.class);
                 myIntent.putExtra("CarDetails", json);
-                getActivity().startActivity(myIntent);
+                getActivity().startActivityForResult(myIntent, 1);
             }
         });
+        getData();
         setAdapter();
         return view;
     }
@@ -74,7 +77,6 @@ public class FragmentCatalogListGroup extends Fragment {
         mStickyListHeaderAdapter = new StickyListHeaderAdapter(getActivity(), cars);
         mListView.setAdapter(mStickyListHeaderAdapter);
     }
-
 
     //animation executor
     class AnimationExecutor implements ExpandableStickyListHeadersListView.IAnimationExecutor {
@@ -135,16 +137,38 @@ public class FragmentCatalogListGroup extends Fragment {
         }
     }
 
-    private ArrayList<Car> getData() {
-        ArrayList<Car> cars = Utils.getCarsDBFiltered();
-        if (cars != null) {
-            ArrayList<Car> carsLoad = Utils.compareData(getActivity(), cars);
-            if (carsLoad != null) {
-                return carsLoad;
+    private void getData() {
+        cars = Utils.getCarsDBFiltered();
+//        if (cars != null) {
+//            ArrayList<Car> carsLoad = Utils.compareData(getActivity(), cars);
+//            if (carsLoad != null) {
+//                return carsLoad;
+//            }
+//            return cars;
+//        } else {
+//            return null;
+//        }
+        Utils.compareData(new Utils.LoadListener() {
+            @Override
+            public void OnLoadComplete(Object result) {
+                if (result != null) {
+                    cars = (ArrayList<Car>) result;
+                    // 2. Sort them using the Mark of the current car
+                    MarkComparator markComparator = new MarkComparator();
+                    Collections.sort(cars, markComparator);
+                }
             }
-            return cars;
-        } else {
-            return null;
+
+            @Override
+            public void OnLoadError(String error) {
+                Log.d("compareData", error);
+            }
+        }, getActivity(), cars);
+    }
+    private class MarkComparator implements Comparator<Car> {
+        @Override
+        public int compare(Car car1, Car car2) {
+            return car1.getMark().compareTo(car2.getMark());
         }
     }
 }

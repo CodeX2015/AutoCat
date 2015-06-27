@@ -48,7 +48,7 @@ public class FragmentCatalogGridGroup extends Fragment {
 
                         Intent myIntent = new Intent(getActivity(), ActivityCarDetails.class);
                         myIntent.putExtra("CarDetails", json);
-                        getActivity().startActivity(myIntent);
+                        getActivity().startActivityForResult(myIntent, 1);
 
                         // create Bundle for fragment
                         //Bundle carsArgs = new Bundle();
@@ -62,14 +62,12 @@ public class FragmentCatalogGridGroup extends Fragment {
                 });
             }
         });
-
         SeparateByMark();
         return view;
     }
 
     void SeparateByMark() {
         // 1. Your data source
-        //cars = Utils.hashById(((MainActivity) getActivity()).getCarsDBG());
         cars = Utils.getCarsDBFiltered();
 
         if (cars != null) {

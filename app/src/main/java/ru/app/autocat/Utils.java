@@ -58,7 +58,7 @@ public class Utils {
     }
 
     public void setContext(Context context) {
-        this.context = context;
+        Utils.context = context;
     }
 
     public static String getmCarMarkFilter() {
@@ -70,16 +70,23 @@ public class Utils {
     }
 
     public Utils(Context context) {
-        this.context = context;
+        Utils.context = context;
         SharedPreferences mPrefs = context.getSharedPreferences("Cars", 0);
     }
 
-    public static ArrayList<Car> compareData(Context context, ArrayList<Car> cars) {
+    public static void compareData(final LoadListener listener, Context context, final ArrayList<Car> cars) {
         mPrefs = context.getSharedPreferences("Cars", 0);
-        if (cars == null) {
-            return null;
-        }
-        return compareCars(cars);
+        mExecService.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    loadPref();
+                    listener.OnLoadComplete(compareCars(cars));
+                } catch (Exception e) {
+                    listener.OnLoadError(e.getMessage());
+                }
+            }
+        });
     }
 
     public static void loadData(final LoadListener listener, final Context context) {
@@ -97,7 +104,7 @@ public class Utils {
         });
     }
 
-    public static void saveData(final SaveListener listener, Context context, final Car carDetails) {
+    public static void saveItem(final SaveListener listener, Context context, final Car carDetails) {
         mPrefs = context.getSharedPreferences("Cars", 0);
         mExecService.submit(new Runnable() {
             @Override
@@ -112,9 +119,20 @@ public class Utils {
         });
     }
 
-    public static void deleteItem(Context context, Car carDetails) {
+    public static void deleteItem(final DeleteListener listener, Context context, final Car carDetails) {
         mPrefs = context.getSharedPreferences("Cars", 0);
-        deleteSelectPref(carDetails);
+        mExecService.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    deleteSelectPref(carDetails);
+                    listener.OnDeleteComplete(true);
+                } catch (Exception e) {
+                    listener.OnDeleteError(e.getMessage());
+                }
+            }
+        });
+
     }
 
     public static void loadItem(final LoadListener listener, Context context, final Car carDetails) {
@@ -144,6 +162,7 @@ public class Utils {
     }
 
     private static ArrayList<Car> compareCars(ArrayList<Car> cars) {
+        if (cars == null) {return null;}
         loadPref();
         ArrayList<Car> loadCars = getCarsDBPrefs();
         if (loadCars != null) {
@@ -282,7 +301,6 @@ public class Utils {
         return mArrayListMarks;
     }
 
-
     protected static void parseXML(Context context) {
         XmlParserHelper.parseXMLbyStack(new XmlParserHelper.LoadListener() {
             @Override
@@ -295,24 +313,6 @@ public class Utils {
                 Log.d("OnParseError: ", error.getMessage());
             }
         }, context.getResources().getXml(R.xml.test));
-    }
-
-    private static void loadPrefBackground(final LoadListener listener) {
-        mExecService.submit(new Runnable() {
-            @Override
-            public void run() {
-                if (mPrefs == null) {
-                    listener.OnLoadError("mPrefs is null");
-                }
-                Gson gson = new Gson();
-                String json = mPrefs.getString("Cars", null);
-                if (json == null) {
-                    listener.OnLoadError("json is null");
-                }
-                listener.OnLoadComplete(gson.fromJson(json, new TypeToken<ArrayList<Car>>() {
-                }.getType()));
-            }
-        });
     }
 
     public interface LoadListener {

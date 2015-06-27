@@ -121,13 +121,23 @@ public class ActivityCarDetails extends AppCompatActivity {
     }
 
     private void deleteItem() {
-        Utils.deleteItem(ActivityCarDetails.this, carDetails);
+        Utils.deleteItem(new Utils.DeleteListener() {
+            @Override
+            public void OnDeleteComplete(boolean result) {
+
+            }
+
+            @Override
+            public void OnDeleteError(String error) {
+                Log.d("Delete ERR", error);
+            }
+        }, ActivityCarDetails.this, carDetails);
     }
 
-    private void saveData() {
+    private void saveItem() {
         carDetails.setAmountKppMt(Integer.parseInt(mAmountMT.getText().toString()));
         carDetails.setAmountKppAt(Integer.parseInt(mAmountAT.getText().toString()));
-        Utils.saveData(new Utils.SaveListener() {
+        Utils.saveItem(new Utils.SaveListener() {
             @Override
             public void OnSaveComplete(boolean result) {
 
@@ -136,9 +146,8 @@ public class ActivityCarDetails extends AppCompatActivity {
             @Override
             public void OnSaveError(String error) {
                 Log.d("Save ERR", error);
-
             }
-        },ActivityCarDetails.this, carDetails);
+        }, ActivityCarDetails.this, carDetails);
         //Toast.makeText(ActivityCarDetails.this, "Save car in garage", Toast.LENGTH_LONG).show();
     }
 
@@ -169,7 +178,7 @@ public class ActivityCarDetails extends AppCompatActivity {
         //Toast.makeText(this, "BackArrowPressed", Toast.LENGTH_LONG).show();
         if (Integer.parseInt(mAmountMT.getText().toString()) > 0
                 | Integer.parseInt(mAmountAT.getText().toString()) > 0) {
-            saveData();
+            saveItem();
         } else {
             deleteItem();
         }

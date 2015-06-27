@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -62,12 +62,12 @@ public class FragmentGarageListGroup extends Fragment {
                 getActivity().startActivityForResult(myIntent, 1);
 
                 /**
-                Bundle carsArgs = new Bundle();
-                carsArgs.putString("CarDetails", json);
-                FragmentDetailsGarage fragmentDetailsGarage = new FragmentDetailsGarage();
-                fragmentDetailsGarage.setArguments(carsArgs);
-                ((MainActivity) getActivity()).changeFragmentBack(fragmentDetailsGarage);
-                */
+                 Bundle carsArgs = new Bundle();
+                 carsArgs.putString("CarDetails", json);
+                 FragmentDetailsGarage fragmentDetailsGarage = new FragmentDetailsGarage();
+                 fragmentDetailsGarage.setArguments(carsArgs);
+                 ((MainActivity) getActivity()).changeFragmentBack(fragmentDetailsGarage);
+                 */
             }
         });
         loadData();
@@ -145,17 +145,11 @@ public class FragmentGarageListGroup extends Fragment {
                         setAdapter();
                     }
                 });
-
             }
 
             @Override
-            public void OnLoadError(String error) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getActivity(), "No data", Toast.LENGTH_LONG).show();
-                    }
-                });
+            public void OnLoadError(final String error) {
+                Log.d("FGLG_loadData ERR", error);
             }
         }, getActivity());
     }

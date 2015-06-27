@@ -15,14 +15,12 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 
 import ru.app.autocat.Car;
 import ru.app.autocat.MainActivity;
 import ru.app.autocat.R;
 import ru.app.autocat.adapters.Sectionizer;
-import ru.app.autocat.adapters.SimpleSectionAdapter;
 
 /**
  * Created by CodeX on 18.06.2015.

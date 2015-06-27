@@ -70,10 +70,10 @@ public class FragmentCatalogListGroupOLD extends Fragment {
     private ArrayList<Car> getData() {
         ArrayList<Car> cars = Utils.getCarsDBOrig();
         if (cars != null) {
-            ArrayList<Car> carsLoad = Utils.compareData(getActivity(), cars);
-            if (carsLoad != null) {
-                return carsLoad;
-            }
+//            ArrayList<Car> carsLoad = Utils.compareData(getActivity(), cars);
+//            if (carsLoad != null) {
+//                return carsLoad;
+//            }
             return cars;
         } else {
             return null;

@@ -39,6 +39,7 @@
     <color name="spn_popup_text_color">#000000</color>
     <color name="spn_popup_bg_color">#faebfa</color>
     <color name="spn_selected_item_text_color">#faebfa</color>
+    <color name="spn_divider_color">#a8615b61</color>
 
 
 

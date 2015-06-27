@@ -4,12 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -68,12 +68,7 @@ public class FragmentGarageGridGroup extends Fragment {
 
             @Override
             public void OnLoadError(String error) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getActivity(), "No data", Toast.LENGTH_LONG).show();
-                    }
-                });
+                Log.d("FGGG_loadData ERR", error);
             }
         }, getActivity());
     }
