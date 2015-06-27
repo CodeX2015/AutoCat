@@ -1,7 +1,9 @@
 package ru.app.autocat;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -39,10 +41,7 @@ public class Utils {
     }
 
     public static ArrayList<Car> getCarsDBFiltered() {
-        if (carsDBFiltered == null) {
-            return getCarsDBOrig();
-        }
-        return carsDBFiltered;
+        return getFilteredDataByMark(mCarMarkFilter, getCarsDBOrig());
     }
 
     public static ArrayList<Car> getCarsDBPrefs() {
@@ -74,14 +73,13 @@ public class Utils {
         SharedPreferences mPrefs = context.getSharedPreferences("Cars", 0);
     }
 
-    public static void compareData(final LoadListener listener, Context context, final ArrayList<Car> cars) {
+    public static void compareData(final LoadListener listener, Context context) {
         mPrefs = context.getSharedPreferences("Cars", 0);
         mExecService.submit(new Runnable() {
             @Override
             public void run() {
                 try {
-                    loadPref();
-                    listener.OnLoadComplete(compareCars(cars));
+                    listener.OnLoadComplete(compareCars(getCarsDBFiltered()));
                 } catch (Exception e) {
                     listener.OnLoadError(e.getMessage());
                 }
@@ -236,13 +234,14 @@ public class Utils {
             return;
         }
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(cars);
         prefsEditor.clear();
         if (cars != null) {
+            Gson gson = new Gson();
+            String json = gson.toJson(cars);
             prefsEditor.putString("Cars", json);
         }
         prefsEditor.apply();
+        loadPref();
     }
 
     private static void loadPref() {
@@ -251,9 +250,6 @@ public class Utils {
         }
         Gson gson = new Gson();
         String json = mPrefs.getString("Cars", null);
-        if (json == null) {
-            return;
-        }
         setCarsDBPrefs(
                 getFilteredDataByMark(mCarMarkFilter,
                         (ArrayList<Car>) gson.fromJson(json,
@@ -326,5 +322,20 @@ public class Utils {
     public interface DeleteListener {
         void OnDeleteComplete(boolean result);
         void OnDeleteError(String error);
+    }
+
+    public static void EmptyMessage(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Информация:")
+                .setMessage("В гараже нет машин.")
+                .setCancelable(false)
+                .setNegativeButton("Ok",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }

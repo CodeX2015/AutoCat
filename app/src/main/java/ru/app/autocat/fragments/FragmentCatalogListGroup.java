@@ -68,7 +68,6 @@ public class FragmentCatalogListGroup extends Fragment {
             }
         });
         getData();
-        setAdapter();
         return view;
     }
 
@@ -138,33 +137,33 @@ public class FragmentCatalogListGroup extends Fragment {
     }
 
     private void getData() {
-        cars = Utils.getCarsDBFiltered();
-//        if (cars != null) {
-//            ArrayList<Car> carsLoad = Utils.compareData(getActivity(), cars);
-//            if (carsLoad != null) {
-//                return carsLoad;
-//            }
-//            return cars;
-//        } else {
-//            return null;
-//        }
         Utils.compareData(new Utils.LoadListener() {
+
             @Override
             public void OnLoadComplete(Object result) {
                 if (result != null) {
                     cars = (ArrayList<Car>) result;
-                    // 2. Sort them using the Mark of the current car
-                    MarkComparator markComparator = new MarkComparator();
-                    Collections.sort(cars, markComparator);
+                } else {
+                    cars = Utils.getCarsDBFiltered();
                 }
+                // 2. Sort them using the Mark of the current car
+                MarkComparator markComparator = new MarkComparator();
+                Collections.sort(cars, markComparator);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setAdapter();
+                    }
+                });
             }
 
             @Override
             public void OnLoadError(String error) {
                 Log.d("compareData", error);
             }
-        }, getActivity(), cars);
+        }, getActivity());
     }
+
     private class MarkComparator implements Comparator<Car> {
         @Override
         public int compare(Car car1, Car car2) {

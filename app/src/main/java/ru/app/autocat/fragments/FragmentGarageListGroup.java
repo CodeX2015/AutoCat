@@ -142,7 +142,9 @@ public class FragmentGarageListGroup extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        setAdapter();
+                        if (cars != null) {
+                            setAdapter();
+                        } else { Utils.EmptyMessage(getActivity());}
                     }
                 });
             }
