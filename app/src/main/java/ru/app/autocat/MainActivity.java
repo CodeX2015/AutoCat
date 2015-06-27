@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                         //Toast.makeText(getBaseContext(), "Reserve", Toast.LENGTH_SHORT).show();
                         break;
                 }
-                ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.spn_selected_item_text_color));
+                //((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.spn_selected_item_text_color));
                 if (newFragment != null) {
                     changeFragment(newFragment, fragmentTag);
                 }
